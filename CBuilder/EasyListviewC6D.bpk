@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="$(BCB)\Projects\Bpl\EasyListviewC6D.bpl"/>
+    <OBJFILES value="c:\progra~1\borland\cbuild~1\Projects\Intermed\EasyListviewC6D.obj 
+      $(BCB)\Projects\Intermed\EasyListviewReg.obj 
+      $(BCB)\Projects\Intermed\EasyCollectionEditor.obj"/>
+    <RESFILES value="EasyListviewC6D.res ..\Design\EasyListviewReg.dcr"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) ..\Design\EasyCollectionEditor.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value="designide.bpi rtl.bpi vcl.bpi EasyListviewC6.bpi MPCommonLibC6D"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\Design;..\Design"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="EasyListviewC6D.cpp"/>
+    <INCLUDEPATH value="..\Design;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\Projects\Bpl;..\Design;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\Intermed"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\Design -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG 
+      -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\Projects\Intermed\EasyListviewC6D.csm -Hc -Vx -Ve -X- -r- -a8 
+      -b- -k -y -v -vi- -c -tWM"/>
+    <PFLAGS value="-N2$(BCB)\Projects\Intermed -N0$(BCB)\Projects\Intermed -$YD -$W -$T -$R 
+      -$Q -$O- -$A8 -v -JPHNE -M -LUdesignide"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-l$(BCB)\Projects\Lib -I$(BCB)\Projects\Intermed 
+      -D&quot;Mustang Peak EasyListview Designtime Package&quot; -aa -Tpp -Gpd -x -Gn -Gl 
+      -Gi -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="EasyListviewC6D.cpp" FORMNAME="" UNITNAME="EasyListviewC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="EasyListviewC6D.res" FORMNAME="" UNITNAME="EasyListviewC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\Design\EasyListviewReg.pas" FORMNAME="" UNITNAME="EasyListviewReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\Design\EasyListviewReg.dcr" FORMNAME="" UNITNAME="EasyListviewReg" CONTAINERID="DcrTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\Design\EasyCollectionEditor.pas" FORMNAME="FormEasyCollectionEditor" UNITNAME="Easycollectioneditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="EasyListviewC6.bpi" FORMNAME="" UNITNAME="EasyListviewC6" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="MPCommonLibC6D.bpi" FORMNAME="" UNITNAME="MPCommonLibC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1029
+CodePage=1250
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[Excluded Packages]
+C:\PROGRA~1\Borland\CBUILD~1\Bin\dcldb60.bpl=Borland Database Components
+C:\PROGRA~1\Borland\CBUILD~1\Bin\dclstd60.bpl=Borland Standard Components
+C:\PROGRA~1\Borland\CBUILD~1\Bin\dbx60.bpl=Borland SQL Explorer UI Package
+c:\progra~1\borland\cbuild~1\Bin\DCLIB60.bpl=InterBase Data Access Components
+C:\PROGRA~1\Borland\CBUILD~1\Bin\dclmid60.bpl=Borland MyBase DataAccess Components
+c:\progra~1\borland\cbuild~1\Bin\dclqrt60.bpl=QuickReport Components
+c:\progra~1\borland\cbuild~1\Bin\dclsmpedit60.bpl=Borland Editor Script Enhancements
+c:\progra~1\borland\cbuild~1\Bin\applet60.bpl=Borland Control Panel Applet Package
+c:\progra~1\borland\cbuild~1\Bin\dclemacsedit60.bpl=Borland Editor Emacs Enhancements
+c:\progra~1\borland\cbuild~1\Bin\dclmlwiz60.bpl=Borland Markup Language Wizards
+c:\progra~1\borland\cbuild~1\Bin\idefilters60.bpl=IDE Filter for CPP32
+c:\progra~1\borland\cbuild~1\Bin\dcl31w60.bpl=Delphi 1.0 Compatibility Components
+c:\progra~1\borland\cbuild~1\Bin\dclbcbsmp60.bpl=Borland Sample Controls Design Time Package
+c:\progra~1\borland\cbuild~1\Bin\dclado60.bpl=Borland ADO DB Components
+c:\progra~1\borland\cbuild~1\Bin\dclbde60.bpl=Borland BDE DB Components
+c:\progra~1\borland\cbuild~1\Bin\dclcds60.bpl=Borland Base Cached ClientDataset Component
+c:\progra~1\borland\cbuild~1\Bin\dclbdecds60.bpl=Borland Local BDE ClientDataset Components
+c:\progra~1\borland\cbuild~1\Bin\dcltee60.bpl=TeeChart Components
+c:\progra~1\borland\cbuild~1\Bin\dcldss60.bpl=Borland Decision Cube Components
+c:\progra~1\borland\cbuild~1\Bin\dcltqr60.bpl=TeeChart for QuickReport Components
+c:\progra~1\borland\cbuild~1\Bin\dclclxdb60.bpl=Borland CLX Database Components
+C:\PROGRA~1\Borland\CBUILD~1\Bin\dclclxstd60.bpl=Borland CLX Standard Components
+c:\progra~1\borland\cbuild~1\Bin\dclmcn60.bpl=Borland DataSnap Connection Components
+c:\progra~1\borland\cbuild~1\Bin\dclact60.bpl=Borland ActionBar Components
+c:\progra~1\borland\cbuild~1\Projects\Bpl\TntLibD.bpl=Tnt Unicode VCL - Design
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

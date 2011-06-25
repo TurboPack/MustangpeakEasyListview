@@ -1,0 +1,43 @@
+package EasyListviewD7D;
+
+{$R *.res}
+{$R '..\Design\EasyListviewReg.dcr'}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'MustangPeak EasyListview Designtime Package'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl,
+  EasyListviewD7,
+  MPCommonLibD7D,
+  designide,
+  vclactnband,
+  vclx;
+
+contains
+  EasyListviewReg in '..\Design\EasyListviewReg.pas',
+  EasyCollectionEditor in '..\Design\EasyCollectionEditor.pas' {FormEasyCollectionEditor};
+
+end.

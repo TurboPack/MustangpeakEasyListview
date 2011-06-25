@@ -1,0 +1,40 @@
+package EasyListviewD4D;
+
+{$R *.RES}
+{$R '..\Design\EasyListviewReg.dcr'}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $00400000}
+{$DESCRIPTION 'MustangPeak EasyListview Designtime Package'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  EasyListviewD4,
+  MPCommonLibD4D,
+  vcl40,
+  Vclx40;
+
+contains
+  EasyListviewReg in '..\Design\EasyListviewReg.pas',
+  EasyCollectionEditorD4 in '..\Design\EasyCollectionEditorD4.pas' {FormEasyCollectionEditor};
+
+end.
