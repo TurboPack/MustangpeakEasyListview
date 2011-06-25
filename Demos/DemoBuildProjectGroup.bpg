@@ -1,0 +1,86 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = UserInterfaceDataProject.exe SimpleProject.exe VirtualProject.exe \
+  FullDemoProject.exe HintProject.exe ContextMenuProject.exe \
+  OLEDragDropProject.exe VCLDragDropProject.exe InterfacedPartOneProject.exe \
+  InterfacedPartTwoProject.exe ImageCustomDrawProject.exe GridProject.exe \
+  TaskbandProject.exe OLEDragDropExplorerProject.exe ThumbScrollerProject.exe \
+  ScrollButtonProject.exe CustomProject.exe ItemCustomDrawProject.exe \
+  ItemCustomDrawProjectAdv.exe SortingProject.exe TaskPanelProject.exe
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+SimpleProject.exe: Basic\Simple\SimpleProject.dpr
+  $(DCC)
+
+VirtualProject.exe: Basic\Virtual\VirtualProject.dpr
+  $(DCC)
+
+FullDemoProject.exe: Fulldemo\FullDemoProject.dpr
+  $(DCC)
+
+HintProject.exe: Hints\HintProject.dpr
+  $(DCC)
+
+ContextMenuProject.exe: Context Menus\ContextMenuProject.dpr
+  $(DCC)
+
+OLEDragDropProject.exe: DragDrop\OLE DragDrop\OLEDragDropProject.dpr
+  $(DCC)
+
+VCLDragDropProject.exe: DragDrop\VCL DragDrop\VCLDragDropProject.dpr
+  $(DCC)
+
+UserInterfaceDataProject.exe: Basic\Interfaced (Jim)\UserInterfaceDataProject.dpr
+  $(DCC)
+
+InterfacedPartOneProject.exe: Basic\Interfaced Part One\InterfacedPartOneProject.dpr
+  $(DCC)
+
+InterfacedPartTwoProject.exe: Basic\Interfaced Part Two\InterfacedPartTwoProject.dpr
+  $(DCC)
+
+ImageCustomDrawProject.exe: Image CustomDraw\ImageCustomDrawProject.dpr
+  $(DCC)
+
+GridProject.exe: Grid\GridProject.dpr
+  $(DCC)
+
+TaskbandProject.exe: Taskband\TaskbandProject.dpr
+  $(DCC)
+
+OLEDragDropExplorerProject.exe: DragDrop\OLE DragDrop Explorer\OLEDragDropExplorerProject.dpr
+  $(DCC)
+
+ThumbScrollerProject.exe: ThumbScroller\ThumbScrollerProject.dpr
+  $(DCC)
+
+ScrollButtonProject.exe: ScrollButton\ScrollButtonProject.dpr
+  $(DCC)
+
+CustomProject.exe: Basic\Custom Items\CustomProject.dpr
+  $(DCC)
+
+ItemCustomDrawProject.exe: Item CustomDraw\ItemCustomDrawProject.dpr
+  $(DCC)
+
+ItemCustomDrawProjectAdv.exe: Item CustomDraw Advanced\ItemCustomDrawProjectAdv.dpr
+  $(DCC)
+
+SortingProject.exe: Sorting\SortingProject.dpr
+  $(DCC)
+
+TaskPanelProject.exe: TaskPanel\TaskPanelProject.dpr
+  $(DCC)
+
+
