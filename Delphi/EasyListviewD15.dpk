@@ -1,6 +1,7 @@
 package EasyListviewD15;
 
 {$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -16,18 +17,20 @@ package EasyListviewD15;
 {$RANGECHECKS OFF}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES OFF}
+{$STACKFRAMES ON}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Muststang Peak EasyListview Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  MPCommonLibD15,
+  MPCommonLibD16,
   rtl,
   vcl;
 
@@ -35,7 +38,7 @@ contains
   EasyListview in '..\Source\EasyListview.pas',
   EasyLVResources in '..\Source\EasyLVResources.pas',
   EasyScrollFrame in '..\Source\EasyScrollFrame.pas',
-  EasyTaskPanelForm in '..\Source\EasyTaskPanelForm.pas',  
+  EasyTaskPanelForm in '..\Source\EasyTaskPanelForm.pas',
   EasyListviewAccessible in '..\Source\EasyListviewAccessible.pas',
   EasyMSAAIntf in '..\Source\EasyMSAAIntf.pas';
 

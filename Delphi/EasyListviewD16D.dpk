@@ -1,4 +1,4 @@
-package EasyListviewD15D;
+package EasyListviewD16D;
 
 {$R *.res}
 {$R '..\Design\EasyListviewReg.dcr'}
@@ -36,8 +36,9 @@ requires
   designide,
   vclactnband,
   vclx,
-  EasyListviewD15,
-  MPCommonLibD15D;
+  EasyListviewD16,
+  MPCommonLibD16,
+  MPCommonLibD16D;
 
 contains
   EasyListviewReg in '..\Design\EasyListviewReg.pas',
