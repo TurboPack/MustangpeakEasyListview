@@ -28,7 +28,7 @@ package EasyListviewD16D;
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'MustangPeak EasyListview Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,

@@ -27,7 +27,7 @@ package EasyListviewD16;
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Muststang Peak EasyListview Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   MPCommonLibD16,
