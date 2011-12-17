@@ -32,7 +32,9 @@ package EasyListviewD16;
 requires
   MPCommonLibD16,
   rtl,
-  vcl;
+  vcl,
+  tb2k_d16,
+  SpTBXLib_d16;
 
 contains
   EasyListview in '..\Source\EasyListview.pas',

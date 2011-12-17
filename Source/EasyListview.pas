@@ -4636,7 +4636,7 @@ type
     FSearchItem: TEasyItem;
     FStart: TCoolIncrementalSearchStart;
     FState: TEasyIncrementalSearchStates;
-    FTimerStub: Pointer;
+    FTimerStub: ICallbackStub;
     procedure SetSearchItem(Value: TEasyItem);
   protected
     procedure EndTimer;
@@ -4655,7 +4655,7 @@ type
     property NextSearchItem: TEasyItem read FNextSearchItem write FNextSearchItem;
     property SearchBuffer: WideString read FSearchBuffer write FSearchBuffer;
     property SearchItem: TEasyItem read FSearchItem write SetSearchItem;
-    property TimerStub: Pointer read FTimerStub write FTimerStub;
+    property TimerStub: ICallBackStub read FTimerStub write FTimerStub;
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     destructor Destroy; override;
@@ -5505,6 +5505,9 @@ type
     function SetEditorFocus: Boolean; override;
   end;
 
+  {$IF CompilerVersion >= 23}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$IFEND}
   TEasyListview = class(TCustomEasyListview)
   private
     function GetPaintInfoColumn: TEasyPaintInfoColumn; reintroduce; virtual;
@@ -5783,6 +5786,9 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+  {$IF CompilerVersion >= 23}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$IFEND}
   TEasyTaskPanelBand = class(TEasyBaseTaskBand)
   private
     FAutoScrollPanels: Boolean;
@@ -5905,7 +5911,10 @@ type
     property OnUnDock;
   end;
 
-  TEasyTaskBand = class(TEasyBaseTaskBand)    
+  {$IF CompilerVersion >= 23}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$IFEND}
+  TEasyTaskBand = class(TEasyBaseTaskBand)
   protected
     procedure DoGroupCollapse(Group: TEasyGroup); override;
     procedure DoGroupExpand(Group: TEasyGroup); override;
@@ -10669,7 +10678,11 @@ begin
                    (Msg.message = WM_MBUTTONDOWN) or
                    (Msg.message = WM_RBUTTONDOWN) then
                 begin
+                  {$IFDEF WIN64}
+                  Pt := SmallPointToPoint(TSmallPoint(Int64Rec(Msg.lParam).Lo));
+                  {$ELSE}
                   Pt := SmallPointToPoint(TSmallPoint(Msg.lParam));
+                  {$ENDIF}
                   ClientToScreen(Msg.hwnd, Pt);
                   ScreenToClient(OwnerListview.Handle, Pt);
                   if not Editor.PtInEditControl(Pt) then
@@ -28653,7 +28666,7 @@ begin
     begin
       hTimer := 0;
       Exclude(FState, eissTimerRunning);
-      DisposeStub(FTimerStub);
+      TimerStub := nil;
     end else
       Exception.Create('Can not Destroy Incremental Search Timer');
   end
@@ -29000,8 +29013,8 @@ procedure TEasyIncrementalSearchManager.StartTimer;
 begin
   if Enabled and not(eissTimerRunning in State) then
   begin
-    TimerStub := CreateStub(Self, @TEasyIncrementalSearchManager.TimerProc);
-    hTimer := SetTimer(0, 0, ResetTime, TimerStub);
+    TimerStub := TCallbackStub.Create(Self, @TEasyIncrementalSearchManager.TimerProc, 4);
+    hTimer := SetTimer(0, 0, ResetTime, TimerStub.StubPointer);
     Include(FState, eissTimerRunning);
   end
 end;

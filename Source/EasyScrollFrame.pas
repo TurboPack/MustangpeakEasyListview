@@ -87,7 +87,7 @@ type
     FOnClick: TNotifyEvent;
     FState: TEasyScrollButtonStates;
     FTimerID: THandle;
-    FTimerStub: Pointer;
+    FTimerStub: ICallBackStub;
     procedure SetDirection(const Value: TEasyScrollButtonDir);
     procedure SetFlat(const Value: Boolean);
   protected
@@ -110,13 +110,16 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property State: TEasyScrollButtonStates read FState write FState;
     property TimerID: THandle read FTimerID write FTimerID;
-    property TimerStub: Pointer read FTimerStub write FTimerStub;
+    property TimerStub: ICallBackStub read FTimerStub write FTimerStub;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
   end;
 
+  {$IF CompilerVersion >= 23}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$IFEND}
   TEasyScrollButton = class(TCustomEasyScrollButton)
   public
     property State;
@@ -378,11 +381,11 @@ begin
   if AutoScroll then
   begin
     if not Assigned(TimerStub) then
-      TimerStub := CreateStub(Self, @TCustomEasyScrollButton.TimerProc);
+      TimerStub := TCallbackStub.Create(Self, @TCustomEasyScrollButton.TimerProc, 4);
     if TimerType = ettAutoScrollDelay then
-      TimerID := SetTimer(Handle, TIMER_AUTOSCROLLDELAY, AutoScrollDelay, TimerStub)
+      TimerID := SetTimer(Handle, TIMER_AUTOSCROLLDELAY, AutoScrollDelay, TimerStub.StubPointer)
     else
-      TimerID := SetTimer(Handle, TIMER_AUTOSCROLL, AutoScrollTime, TimerStub);
+      TimerID := SetTimer(Handle, TIMER_AUTOSCROLL, AutoScrollTime, TimerStub.StubPointer);
     Include(FState, sbsAutoScrollTimerRunning);
   end
 end;
@@ -397,7 +400,6 @@ begin
       Exclude(FState, sbsAutoScrollTimerRunning);
       if FreeStub then
       begin
-        DisposeStub(FTimerStub);
         TimerStub := nil;
       end
     end else
