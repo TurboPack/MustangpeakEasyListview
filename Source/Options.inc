@@ -13,7 +13,7 @@
 {.$DEFINE USETHEMES}
 
 // Uncomment to support SpTBX Themes
-{$DEFINE SpTBX}
+{.DEFINE SpTBX}
 
 // -----------------------------------------------------------------------------
 // Use unicode-aware inplace editors. This implementation uses Troy Wolbrink's
