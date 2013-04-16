@@ -51,6 +51,8 @@ interface
 
 {$B-}
 
+{.$DEFINE DISABLE_ACCESSIBILITY}
+
 {$I Compilers.inc}
 {$I ..\Include\Debug.inc}
 {$I Options.inc}
@@ -97,10 +99,12 @@ uses
     UxTheme,
     {$ENDIF}
   {$ENDIF}
-  {$ifdef COMPILER_10_UP}
-  oleacc, // MSAA support in Delphi 2006 or higher
-  {$ELSE}
-  EasyMSAAIntf, // MSAA support for Delphi up to 2005
+  {$ifndef DISABLE_ACCESSIBILITY}
+    {$ifdef COMPILER_10_UP}
+    oleacc, // MSAA support in Delphi 2006 or higher
+    {$ELSE}
+    EasyMSAAIntf, // MSAA support for Delphi up to 2005
+    {$ENDIF}
   {$ENDIF}
   ExtCtrls,
   Forms,
@@ -1625,7 +1629,7 @@ type
   // **************************************************************************
   TEasyCollectionItem = class(TEasyPersistent, IUnknown, IEasyNotificationSink)
   private
-    FAccessible: IAccessible;
+    {$ifndef DISABLE_ACCESSIBILITY}FAccessible: IAccessible;{$endif}
     FCollection: TEasyCollection;
     FData: TObject;
     FDataInf: IUnknown;
@@ -1799,7 +1803,7 @@ type
     procedure LoadFromStream(S: TStream; var AVersion: Integer); virtual;
     procedure MakeVisible(Position: TEasyMakeVisiblePos); virtual;
     procedure SaveToStream(S: TStream; AVersion: Integer = EASYLISTVIEW_STREAM_VERSION); virtual;
-    property Accessible: IAccessible read FAccessible write FAccessible;
+    {$ifndef DISABLE_ACCESSIBILITY}property Accessible: IAccessible read FAccessible write FAccessible;{$endif}
     property Caption: WideString read GetCaption write SetCaption;
     property Captions[Column: Integer]: Widestring read GetCaptions write SetCaptions;
     property Data: TObject read FData write SetData;
@@ -3554,7 +3558,7 @@ type
   // **************************************************************************
   TEasyHeader = class(TEasyOwnedPersistent)
   private
-    FAccessible: IAccessible;
+    {$ifndef DISABLE_ACCESSIBILITY}FAccessible: IAccessible;{$endif}
     FAutoSizeHeight: Boolean;
     FAutoSizeHeightMargin: Integer;
     FCanvasStore: TEasyCanvasStore;
@@ -3658,7 +3662,7 @@ type
     procedure PaintTo(ACanvas: TCanvas; ARect: TRect; ViewRectCoords: Boolean); virtual;
     procedure Rebuild(Force: Boolean); virtual;
     procedure SaveToStream(S: TStream; Version: Integer = EASYLISTVIEW_STREAM_VERSION); override;
-    property Accessible: IAccessible read FAccessible;
+    {$ifndef DISABLE_ACCESSIBILITY}property Accessible: IAccessible read FAccessible;{$endif}
     property DisplayRect: TRect read GetDisplayRect write FDisplayRect;
     property MouseCaptured: Boolean read GetMouseCaptured;
     property StreamColumns: Boolean read FStreamColumns write FStreamColumns default True;
@@ -4714,7 +4718,7 @@ type
   // **************************************************************************
   TCustomEasyListview = class(TCommonCanvasControl)
   private
-    FAccessible: IAccessible;
+    {$ifndef DISABLE_ACCESSIBILITY}FAccessible: IAccessible;{$endif}
     FAllowInvisibleCheckedItems: Boolean;
     FBackGround: TEasyBackgroundManager;
     FCellSizes: TEasyCellSizes;
@@ -4981,7 +4985,7 @@ type
     procedure CopyToClipboard(UserData: Integer = 0); virtual;
     procedure CreateWnd; override;
     procedure CutToClipboard(UserData: Integer = 0); virtual;
-    procedure DisconnectAccessibility;
+    {$ifndef DISABLE_ACCESSIBILITY}procedure DisconnectAccessibility;{$endif}
     procedure DoAfterPaint(ACanvas: TCanvas; ClipRect: TRect); virtual;
     procedure DoAutoGroupGetKey(Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Key: LongWord); virtual;
     procedure DoAutoSortGroupCreate(Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Group: TEasyGroup; var DoDefaultAction: Boolean); virtual;
@@ -5175,7 +5179,7 @@ type
     procedure WMEasyThreadCallback(var Msg: TWMThreadRequest); message WM_COMMONTHREADCALLBACK;
     procedure WMEraseBkGnd(var Msg: TWMEraseBkGnd); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
-    procedure WMGetObject(var Msg: TMessage); message WM_GETOBJECT;
+    {$ifndef DISABLE_ACCESSIBILITY}procedure WMGetObject(var Msg: TMessage); message WM_GETOBJECT;{$endif}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
@@ -5200,7 +5204,7 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
     procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
-    property Accessible: IAccessible read FAccessible write FAccessible;
+    {$ifndef DISABLE_ACCESSIBILITY}property Accessible: IAccessible read FAccessible write FAccessible;{$endif}
     property AllowHiddenCheckedItems: Boolean read FAllowInvisibleCheckedItems write FAllowInvisibleCheckedItems default False;
     property BackGround: TEasyBackgroundManager read FBackGround write SetBackGround;
     property BevelInner default bvRaised;
@@ -6110,7 +6114,7 @@ var
 implementation
 
 uses
-  EasyListviewAccessible,
+  {$ifndef DISABLE_ACCESSIBILITY}EasyListviewAccessible,{$endif}
   Math;
 
 const
@@ -8414,8 +8418,10 @@ begin
   inherited;
   FExpanded := True;
   FItems := TEasyItems.Create(OwnerListview, Self);
+  {$ifndef DISABLE_ACCESSIBILITY}
   if Assigned(OwnerListview.Accessible) and (not (csDesigning in OwnerListview.ComponentState)) then
     Accessible := TEasyGroupAccessibleManager.Create(Self);
+  {$endif}
   FVisibleItems := TList.Create;
   Checked := True;
 end;
@@ -9902,8 +9908,10 @@ constructor TEasyColumn.Create(ACollection: TEasyCollection);
 begin
   inherited;
   FDropDownButton := TEasyColumnDropDownButton.Create(Self);
+  {$ifndef DISABLE_ACCESSIBILITY}
   if Assigned(OwnerListview.Accessible) and (not (csDesigning in OwnerListview.ComponentState)) then
     Accessible := TEasyColumnAccessibleManager.Create(Self);
+  {$endif}
   FSortDirection := esdNone;
   FAutoToggleSortGlyph := True;
   FClickable := True;
@@ -14851,6 +14859,7 @@ begin
   inherited;
 end;
 
+{$ifndef DISABLE_ACCESSIBILITY}
 procedure TCustomEasyListview.DisconnectAccessibility;
 var
   i: Integer;
@@ -14884,6 +14893,7 @@ begin
     Accessible := nil;
   end
 end;
+{$endif}
 
 procedure TCustomEasyListview.DoAfterPaint(ACanvas: TCanvas; ClipRect: TRect);
 begin
@@ -17413,7 +17423,7 @@ end;
 procedure TCustomEasyListview.WMDestroy(var Msg: TMessage);
 begin
   EditManager.EndEdit;
-  DisconnectAccessibility;
+  {$ifndef DISABLE_ACCESSIBILITY}DisconnectAccessibility;{$endif}
   DragManager.Registered := False;
   Header.DragManager.Registered := False;
   inherited;
@@ -17436,6 +17446,7 @@ begin
   Msg.Result := Msg.Result or DLGC_WANTALLKEYS or DLGC_WANTARROWS or DLGC_WANTCHARS;
 end;
 
+{$ifndef DISABLE_ACCESSIBILITY}
 procedure TCustomEasyListview.WMGetObject(var Msg: TMessage);
 var
   i, j: Integer;
@@ -17464,6 +17475,7 @@ begin
     else
       Msg.Result := 0;
 end;
+{$endif}
 
 procedure TCustomEasyListview.WMHScroll(var Msg: TWMHScroll);
 // Called to scroll the Window, the Window is responsible for actually performing
@@ -26316,8 +26328,10 @@ end;
 constructor TEasyItem.Create(ACollection: TEasyCollection);
 begin
   inherited Create(ACollection);
+  {$ifndef DISABLE_ACCESSIBILITY}
   if Assigned(OwnerListview.Accessible) and (not (csDesigning in OwnerListview.ComponentState)) then
     Accessible := TEasyItemAccessibleManager.Create(Self);
+  {$endif}
   FVisibleIndexInGroup := -1;
 end;
 

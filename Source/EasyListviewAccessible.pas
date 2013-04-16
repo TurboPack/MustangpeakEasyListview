@@ -34,6 +34,8 @@ unit EasyListviewAccessible;
 {$I Options.inc}
 {$I ..\Include\Addins.inc}
 
+{.$DEFINE DISABLE_ACCESSIBILITY}
+
 {$ifdef COMPILER_12_UP}
   {$WARN IMPLICIT_STRING_CAST       OFF}
  {$WARN IMPLICIT_STRING_CAST_LOSS  OFF}
@@ -45,6 +47,7 @@ interface
 
 {.$DEFINE LOADGXUNIT}
 
+{$ifndef DISABLE_ACCESSIBILITY}
 
 uses
   {$IFDEF COMPILER_9_UP}
@@ -282,7 +285,11 @@ type
     property Selection: TEasyItemArray read FSelection write FSelection;
   end;
 
+{$endif}
+
 implementation
+
+{$ifndef DISABLE_ACCESSIBILITY}
 
 type
   TOleVarArray = array[0..0] of OleVariant;
@@ -1590,5 +1597,7 @@ begin
   Inc(FEnumCount, celt);
   Result := S_OK
 end;
+
+{$endif}
 
 end.
