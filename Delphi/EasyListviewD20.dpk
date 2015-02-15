@@ -1,7 +1,6 @@
-package EasyListviewD16;
+package EasyListviewD20;
 
 {$R *.res}
-{$R *.otares}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -28,10 +27,10 @@ package EasyListviewD16;
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Muststang Peak EasyListview Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 
 requires
-  MPCommonLibD16,
+  MPCommonLibD20,
   rtl,
   vcl;
 

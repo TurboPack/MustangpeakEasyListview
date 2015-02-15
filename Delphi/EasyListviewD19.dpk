@@ -1,5 +1,6 @@
-package EasyListviewD18;
+package EasyListviewD19;
 
+{$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -29,16 +30,16 @@ package EasyListviewD18;
 {$IMPLICITBUILD ON}
 
 requires
-  MPCommonLibD18,
+  MPCommonLibD19,
   rtl,
   vcl;
 
 contains
-  EasyListview in '..\..\Source\EasyListview.pas',
-  EasyLVResources in '..\..\Source\EasyLVResources.pas',
-  EasyScrollFrame in '..\..\Source\EasyScrollFrame.pas',
-  EasyTaskPanelForm in '..\..\Source\EasyTaskPanelForm.pas',
-  EasyListviewAccessible in '..\..\Source\EasyListviewAccessible.pas',
-  EasyMSAAIntf in '..\..\Source\EasyMSAAIntf.pas';
+  EasyListview in '..\Source\EasyListview.pas',
+  EasyLVResources in '..\Source\EasyLVResources.pas',
+  EasyScrollFrame in '..\Source\EasyScrollFrame.pas',
+  EasyTaskPanelForm in '..\Source\EasyTaskPanelForm.pas',
+  EasyListviewAccessible in '..\Source\EasyListviewAccessible.pas',
+  EasyMSAAIntf in '..\Source\EasyMSAAIntf.pas';
 
 end.
