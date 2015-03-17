@@ -17294,7 +17294,7 @@ end;
 {$IFDEF SpTBX}
 procedure TCustomEasyListview.UpdateSelectionRectColor;
 begin
-  if SkinManager.CurrentSkinName <> 'Default' then
+  if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
   begin
     if CurrentSkin.Options(skncListItem, sknsChecked).Borders.Color1 <> 0 then
     begin
@@ -19766,10 +19766,10 @@ begin
   if not Handled then
   begin
     {$IFDEF SpTBX}
-    if SkinManager.CurrentSkinName <> 'Default' then
+    if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
     begin
       // Paints the rightmost background of the columns, the part that never gets selected
-      SpDrawXPHeader(ACanvas, ViewRect, False, False, sknSkin);
+      SpDrawXPHeader(ACanvas, ViewRect, False, False);
     end else
     {$ENDIF SpTBX}
     {$IFDEF USETHEMES}
@@ -20687,7 +20687,7 @@ begin
       begin
         ACanvas.Font.Color := OwnerListview.Selection.TextColor;
         {$IFDEF SpTBX}
-        if SkinManager.CurrentSkinName <> 'Default' then
+        if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
           ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, True));
         {$ENDIF}
       end
@@ -21178,7 +21178,7 @@ begin
     begin
       ACanvas.Font.Color := OwnerListview.Selection.TextColor;
       {$IFDEF SpTBX}
-      if SkinManager.CurrentSkinName <> 'Default' then
+      if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
         ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, Item.Selected or Item.Hilighted));
       {$ENDIF}
       if (Item <> OwnerListview.Selection.FocusedItem) or not OwnerListview.Selection.UseFocusRect then
@@ -21309,8 +21309,8 @@ begin
     if not IsRectEmpty(LocalSelRect) then
     begin
       {$IFDEF SpTBX}
-      if (SkinManager.CurrentSkinName <> 'Default') and OwnerListview.PaintSpTBXSelection then
-        SpDrawXPListItemBackGround(ACanvas, LocalSelRect, Item.Selected or Item.Hilighted, False, Item.Focused, SkinManager.GetSkinType, True)
+      if (SkinManager.GetSkinType in [sknSkin, sknDelphiStyle]) and OwnerListview.PaintSpTBXSelection then
+        SpDrawXPListItemBackGround(ACanvas, LocalSelRect, Item.Selected or Item.Hilighted, False, Item.Focused, True)
       else begin
       {$ENDIF}
         if OwnerListview.Selection.Gradient and not OwnerListview.Selection.AlphaBlend then
@@ -22483,7 +22483,7 @@ begin
     begin
       LoadTextFont(Item, 0, ACanvas, Item.Selected);
       {$IFDEF SpTBX}
-      if SkinManager.CurrentSkinName <> 'Default' then
+      if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
       begin
         if Item.Selected or Item.Hilighted then
           ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, True));
@@ -22497,7 +22497,7 @@ begin
       begin
         LoadTextFont(Item, i, ACanvas, Item.Selected);
         {$IFDEF SpTBX}
-        if SkinManager.CurrentSkinName <> 'Default' then
+        if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
         begin
           if Item.Selected or Item.Hilighted then
             ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, True));
@@ -23228,8 +23228,8 @@ begin
   Pt.y := 0;
 
   {$IFDEF SpTBX}
-  if SkinManager.CurrentSkinName <> 'Default' then
-    SpDrawXPHeader(ACanvas, Column.DisplayRect, Column.HotTracking[Pt], Column.Clicking, sknSkin)
+  if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+    SpDrawXPHeader(ACanvas, Column.DisplayRect, Column.HotTracking[Pt], Column.Clicking)
   else
   {$ENDIF SpTBX}
   {$IFDEF USETHEMES}
@@ -28510,14 +28510,14 @@ begin
   {$IFDEF SpTBX}
   if not ((CheckType = ectNone) or (CheckType = ectNoneWithSpace)) then
   begin
-    if SkinManager.CurrentSkinName <> 'Default' then
+    if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
     begin
       if IsChecked then
         CheckState := cbChecked
       else
         CheckState := cbUnChecked;
       InflateRect(ARect, -1, -1);
-      SpDrawXPCheckBoxGlyph(ACanvas, ARect, IsEnabled, CheckState, IsHovering, IsPending, sknSkin);
+      SpDrawXPCheckBoxGlyph(ACanvas, ARect, IsEnabled, CheckState, IsHovering, IsPending);
       Exit;
     end
   end;
@@ -29691,7 +29691,7 @@ var
 {$ENDIF SpTBX}
 begin
   {$IFDEF SpTBX}
-    if (CurrentSkin.SkinName <> 'Default') and (MarginEdge = egmeTop) then
+    if (SkinManager.GetSkinType in [sknSkin, sknDelphiStyle]) and (MarginEdge = egmeTop) then
     begin
       if Group.Enabled then
         TBXState := sknsNormal
@@ -29824,7 +29824,7 @@ begin
   if (MarginEdge = egmeTop) and Group.Expandable then
   begin
     {$IFDEF SpTBX}
-    if CurrentSkin.SkinName <> 'Default' then
+    if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
     begin
       if Group.Bold then
         ACanvas.Pen.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsHotTrack)
@@ -29881,8 +29881,8 @@ var
 {$ENDIF SpTBX}
 begin
   {$IFDEF SpTBX}
-  if (CurrentSkin.SkinName <> 'Default') and (MarginEdge = egmeTop) then
-  begin    
+  if (SkinManager.GetSkinType in [sknSkin, sknDelphiStyle]) and (MarginEdge = egmeTop) then
+  begin
 
     if Group.Bold then
       ACanvas.Font.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsHotTrack)
@@ -29965,7 +29965,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF SpTBX}
-  if CurrentSkin.SkinName <> 'Default' then
+  if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
   begin
     CurrentSkin.PaintBackground(ACanvas, OwnerListview.ClientRect, skncPanel, sknsNormal, True, False);
   end else
