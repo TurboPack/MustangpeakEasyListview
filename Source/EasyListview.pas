@@ -23104,6 +23104,9 @@ begin
   ACanvas.Font.Assign(OwnerListview.Header.Font);
   if Column.Bold then
     ACanvas.Font.Style := ACanvas.Font.Style +[fsBold];
+  {$IFDEF SpTBX}
+    ACanvas.Font.Color := SkinManager.CurrentSkin.GetTextColor(skncHeader, sknsNormal)
+  {$ENDIF}
 end;
 
 procedure TEasyViewColumn.Paint(Column: TEasyColumn; ACanvas: TCanvas;
