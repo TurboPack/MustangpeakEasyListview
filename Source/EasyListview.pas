@@ -6040,7 +6040,7 @@ implementation
 
 uses
   {$ifndef DISABLE_ACCESSIBILITY}EasyListviewAccessible,{$endif}
-  Math;
+  System.UITypes, System.Math;
 
 const
   PERSISTENTOBJECTSTATES = [esosSelected, esosEnabled, esosVisible, esosChecked, esosBold]; // States that are stored to a stream for persistance
@@ -13176,7 +13176,6 @@ function TEasyDropTargetManager.DragEnter(const dataObj: IDataObject;
   grfKeyState: Integer; pt: TPoint; var dwEffect: Integer): HResult;
 var
   Effect: TCommonDropEffect;
-  Effects: TCommonDropEffects;
   KeyState: TCommonKeyStates;
   StgMedium: TStgMedium;
 begin
@@ -13186,7 +13185,7 @@ begin
   if Owner.DragManager.Enabled then
   begin
     KeyState := KeyToKeyStates(grfKeyState);
-    Effects := DropEffectToDropEffectStates(dwEffect);
+    DropEffectToDropEffectStates(dwEffect);
 
     // Get the "Windows Style" effect with the key modifiers
     Effect := KeyStateToDropEffect(KeyState);
@@ -13256,7 +13255,6 @@ function TEasyDropTargetManager.Drop(const dataObj: IDataObject;
   grfKeyState: Integer; pt: TPoint; var dwEffect: Integer): HResult;
 var
   Effect: TCommonDropEffect;
-  Effects: TCommonDropEffects;
   KeyState: TCommonKeyStates;
   Handled: Boolean;
 begin
@@ -13264,7 +13262,7 @@ begin
     DropTargetHelper.Drop(dataObj, Pt, dwEffect);
 
   KeyState := KeyToKeyStates(grfKeyState);
-  Effects := DropEffectToDropEffectStates(dwEffect);
+  DropEffectToDropEffectStates(dwEffect);
 
   // Get the "Windows Style" effect with the key modifiers
   Effect := KeyStateToDropEffect(KeyState);
@@ -16205,7 +16203,6 @@ end;
 procedure TCustomEasyListview.HandleDblClick(Button: TCommonMouseButton; Msg: TWMMouse);
 var
   Group: TEasyGroup;
-  KeyState: TCommonKeyStates;
   GroupHitInfo: TEasyGroupHitTestInfoSet;
   GroupInfo: TEasyHitInfoGroup;
   Item: TEasyItem;
@@ -16214,7 +16211,7 @@ var
   ViewPt: TPoint;
   Handled: Boolean;
 begin
-  KeyState := KeyToKeyStates(Msg.Keys);
+  KeyToKeyStates(Msg.Keys);
   ViewPt := Scrollbars.MapWindowToView(Msg.Pos);
   if ViewSupportsHeader and (Header.Visible) and (Msg.YPos < Header.Height) then
     Header.WMLButtonDblClk(Msg)
@@ -22100,7 +22097,7 @@ begin
         taRightJustify: Include(DrawTextFlags, dtRight);
         taCenter:  Include(DrawTextFlags, dtCenter);
       end;
-      DrawTextFlags := [dtCalcRect, dtCalcRectAlign, dtEndEllipsis, dtTop];
+      DrawTextFlags := DrawTextFlags + [dtCalcRect, dtCalcRectAlign, dtEndEllipsis, dtTop];
 
       // Calcuate the Bounds of the Cell that is allowed to be drawn in
       // **********
@@ -28625,12 +28622,12 @@ TWMKeyDown);
 // The WM_KEYDOWN message is passed to the manager to handle the incremental
 // search
 //
-var
-  Shift: TShiftState;
+//var
+//  Shift: TShiftState;
 begin
   if Enabled then
   begin
-    Shift := KeyDataToShiftState(Msg.KeyData);
+//    Shift := KeyDataToShiftState(Msg.KeyData);
  //   if (Shift * [ssCtrl, ssAlt] = []) and ((Msg.CharCode > VK_HELP) and (Msg.CharCode < VK_LWIN)) or ((Msg.CharCode > VK_APPS) and (Msg.CharCode < VK_F1) )  then
       StartSearch
   end

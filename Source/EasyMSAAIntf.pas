@@ -688,3 +688,4 @@ end;
 procedure NotifyWinEvent; external user32 name 'NotifyWinEvent';
 
 end.
+

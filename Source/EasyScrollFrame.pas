@@ -162,6 +162,9 @@ type
 
 implementation
 
+uses
+  System.Types;
+
 { TEasyScrollButton }
 constructor TCustomEasyScrollButton.Create(AOwner: TComponent);
 begin

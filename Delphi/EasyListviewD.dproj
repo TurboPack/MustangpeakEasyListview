@@ -45,6 +45,8 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
+        <DCC_HppOutput>..\source\hpp\$(Platform)\$(Config)</DCC_HppOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
         <GenPackage>true</GenPackage>

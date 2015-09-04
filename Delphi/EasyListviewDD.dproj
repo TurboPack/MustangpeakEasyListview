@@ -3,7 +3,7 @@
         <ProjectGuid>{451B2A07-0A8A-441D-8A6B-DCD6D40C4FF0}</ProjectGuid>
         <MainSource>EasyListviewDD.dpk</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Package</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -40,6 +40,8 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
+        <DCC_HppOutput>..\source\hpp\$(Platform)\$(Config)</DCC_HppOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DesignOnlyPackage>true</DesignOnlyPackage>
         <GenPackage>true</GenPackage>
