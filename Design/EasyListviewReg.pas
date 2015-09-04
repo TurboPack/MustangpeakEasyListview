@@ -23,23 +23,14 @@ unit EasyListviewReg;
 
 interface
 
-{$I Compilers.inc}
-
 uses
   ToolsApi,
   Classes,
-  {$IFDEF COMPILER_6_UP}
   DesignIntf,
   DesignEditors,
   PropertyCategories,
-  {$ELSE}
-  DsgnIntf,
-  DsgnWnds,
-  {$ENDIF}
   Forms,
-  {$IFDEF COMPILER_5_UP}
   ColnEdit,
-  {$ENDIF COMPILER_5_UP}
   SysUtils,
   Controls,
   EasyListview,
@@ -73,7 +64,6 @@ type
     procedure InitializeCreator; override;
   end;
 
-{$IFDEF COMPILER_6_UP}
 const
   sELVColumnCategory = 'Column Objects';
   sELVItemCategory = 'Item Objects';
@@ -90,23 +80,16 @@ const
   sAutoCategory = 'Auto';
   sELVViewCategory = 'View';
   sELVContextMenuCategory = 'ContextMenu';
-{$ENDIF COMPILER_6_UP}
 
 procedure Register;
 
 implementation
 
 uses
-  {$IFDEF COMPILER_5_UP}
   EasyCollectionEditor;
-  {$ELSE}
-  EasyCollectionEditorD4;
-  {$ENDIF COMPILER_5_UP}
 
-{$IFDEF COMPILER_8_UP}
 var
   DelphiCategory, BuilderCategory: IOTAGalleryCategory;
-{$ENDIF}
 
 procedure Register;
 begin
@@ -118,11 +101,8 @@ begin
 
   RegisterCustomModule(TEasyTaskPanelForm, TCustomModule);
   RegisterPackageWizard(TEasyDelphiTaskFormWizard.Create);
-  {$IFDEF COMPILER_10_UP}
   RegisterPackageWizard(TEasyBuilderTaskFormWizard.Create);
-  {$ENDIF COMPILER_10_UP}
 
-  {$IFDEF COMPILER_6_UP}
   RegisterPropertyEditor(TypeInfo(TCommonImageIndexInteger), nil, '', TCommonImageIndexProperty);
 
   RegisterPropertiesInCategory(sELVColumnCategory, TCustomEasyListview,
@@ -172,9 +152,6 @@ begin
 
    RegisterPropertiesInCategory(sELVContextMenuCategory, TCustomEasyListview,
     ['OnContextMenu*'] );
-
-   {$ENDIF COMPILER_6_UP}
-
 end;
 
 { TEasyListviewEditor }
@@ -201,9 +178,7 @@ begin
   UniqueID := 'mustangpeak.easy.delphi.task.form';
   State := [];
   CreatorClass := TEasyTaskPanelCreator;
-  {$IFDEF COMPILER_8_UP}
   GalleryCategory := DelphiCategory;
-  {$ENDIF COMPILER_8_UP}
 end;
 
 { TEasyBuilderTaskForm }
@@ -219,9 +194,7 @@ begin
   UniqueID := 'mustangpeak.easy.builder.task.form';
   State := [];
   CreatorClass := TEasyTaskPanelCreator;
-  {$IFDEF COMPILER_8_UP}
   GalleryCategory := BuilderCategory;
-  {$ENDIF COMPILER_8_UP}
 end;
 
 { TEasyTaskPanelCreator }
@@ -237,15 +210,11 @@ begin
 end;
 
 initialization
-  {$IFDEF COMPILER_8_UP}
   DelphiCategory := AddDelphiCategory('mustangpeak.delphi.easylistview', 'EasyListview for Delphi');
   BuilderCategory := AddBuilderCategory('mustangpeak.builder.easylistview', 'EasyListview for C++ Builder');
-  {$ENDIF COMPILER_8_UP}
 finalization
-  {$IFDEF COMPILER_8_UP}
   RemoveCategory(BuilderCategory);
   RemoveCategory(DelphiCategory);
-  {$ENDIF COMPILER_8_UP}
 
 end.
 

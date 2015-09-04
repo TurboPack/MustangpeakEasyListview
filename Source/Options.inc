@@ -1,5 +1,3 @@
-{$I Compilers.inc}
-
 {$IFDEF COMPILER_7_UP}
   {$DEFINE USETHEMES}
   {$UNDEF JCL_THEME}

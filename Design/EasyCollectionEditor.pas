@@ -23,8 +23,6 @@ unit EasyCollectionEditor;
 
 interface
 
-{$I Compilers.inc}
-
 uses
   Windows,
   Messages,
@@ -32,19 +30,11 @@ uses
   Classes,
   Controls,
   Graphics,
-  {$IFDEF COMPILER_6_UP}
   DesignIntf,
   DesignEditors,
   DesignWindows,
   TreeIntf,
   VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  DsgnWnds,
-  {$ENDIF}
-  {$IFDEF COMPILER_5}
-  ParentageSupport, // Sprig support in DsnIDE5.dpk  What about D4?
-  {$ENDIF}
   TypInfo,
   Forms,
   Dialogs,
@@ -55,7 +45,7 @@ uses
   CommCtrl,
   ImgList,
   ToolWin,
-  ActnList, Menus;
+  ActnList, Menus, System.Actions, System.ImageList;
 
 type
   TFormEasyCollectionEditor = class(TDesignWindow)
@@ -100,22 +90,10 @@ type
     procedure Rebuild;
     procedure Refresh;
     procedure HandleDelete;
-    {$IFNDEF COMPILER_6_UP}
-    function UniqueName(Component: TComponent): string; override;
-    {$ENDIF}
   public
-    { Public declarations }
-    {$IFDEF COMPILER_6_UP}
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    {$ENDIF}
-
-    {$IFNDEF COMPILER_6_UP}
-    procedure ComponentDeleted(Component: IPersistent); override;
-    procedure FormClosed(AForm: TCustomForm); override;
-    procedure FormModified; override;
-    {$ENDIF}
 
     property Collection: TEasyCollection read FCollection write FCollection;
     property Listview: TCustomEasyListview read FListview write FListview;
@@ -151,7 +129,7 @@ type
     function GetValue: string; override;
   end;
 
-procedure ShowEasyCollectionEditor(ADesigner: {$IFDEF COMPILER_6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; ACollection: TEasyCollection);
+procedure ShowEasyCollectionEditor(ADesigner: IDesigner; ACollection: TEasyCollection);
 
 var
   EditorList: TEditorList;
@@ -163,24 +141,18 @@ implementation
 type
   TEasyCollectionItemHack = class(TEasyCollectionItem);
 
-{$IFDEF COMPILER_6_UP}
 // To make the transition between D5's IPersistent and D6 and D7's TPersistent
 function ExtractPersistent(Inst: TPersistent): TPersistent;
 begin
   Result := Inst;
 end;
-{$ENDIF COMPILER_6_UP}
 
-procedure ShowEasyCollectionEditor(ADesigner: {$IFDEF COMPILER_6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; ACollection: TEasyCollection);
+procedure ShowEasyCollectionEditor(ADesigner: IDesigner; ACollection: TEasyCollection);
 var
   F: TForm;
   Selections: IDesignerSelections;
 begin
-  {$IFDEF COMPILER_6_UP}
   Selections := TDesignerSelections.Create;
-  {$ELSE}
-  Selections := CreateSelectionList;
-  {$ENDIF COMPILER_6_UP}
 
   ADesigner.GetSelections(Selections);
   if Selections.Count = 1 then
@@ -191,9 +163,7 @@ begin
       if not EditorList.CollectionRegistered(ACollection, F) then
       begin
         F := TFormEasyCollectionEditor.Create(Application);
-        {$IFDEF COMPILER_9_UP}
         F.FormStyle := fsStayOnTop; // bug in D2005
-        {$ENDIF COMPILER_9_UP}
         TFormEasyCollectionEditor(F).Collection := ACollection;
         TFormEasyCollectionEditor(F).Designer := ADesigner;
         if (ExtractPersistent( Selections[0]) is TCustomEasyListview) then
@@ -328,7 +298,7 @@ end;
 
 function TEasyCollectionEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paDialog, paReadOnly{$IFDEF COMPILER_6_UP}, paVCL{$ENDIF COMPILER_6_UP}];
+  Result := [paDialog, paReadOnly, paVCL];
 end;
 
 function TEasyCollectionEditor.GetValue: string;
@@ -352,46 +322,6 @@ begin
   EditorList.UnRegister(Self, Collection);
   Action := caFree
 end;
-
-{$IFNDEF COMPILER_6_UP}
-
-procedure TFormEasyCollectionEditor.ComponentDeleted(Component: IPersistent);
-begin
-  inherited;
-  if ExtractPersistent(Component) = Listview  then
-  begin
-    EditorList.ListviewDestroying(Listview);
-    Listview := nil;
-    Collection := nil
-  end
-end;
-
-function TFormEasyCollectionEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-
-procedure TFormEasyCollectionEditor.FormClosed(AForm: TCustomForm);
-begin
-  inherited;
-  // D4 and D5 have bug in this somehow so destroy all the editor when any form
-  // is closed.
-  if Designer = Self.Designer then
-  begin
-    EditorList.ListviewDestroying(Listview, True);
-    Listview := nil;
-    Collection := nil
-  end
-end;
-
-procedure TFormEasyCollectionEditor.FormModified;
-begin
-  Refresh;
-end;
-
-{$ENDIF}
-
-{$IFDEF COMPILER_6_UP}
 
 procedure TFormEasyCollectionEditor.DesignerClosed(const Designer: IDesigner;
   AGoingDormant: Boolean);
@@ -421,8 +351,6 @@ procedure TFormEasyCollectionEditor.ItemsModified(const Designer: IDesigner);
 begin
   Refresh;
 end;
-
-{$ENDIF}
 
 procedure TFormEasyCollectionEditor.ActionNewItemExecute(Sender: TObject);
 begin
@@ -547,22 +475,14 @@ begin
       if Listview1.SelCount = 1 then
         Designer.SelectComponent(Collection.Items[Listview1.Selected.Index])
       else begin
-        {$IFDEF COMPILER_6_UP}
         Selections := TDesignerSelections.Create;
-        {$ELSE}
-        Selections := CreateSelectionList;
-        {$ENDIF COMPILER_6_UP}
 
         for i := 0 to Listview1.Items.Count - 1 do
         begin
 
           if Listview1.Items[i].Selected then
           begin
-            {$IFDEF COMPILER_6_UP}
               Selections.Add( Collection.Items[i])
-            {$ELSE}
-              Selections.Add( MakeIPersistent(Collection.Items[i]))
-            {$ENDIF COMPILER_6_UP}
           end
         end;
         Designer.SetSelections(Selections);
@@ -595,9 +515,7 @@ end;
 procedure TFormEasyCollectionEditor.ListView1KeyPress(Sender: TObject;
   var Key: Char);
 begin
-  {$IFDEF COMPILER_6_UP}
   Designer.ModalEdit(Key, Self);
-  {$ENDIF}
 end;
 
 procedure TFormEasyCollectionEditor.Refresh;

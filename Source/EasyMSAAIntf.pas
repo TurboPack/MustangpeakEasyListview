@@ -30,16 +30,9 @@ unit EasyMSAAIntf;
 //   Hint: Parameter 'var' of IAccPropServices.SetHwndProp changed to 'var_'
 //   Hint: Parameter 'var' of IAccPropServices.SetHmenuProp changed to 'var_'
 // ************************************************************************ //
-{$I Compilers.inc}
-
-{$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{$ifdef COMPILER_7_UP}
-  {$WARN SYMBOL_PLATFORM OFF}
-{$endif COMPILE_7_UP}
+{$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers.
 {$WRITEABLECONST ON}
-{$ifdef COMPILER_7_UP}
-  {$VARPROPSETTER ON}
-{$endif COMPILE_7_UP}
+{$VARPROPSETTER ON}
 interface
 
 uses Windows, ActiveX;
@@ -160,9 +153,6 @@ const
 // *********************************************************************//
 // Constants for enum AnnoScope
 type
-  {$IFNDEF COMPILER_5_UP}
-    TOleEnum = type Integer;
-  {$ENDIF}
   AnnoScope = TOleEnum;
   {$EXTERNALSYM AnnoScope}  
 const
@@ -447,8 +437,10 @@ type
 // *********************************************************************//
   {$EXTERNALSYM IAccessible}
   IAccessible = interface;
+{$WARN SYMBOL_PLATFORM OFF}
   {$EXTERNALSYM IAccessibleDisp}
   IAccessibleDisp = dispinterface;
+{$WARN SYMBOL_PLATFORM OFF}
   {$EXTERNALSYM IAccessibleHandler}
   IAccessibleHandler = interface;
   {$EXTERNALSYM IAccIdentity}

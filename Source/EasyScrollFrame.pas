@@ -23,14 +23,8 @@ unit EasyScrollFrame;
 
 interface
 
-{$I Compilers.inc}
 {$I Options.inc}
 {$I ..\Include\Addins.inc}
-
-{$ifdef COMPILER_12_UP}
-  {$WARN IMPLICIT_STRING_CAST       OFF}
- {$WARN IMPLICIT_STRING_CAST_LOSS  OFF}
-{$endif COMPILER_12_UP}
 
 uses
   Windows,
@@ -38,15 +32,8 @@ uses
   SysUtils,
   Classes,
   Graphics,
-  {$IFDEF COMPILER_7_UP}
   Themes,
   UxTheme,
-  {$ELSE}
-    {$IFDEF USETHEMES}
-    TmSchema,
-    UxTheme,
-    {$ENDIF}
-  {$ENDIF}
   Controls,
   MPCommonObjects,
   MPCommonUtilities;
@@ -144,9 +131,7 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER_5_UP}
     property OnContextPopup;
-    {$ENDIF}
     property OnDblClick;
     property OnDockDrop;
     property OnDockOver;

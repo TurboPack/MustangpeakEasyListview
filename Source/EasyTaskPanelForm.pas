@@ -27,14 +27,8 @@ unit EasyTaskPanelForm;
 // practical do to the way the VCL was designed.
 //----------------------------------------------------------------------------
 
-{$I Compilers.inc}
 {$I Options.inc}
 {$I ..\Include\Addins.inc}
-
-{$ifdef COMPILER_12_UP}
-  {$WARN IMPLICIT_STRING_CAST       OFF}
- {$WARN IMPLICIT_STRING_CAST_LOSS  OFF}
-{$endif COMPILER_12_UP}
 
 interface
 
@@ -42,18 +36,9 @@ uses
   Windows,
   Messages,
   SysUtils,
-  {$IFDEF COMPILER_6_UP}
   Variants,
-  {$ENDIF}
-  {$IFDEF COMPILER_7_UP}
   Themes,
   UxTheme,
-  {$ELSE}
-    {$IFDEF USETHEMES}
-    TmSchema,
-    UxTheme,
-    {$ENDIF}
-  {$ENDIF}
   {$IFDEF SpTBX}
   SpTBXSkins,
   {$ENDIF SpTBX}

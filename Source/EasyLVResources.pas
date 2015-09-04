@@ -23,14 +23,8 @@ unit EasyLVResources;
 
 interface
 
-{$I Compilers.inc}
 {$I ..\Include\Debug.inc}
 {$I ..\Include\Addins.inc}
-
-{$ifdef COMPILER_12_UP}
-  {$WARN IMPLICIT_STRING_CAST       OFF}
- {$WARN IMPLICIT_STRING_CAST_LOSS  OFF}
-{$endif COMPILER_12_UP}
 
 {$B-}
 

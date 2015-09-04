@@ -53,15 +53,9 @@ interface
 
 {.$DEFINE DISABLE_ACCESSIBILITY}
 
-{$I Compilers.inc}
 {$I ..\Include\Debug.inc}
 {$I Options.inc}
 {$I ..\Include\Addins.inc}
-
-{$ifdef COMPILER_12_UP}
-  {$WARN IMPLICIT_STRING_CAST       OFF}
- {$WARN IMPLICIT_STRING_CAST_LOSS  OFF}
-{$endif COMPILER_12_UP}
 
 {.$DEFINE GXDEBUG}
 {.$DEFINE LOADGXUNIT}
@@ -75,12 +69,8 @@ uses
   DbugIntf,
   {$ENDIF}
 
-  {$IFDEF COMPILER_9_UP}
   Types,    // This MUST come before Windows
-  {$ENDIF}
-  {$IFDEF COMPILER_6_UP}
   Variants,
-  {$ENDIF}
   Windows,
   Messages,
   SysUtils,
@@ -90,21 +80,10 @@ uses
   {$IFDEF LOADGXUNIT}
   DbugIntf,
   {$ENDIF LOADGXUNIT}
-  {$IFDEF COMPILER_7_UP}
   Themes,
   UxTheme,
-  {$ELSE}
-    {$IFDEF USETHEMES}
-    TmSchema,
-    UxTheme,
-    {$ENDIF}
-  {$ENDIF}
   {$ifndef DISABLE_ACCESSIBILITY}
-    {$ifdef COMPILER_10_UP}
     oleacc, // MSAA support in Delphi 2006 or higher
-    {$ELSE}
-    EasyMSAAIntf, // MSAA support for Delphi up to 2005
-    {$ENDIF}
   {$ENDIF}
   ExtCtrls,
   Forms,
@@ -113,11 +92,7 @@ uses
   ActiveX,
   Menus,
   StdCtrls,
-  {$IFDEF COMPILER_6_UP}
-    RTLConsts,
-  {$ELSE}
-    Consts,
-  {$ENDIF}
+  RTLConsts,
   {$IFDEF SpTBX}
   SpTBXItem,
   SpTBXSkins,
@@ -5403,7 +5378,7 @@ type
     property PaintInfoColumn: TEasyPaintInfoBaseColumn read GetPaintInfoColumn write SetPaintInfoColumn;
     property PaintInfoGroup: TEasyPaintInfoBaseGroup read GetPaintInfoGroup write SetPaintInfoGroup;
     property PaintInfoItem: TEasyPaintInfoBaseItem read GetPaintInfoItem write SetPaintInfoItem;
-    {$IFDEF COMPILER_7_UP}property ParentBackground default False;{$ENDIF COMPILER_7_UP}
+    property ParentBackground default False;
     property ParentColor default False;
     property PopupMenuHeader: TPopupMenu read FPopupMenuHeader write FPopupMenuHeader;
     property ScratchCanvas: TControlCanvas read GetScratchCanvas write FScratchCanvas;
@@ -5569,7 +5544,7 @@ type
     property PaintInfoGroup: TEasyPaintInfoGroup read GetPaintInfoGroup write SetPaintInfoGroup;
     property PaintInfoItem: TEasyPaintInfoItem read GetPaintInfoItem write SetPaintInfoItem;
     property ParentBiDiMode;
-    {$IFDEF COMPILER_7_UP}property ParentBackground;{$ENDIF}
+    property ParentBackground;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -5596,9 +5571,7 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER_5_UP}
     property OnContextPopup;
-    {$ENDIF}
     property OnAutoGroupGetKey;
     property OnAutoSortGroupCreate;
     property OnBeginUpdate;
@@ -5839,7 +5812,7 @@ type
     property ImagesSmall;
     property PaintInfoGroup;
     property ParentBiDiMode;
-    {$IFDEF COMPILER_7_UP}property ParentBackground;{$ENDIF}
+    property ParentBackground;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -5859,7 +5832,7 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER_5_UP} property OnContextPopup; {$ENDIF}
+    property OnContextPopup;
     property OnAutoSortGroupCreate;
     property OnDblClick;
     property OnDragDrop;
@@ -5956,7 +5929,7 @@ type
     property PaintInfoGroup: TEasyPaintInfoTaskbandGroup read GetPaintInfoGroup write SetPaintInfoGroup;
     property PaintInfoItem: TEasyPaintInfoTaskBandItem read GetPaintInfoItem write SetPaintInfoItem;
     property ParentBiDiMode;
-    {$IFDEF COMPILER_7_UP}property ParentBackground;{$ENDIF}
+    property ParentBackground;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -5978,9 +5951,7 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER_5_UP}
     property OnContextPopup;
-    {$ENDIF}
     property OnAutoSortGroupCreate;
     property OnDblClick;
     property OnDragDrop;
@@ -6311,20 +6282,12 @@ begin
   begin
     CreateHandle := WideFileCreate(FileName);
     if CreateHandle < 0 then
-     {$IFNDEF COMPILER_5_UP}
-      raise EFCreateError.Create('Can not create file: ' + FileName);
-     {$ELSE}
      raise EFCreateError.CreateResFmt(PResStringRec(@SFCreateError), [FileName]);
-     {$ENDIF COMPILER_5_UP}
   end else
   begin
     CreateHandle := WideFileOpen(FileName, Mode);
     if CreateHandle < 0 then
-     {$IFNDEF COMPILER_5_UP}
-      raise EFCreateError.Create('Can not create file: ' + FileName);
-     {$ELSE}
      raise EFCreateError.CreateResFmt(PResStringRec(@SFCreateError), [FileName]);
-     {$ENDIF COMPILER_5_UP}
   end;
   inherited Create(CreateHandle);
 end;
@@ -6764,11 +6727,7 @@ end;
 
 procedure TEasyGlobalItems.IndexError(Index: Integer);
 begin
-  {$IFDEF COMPILER_5_UP}
   TList.Error(SListIndexError, Index);
-  {$ELSE}
-  TList.Error('List index out of bounds (%d)', Index);
-  {$ENDIF}
 end;
 
 function TEasyGlobalItems.IndexOf(Item: TEasyItem): Integer;
@@ -8001,10 +7960,6 @@ begin
   if Assigned(Item) then
     Item.Invalidate(ImmediateUpdate)
 end;
-
-{$IFDEF COMPILER_6_UP}
-{$ELSE}
-{$ENDIF COMPILER_6_UP}
 
 procedure TEasyGroups.LoadFromStream(S: TStream; Version: Integer = EASYLISTVIEW_STREAM_VERSION);
 begin
@@ -14078,10 +14033,6 @@ begin
   FIncrementalSearch := TEasyIncrementalSearchManager.Create(Self);
   FScratchCanvas := TControlCanvas.Create;
   FScratchCanvas.Control := Self;
-  {$IFNDEF COMPILER_6_UP}
-  Width := 100;
-  Height := 200;
-  {$ENDIF COMPILER_6_UP}
   {$IFDEF SpTBX}
   SkinManager.AddSkinNotification(Self);
   {$ENDIF}
@@ -14119,9 +14070,7 @@ begin
   FreeAndNil(FEditManager);
   FreeAndNil(FGlobalImages);
   FreeAndNil(FCellSizes);
-  {$IFDEF COMPILER_5_UP}
   FreeAndNil(FGroupFont);   // Bug in D4
-  {$ENDIF COMPILER_5_UP}
   FreeAndNil(FPaintInfoGroup);
   FreeAndNil(FPaintInfoItem);
   FreeAndNil(FPaintInfoColumn);
@@ -19127,7 +19076,7 @@ begin
     // object to make sure it creates the correct item type
     for i := 0 to ItemCount - 1 do
     begin
-      Cls := GetClass(StreamHelper.ReadString(Stream));
+      Cls := GetClass(string(StreamHelper.ReadString(Stream)));
       Assert(Cls <> nil, 'If using custom item types for Item, Groups or Columns you must register them with the streaming system with RegisterClass(TMyEasyClassItemType)');
       if Assigned(Cls) then
       begin
@@ -19185,7 +19134,7 @@ begin
   StreamHelper.WriteInteger(Stream, FList.Count);
   for i := 0 to FList.Count - 1 do
   begin
-    StreamHelper.WriteString(Stream, TEasyCollectionItem( Items[i]).ClassName);
+    StreamHelper.WriteString(Stream, AnsiString(TEasyCollectionItem( Items[i]).ClassName));
     TEasyCollectionItem( Items[i]).SaveToStream(Stream); // Write custom data to the stream
   end
 end;
@@ -30112,11 +30061,9 @@ begin
   begin
     Memo.Ctl3D := False;
     Memo.BorderStyle := bsSingle;
-    {$IFDEF COMPILER_6_UP}
     Memo.BevelInner := bvNone;
     Memo.BevelOuter := bvNone;
     Memo.BevelKind := bkNone;
-    {$ENDIF}
   end
 end;
 
@@ -30237,11 +30184,9 @@ begin
   begin
     Edit.Ctl3D := False;
     Edit.BorderStyle := bsSingle;
-    {$IFDEF COMPILER_6_UP}
     Edit.BevelInner := bvNone;
     Edit.BevelOuter := bvNone;
     Edit.BevelKind := bkNone;
-    {$ENDIF}
   end
 end;
 

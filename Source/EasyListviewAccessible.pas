@@ -29,17 +29,11 @@ unit EasyListviewAccessible;
 //----------------------------------------------------------------------------
 
 
-{$I Compilers.inc}
 {$I ..\Include\Debug.inc}
 {$I Options.inc}
 {$I ..\Include\Addins.inc}
 
 {.$DEFINE DISABLE_ACCESSIBILITY}
-
-{$ifdef COMPILER_12_UP}
-  {$WARN IMPLICIT_STRING_CAST       OFF}
- {$WARN IMPLICIT_STRING_CAST_LOSS  OFF}
-{$endif COMPILER_12_UP}
 
  {$B-}
 
@@ -50,12 +44,8 @@ interface
 {$ifndef DISABLE_ACCESSIBILITY}
 
 uses
-  {$IFDEF COMPILER_9_UP}
   Types,    // This MUST come before Windows
-  {$ENDIF}
-  {$IFDEF COMPILER_6_UP}
   Variants,
-  {$ENDIF}
   Windows,
   Messages,
   SysUtils,
@@ -65,11 +55,7 @@ uses
   DbugIntf,
   {$ENDIF LOADGXUNIT}
 
-  {$ifdef COMPILER_10_UP}
   oleacc, // MSAA support in Delphi 2006 or higher
-  {$ELSE}
-  EasyMSAAIntf, // MSAA support for Delphi up to 2005
-  {$ENDIF}
   Classes,
   ActiveX,
   EasyListview;
@@ -89,19 +75,6 @@ type
   ['{D1F3F352-A96E-47F6-A731-AF688A6B74BE}']
      procedure DisconnectFromObject; stdcall;
   end;
-
-  {$IFNDEF COMPILER_5_UP}
-  {$EXTERNALSYM IEnumVariant}
-  IEnumVariant = interface(IUnknown)
-    ['{00020404-0000-0000-C000-000000000046}']
-    function Next(celt: LongWord; var rgvar : OleVariant;
-      out pceltFetched: LongWord): HResult; stdcall;
-    function Skip(celt: LongWord): HResult; stdcall;
-    function Reset: HResult; stdcall;
-    function Clone(out Enum: IEnumVariant): HResult; stdcall;
-  end;
-  {$ENDIF COMPILER_5_UP}  
-
 
 type
   TIntegerArray = array of Integer;
