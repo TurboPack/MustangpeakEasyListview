@@ -24,7 +24,6 @@ unit EasyLVResources;
 interface
 
 {$I ..\Include\Debug.inc}
-{$I ..\Include\Addins.inc}
 
 {$B-}
 

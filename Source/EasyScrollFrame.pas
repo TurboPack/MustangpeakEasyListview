@@ -23,9 +23,6 @@ unit EasyScrollFrame;
 
 interface
 
-{$I Options.inc}
-{$I ..\Include\Addins.inc}
-
 uses
   Windows,
   Messages,
@@ -229,12 +226,9 @@ procedure TCustomEasyScrollButton.DoPaintRect(ACanvas: TCanvas; WindowClipRect: 
       DrawFrameControl(ACanvas.Handle, ClientRect, DFC_SCROLL, uState);
     end;
 
-{$IFDEF USETHEMES}
 var
   Part, uState: Longword;
-  {$ENDIF}
 begin
-  {$IFDEF USETHEMES}
     if DrawWithThemes then
     begin
       uState := 0;
@@ -281,9 +275,6 @@ begin
         Part, uState, ClientRect, @WindowClipRect);
     end else
       DrawWithOutThemes;
-  {$ELSE}
-    DrawWithoutThemes;
-  {$ENDIF}
 end;
 
 procedure TCustomEasyScrollButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);

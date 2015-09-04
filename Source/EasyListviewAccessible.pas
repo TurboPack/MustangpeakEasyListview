@@ -30,9 +30,6 @@ unit EasyListviewAccessible;
 
 
 {$I ..\Include\Debug.inc}
-{$I Options.inc}
-{$I ..\Include\Addins.inc}
-
 {.$DEFINE DISABLE_ACCESSIBILITY}
 
  {$B-}
