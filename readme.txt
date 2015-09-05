@@ -13,7 +13,7 @@ Table of contents
 1. Introduction
 
 
-TurboPack MustangpeakEasyListview is a base library needed for all Mustangpeak components.
+TurboPack MustangpeakEasyListview is part of VirtualShellTools for the Listview but can be used for a TListview Replacement that is faster and more customizable.
 This is a source-only release of TurboPack MustangpeakEasyListview. It includes
 designtime and runtime packages for Delphi and CBuilder and supports 
 Win32 and Win64.
