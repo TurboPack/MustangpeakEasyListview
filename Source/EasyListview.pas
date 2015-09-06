@@ -38,6 +38,8 @@ interface
 
 {.$DEFINE GXDEBUG}
 {.$DEFINE LOADGXUNIT}
+{.$DEFINE SpTBXSelection}
+{.$DEFINE SpTBX}
 {.$DEFINE GXDEBUG_SIZING}
 {.$DEFINE GXDEBUG_HINT}
 
@@ -70,6 +72,10 @@ uses
   Menus,
   StdCtrls,
   RTLConsts,
+  {$IFDEF SpTBX}
+  SpTBXItem,
+  SpTBXSkins,
+  {$ENDIF}
   EasyLVResources,
   MPCommonUtilities,
   MPShellTypes,
@@ -4898,6 +4904,9 @@ type
     function CustomEasyHintWindowClass: THintWindowClass; dynamic;
     function GetSortColumn: TEasyColumn; virtual;
     function GroupTestExpand(HitInfo: TEasyGroupHitTestInfoSet): Boolean; virtual;
+    {$IFDEF SpTBX}
+    function PaintSpTBXSelection: Boolean; virtual;
+    {$ENDIF SpTBX}
     function ToolTipNeeded(TargetObj: TEasyCollectionItem; var TipCaption: WideString): Boolean;
     function UseInternalDragImage(DataObject: IDataObject): Boolean; virtual;
     function ViewSupportsHeader: Boolean;
@@ -5104,6 +5113,9 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure PasteFromClipboard; virtual;
     procedure SetView(Value: TEasyListStyle); virtual;
+    {$IFDEF SpTBX}
+    procedure UpdateSelectionRectColor;
+    {$ENDIF}
     procedure WMChar(var Msg: TWMChar); message WM_CHAR;
     procedure WMClose(var Msg: TWMClose); message WM_CLOSE;
     procedure WMContextMenu(var Msg: TMessage); message WM_CONTEXTMENU;
@@ -5129,6 +5141,9 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$IFDEF SpTBX}
+    procedure WMSpSkinChange(var Msg: TMessage); message WM_SPSKINCHANGE;
+    {$ENDIF SpTBX}
     procedure WMTabMoveFocusAndEdit(var Msg: TMessage); message WM_TABMOVEFOCUSANDEDIT;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
@@ -9400,14 +9415,30 @@ var
   Red1, Red2, Green1, Green2, Blue1, Blue2, RC, GC, BC, BandTop: Integer;
   RStep, GStep, BStep : Double;
   RGBVal, BlendStop: Longword;
+  {$IFDEF SpTBX}
+  Op: TSpTBXSkinOptionCategory;
+  {$ENDIF}
   CellR: TRect;
   BandColor, BandColorFade: TColor;
 begin
   if Group.BandEnabled and not IsRectEmpty(RectArray.BandRect) then
   begin
     CellR := ObjRect;
+    {$IFDEF SpTBX}
+    Op := SkinManager.CurrentSkin.Options(skncTab, sknsChecked);
+    if Op.Body.IsEmpty then
+    begin
+      BandColor := Group.BandColor;
+      BandColorFade := Group.BandColorFade;
+    end else
+    begin
+      BandColor := Op.Body.Color1;
+      BandColorFade := Op.Body.Color4
+    end;
+    {$ELSE}
     BandColor := Group.BandColor;
     BandColorFade := Group.BandColorFade;
+    {$ENDIF}
     if MarginEdge in [egmeBottom, egmeTop] then
     begin
       BandTop := RectArray.BandRect.Top + Group.BandMargin;
@@ -13185,7 +13216,6 @@ begin
   if Owner.DragManager.Enabled then
   begin
     KeyState := KeyToKeyStates(grfKeyState);
-    DropEffectToDropEffectStates(dwEffect);
 
     // Get the "Windows Style" effect with the key modifiers
     Effect := KeyStateToDropEffect(KeyState);
@@ -13262,7 +13292,6 @@ begin
     DropTargetHelper.Drop(dataObj, Pt, dwEffect);
 
   KeyState := KeyToKeyStates(grfKeyState);
-  DropEffectToDropEffectStates(dwEffect);
 
   // Get the "Windows Style" effect with the key modifiers
   Effect := KeyStateToDropEffect(KeyState);
@@ -13965,6 +13994,9 @@ begin
   FIncrementalSearch := TEasyIncrementalSearchManager.Create(Self);
   FScratchCanvas := TControlCanvas.Create;
   FScratchCanvas.Control := Self;
+  {$IFDEF SpTBX}
+  SkinManager.AddSkinNotification(Self);
+  {$ENDIF}
   if IsUnicode then
   begin
 //    GroupFont.Name := 'MS Shell Dlg 2';
@@ -13977,6 +14009,9 @@ destructor TCustomEasyListview.Destroy;
 begin
   Groups.Clear; // Clear the items first so there is no chance of trying to draw them after the window is destroyed
   Header.Columns.Clear; // Clear the columns first so there is no chance of trying to draw them after the window is destroyed
+  {$IFDEF SpTBX}
+  SkinManager.RemoveSkinNotification(Self);
+  {$ENDIF SpTBX}
   inherited Destroy;
   DropTarget := nil;
   // Don't destroy these objects until the Window is destroyed
@@ -14245,6 +14280,14 @@ function TCustomEasyListview.IsVertView: Boolean;
 begin
   Result := View in VERTICALVIEWS
 end;
+
+{$IFDEF SpTBX}
+function TCustomEasyListview.PaintSpTBXSelection: Boolean;
+begin
+  // If it is focused use the SpTBX themes else use the grayed default (unless in Popup Mode then always paint SpTBX
+  Result := Focused or Selection.PopupMode
+end;
+{$ENDIF SpTBX}
 
 function TCustomEasyListview.ScrollHeaderHorz: Boolean;
 begin
@@ -16211,7 +16254,6 @@ var
   ViewPt: TPoint;
   Handled: Boolean;
 begin
-  KeyToKeyStates(Msg.Keys);
   ViewPt := Scrollbars.MapWindowToView(Msg.Pos);
   if ViewSupportsHeader and (Header.Visible) and (Msg.YPos < Header.Height) then
     Header.WMLButtonDblClk(Msg)
@@ -16880,6 +16922,9 @@ procedure TCustomEasyListview.Loaded;
 begin
   inherited;
   DoUpdate;
+  {$IFDEF SpTBX}
+  UpdateSelectionRectColor
+  {$ENDIF}
 end;
 
 procedure TCustomEasyListview.LoadFromFile(FileName: WideString; Mode: Word);
@@ -17149,6 +17194,24 @@ begin
      DoViewChange
    end
 end;
+
+{$IFDEF SpTBX}
+procedure TCustomEasyListview.UpdateSelectionRectColor;
+begin
+  if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+  begin
+    if CurrentSkin.Options(skncListItem, sknsChecked).Borders.Color1 <> 0 then
+    begin
+      Selection.BlendColorSelRect := CurrentSkin.Options(skncListItem, sknsChecked).Borders.Color1;
+      Selection.BorderColorSelRect := CurrentSkin.Options(skncListItem, sknsChecked).Borders.Color1;
+    end;
+  end else
+  begin
+    Selection.BlendColorSelRect := clHighlight;
+    Selection.BorderColorSelRect := clHighlight;
+  end;
+end;
+{$ENDIF}
 
 procedure TCustomEasyListview.WMChar(var Msg: TWMChar);
 begin
@@ -17834,6 +17897,15 @@ begin
   Header.WMSize(Msg);  // do it first
   inherited;
 end;
+
+{$IFDEF SpTBX}
+procedure TCustomEasyListview.WMSpSkinChange(var Msg: TMessage);
+begin
+  UpdateSelectionRectColor;
+  Invalidate;
+  Update;
+end;
+{$ENDIF SpTBX}
 
 procedure TCustomEasyListview.WMTabMoveFocusAndEdit(var Msg: TMessage);
 var
@@ -19595,6 +19667,13 @@ begin
   CanvasStore.RestoreCanvasState(ACanvas);
   if not Handled then
   begin
+    {$IFDEF SpTBX}
+    if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+    begin
+      // Paints the rightmost background of the columns, the part that never gets selected
+      SpDrawXPHeader(ACanvas, ViewRect, False, False);
+    end else
+    {$ENDIF SpTBX}
     if OwnerListview.DrawWithThemes then
     begin
       PartID := HP_HEADERITEM;
@@ -20507,6 +20586,10 @@ begin
       if OwnerListview.Focused or Item.OwnerListview.Selection.PopupMode or Item.Hilighted then
       begin
         ACanvas.Font.Color := OwnerListview.Selection.TextColor;
+        {$IFDEF SpTBX}
+        if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+          ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, True));
+        {$ENDIF}
       end
       else
         ACanvas.Font.Color := OwnerListview.Selection.InactiveTextColor
@@ -20994,6 +21077,10 @@ begin
     if OwnerListview.Focused or Item.Hilighted and not Item.OwnerListview.ShowInactive or Item.OwnerListview.Selection.PopupMode then
     begin
       ACanvas.Font.Color := OwnerListview.Selection.TextColor;
+      {$IFDEF SpTBX}
+      if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+        ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, Item.Selected or Item.Hilighted));
+      {$ENDIF}
       if (Item <> OwnerListview.Selection.FocusedItem) or not OwnerListview.Selection.UseFocusRect then
         ACanvas.Pen.Color := OwnerListview.Selection.BorderColor
       else
@@ -21121,6 +21208,11 @@ begin
 
     if not IsRectEmpty(LocalSelRect) then
     begin
+      {$IFDEF SpTBX}
+      if (SkinManager.GetSkinType in [sknSkin, sknDelphiStyle]) and OwnerListview.PaintSpTBXSelection then
+        SpDrawXPListItemBackGround(ACanvas, LocalSelRect, Item.Selected or Item.Hilighted, False, Item.Focused, True)
+      else begin
+      {$ENDIF}
         if OwnerListview.Selection.Gradient and not OwnerListview.Selection.AlphaBlend then
         begin
           if RectHeight(LocalSelWindowClippedRect) > 0 then
@@ -21143,6 +21235,9 @@ begin
           end
         end else
           PaintNonAlphaBlendedSelection(ACanvas, LocalSelRect);
+      {$IFDEF SpTBX}
+      end
+      {$ENDIF}
     end
   end
 end;
@@ -22287,6 +22382,13 @@ begin
     if Item.Details[0] > -1 then
     begin
       LoadTextFont(Item, 0, ACanvas, Item.Selected);
+      {$IFDEF SpTBX}
+      if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+      begin
+        if Item.Selected or Item.Hilighted then
+          ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, True));
+      end;
+      {$ENDIF}
       DrawTextWEx(ACanvas.Handle, Item.Captions[Item.Details[0]], RectArray.TextRects[0], DrawTextFlags, PaintTextLineCount(Item, Column));
     end;
     for i := 1 to Length(RectArray.TextRects) - 1 do
@@ -22294,6 +22396,13 @@ begin
       if Item.Details[i] > -1 then
       begin
         LoadTextFont(Item, i, ACanvas, Item.Selected);
+        {$IFDEF SpTBX}
+        if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+        begin
+          if Item.Selected or Item.Hilighted then
+            ACanvas.Font.Color := CurrentSkin.GetTextColor(skncListItem, CurrentSkin.GetState(True, False, False, True));
+        end;
+        {$ENDIF}
         DrawTextWEx(ACanvas.Handle, Item.Captions[Item.Details[i]], RectArray.TextRects[i], DrawTextFlags, PaintTextLineCount(Item, Column));
       end
     end
@@ -22895,6 +23004,9 @@ begin
   ACanvas.Font.Assign(OwnerListview.Header.Font);
   if Column.Bold then
     ACanvas.Font.Style := ACanvas.Font.Style +[fsBold];
+  {$IFDEF SpTBX}
+    ACanvas.Font.Color := SkinManager.CurrentSkin.GetTextColor(skncHeader, sknsNormal)
+  {$ENDIF}
 end;
 
 procedure TEasyViewColumn.Paint(Column: TEasyColumn; ACanvas: TCanvas;
@@ -23016,6 +23128,11 @@ begin
   Pt.x := 0;
   Pt.y := 0;
 
+  {$IFDEF SpTBX}
+  if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+    SpDrawXPHeader(ACanvas, Column.DisplayRect, Column.HotTracking[Pt], Column.Clicking)
+  else
+  {$ENDIF SpTBX}
   if OwnerListview.DrawWithThemes then
   begin
     PartID := HP_HEADERITEM;
@@ -28278,10 +28395,29 @@ procedure TEasyOwnedPersistentView.PaintCheckboxCore(CheckType: TEasyCheckType;
   OwnerListView: TCustomEasyListView; ACanvas: TCanvas; ARect: TRect; IsEnabled,
   IsChecked, IsHot, IsFlat, IsHovering, IsPending: Boolean; Obj: TEasyCollectionItem; Size: Integer);
 var
+  {$IFDEF SpTBX}
+  CheckState: TCheckBoxState;
+  {$ENDIF}
   uState: Longword;
   Part: BUTTONPARTS;
   Pt: TPoint;
 begin
+  {$IFDEF SpTBX}
+  if not ((CheckType = ectNone) or (CheckType = ectNoneWithSpace)) then
+  begin
+    if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+    begin
+      if IsChecked then
+        CheckState := cbChecked
+      else
+        CheckState := cbUnChecked;
+      InflateRect(ARect, -1, -1);
+      SpDrawXPCheckBoxGlyph(ACanvas, ARect, IsEnabled, CheckState, IsHovering, IsPending);
+      Exit;
+    end
+  end;
+  {$ENDIF}
+
   if OwnerListview.DrawWithThemes then
     begin
       uState := 0;
@@ -29420,7 +29556,28 @@ procedure TEasyViewTaskBandGroup.PaintBackground(Group: TEasyGroup; ACanvas: TCa
 var
   PartID, StateID: LongWord;
   R, HeaderR: TRect;
+{$IFDEF SpTBX}
+var
+  TBXState: TSpTBXSkinStatesType;
+  TBX_R: TRect;
+{$ENDIF SpTBX}
 begin
+  {$IFDEF SpTBX}
+    if (SkinManager.GetSkinType in [sknSkin, sknDelphiStyle]) and (MarginEdge = egmeTop) then
+    begin
+      if Group.Enabled then
+        TBXState := sknsNormal
+      else
+        TBXState := sknsDisabled;
+      TBX_R := Group.BoundsRectBkGnd;
+      TBX_R.Bottom := TBX_R.Top;
+      TBX_R.Top := Group.DisplayRect.Top;
+      if Group.Bold then
+        CurrentSkin.PaintBackground(ACanvas, TBX_R, skncButton, sknsHotTrack, True, False)
+      else
+        CurrentSkin.PaintBackground(ACanvas, TBX_R, skncButton, TBXState, True, False);
+    end else
+  {$ENDIF SpTBX}
   if Group.OwnerListview.DrawWithThemes then
   begin
     case MarginEdge of
@@ -29532,6 +29689,19 @@ var
 begin
   if (MarginEdge = egmeTop) and Group.Expandable then
   begin
+    {$IFDEF SpTBX}
+    if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+    begin
+      if Group.Bold then
+        ACanvas.Pen.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsHotTrack)
+      else
+        ACanvas.Pen.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+      if not Group.Enabled then
+        ACanvas.Pen.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsDisabled);
+      DrawNonThemed;
+      Exit;
+    end else
+    {$ENDIF SpTBX}
     if Group.OwnerListview.DrawWithThemes then
     begin
       StateID := EBNGC_NORMAL;
@@ -29563,7 +29733,39 @@ begin
 end;
 
 procedure TEasyViewTaskBandGroup.PaintText(Group: TEasyGroup; MarginEdge: TEasyGroupMarginEdge; ACanvas: TCanvas; ObjRect: TRect; RectArray: TEasyRectArrayObject);
+{$IFDEF SpTBX}
+var
+  Flags: Cardinal;
+{$ENDIF SpTBX}
 begin
+  {$IFDEF SpTBX}
+  if (SkinManager.GetSkinType in [sknSkin, sknDelphiStyle]) and (MarginEdge = egmeTop) then
+  begin
+
+    if Group.Bold then
+      ACanvas.Font.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsHotTrack)
+    else
+      ACanvas.Font.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsNormal);
+    if not Group.Enabled then
+      ACanvas.Font.Color := CurrentSkin.GetTextColor(skncToolbarItem, sknsDisabled);
+
+    Flags := 0;
+    case Group.Alignment of
+      taLeftJustify: Flags := Flags or DT_LEFT;
+      taRightJustify: Flags := Flags or DT_RIGHT;
+      taCenter: Flags := Flags or DT_CENTER;
+    end;
+
+    case Group.VAlignment of
+      cvaTop: Flags := Flags or DT_TOP;
+      cvaCenter: Flags := Flags or DT_VCENTER;
+      cvaBottom: Flags := Flags or DT_BOTTOM;
+    end;
+
+    Flags := Flags or DT_SINGLELINE or DT_END_ELLIPSIS;
+    SpDrawXPText(ACanvas, Group.Caption, RectArray.LabelRect, Flags);
+  end else
+  {$ENDIF SpTBX}
   if DrawThemed and (MarginEdge = egmeTop) and Group.OwnerListview.DrawWithThemes then
   begin
     PaintTextTopThemed(ACanvas, Group, ObjRect, RectArray);
@@ -29610,6 +29812,14 @@ var
   R: TRect;
   Theme: HTheme;
 begin
+  {$IFDEF SpTBX}
+  if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
+  begin
+    CurrentSkin.PaintBackground(ACanvas, OwnerListview.ClientRect, skncPanel, sknsNormal, True, False);
+  end else
+    inherited;
+  Exit;
+  {$ENDIF SpTBX}
   Theme := OwnerListview.Themes.ExplorerBarTheme;
   if OwnerListview.DrawWithThemes then
   begin
