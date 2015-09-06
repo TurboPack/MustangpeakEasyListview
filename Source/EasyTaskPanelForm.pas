@@ -36,6 +36,9 @@ uses
   Variants,
   Themes,
   UxTheme,
+  {$IFDEF SpTBX}
+  SpTBXSkins,
+  {$ENDIF SpTBX}
   Classes,
   Graphics,
   Controls,
@@ -231,6 +234,12 @@ begin
   try
     DC.Handle := Msg.DC;
     DC.Control := Self;
+    {$IFDEF SpTBX}
+    if CurrentSkin.SkinName <> 'Default' then
+    begin
+      CurrentSkin.PaintBackground(DC, ClientRect, skncWindow{skncPanel}, sknsNormal, True, True, false, [akLeft, akTop, akRight, akBottom]);
+    end else
+    {$ENDIF SpTBX}
     if Themed and not (csDesigning in ComponentState) then
     begin
       PartID := EBP_NORMALGROUPBACKGROUND;
