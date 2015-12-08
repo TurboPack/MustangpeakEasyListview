@@ -1670,7 +1670,7 @@ private:
 	TEasyPaintInfoBasic* FPaintInfo;
 	int FRefCount;
 	TEasyStorageObjectStates FState;
-	int FTag;
+	NativeInt FTag;
 	int FVisibleIndex;
 	System::Classes::TAlignment __fastcall GetAlignment(void);
 	bool __fastcall GetBold(void);
@@ -1846,7 +1846,7 @@ public:
 	__property int Index = {read=GetIndex, nodefault};
 	__property TCustomEasyListview* OwnerListview = {read=GetOwnerListview};
 	__property int RefCount = {read=FRefCount, nodefault};
-	__property int Tag = {read=FTag, write=FTag, default=0};
+	__property NativeInt Tag = {read=FTag, write=FTag, default=0};
 	__property System::Types::TRect ViewRect = {read=GetViewRect};
 	__property int VisibleIndex = {read=FVisibleIndex, nodefault};
 private:
@@ -2140,7 +2140,7 @@ private:
 	bool FHideFromDFM;
 	System::Classes::TList* FList;
 	int FReIndexCount;
-	int FTag;
+	NativeInt FTag;
 	System::Classes::TList* FVisibleList;
 	int __fastcall GetCount(void);
 	TEasyCollectionItem* __fastcall GetItem(int Index);
@@ -2188,7 +2188,7 @@ public:
 	__property int VisibleCount = {read=GetVisibleCount, nodefault};
 	
 __published:
-	__property int Tag = {read=FTag, write=FTag, default=0};
+	__property NativeInt Tag = {read=FTag, write=FTag, default=0};
 };
 
 

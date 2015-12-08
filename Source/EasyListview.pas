@@ -1583,7 +1583,7 @@ type
     FPaintInfo: TEasyPaintInfoBasic;   // Information to draw the item
     FRefCount: Integer;
     FState: TEasyStorageObjectStates;  // State of the item
-    FTag: Integer;
+    FTag: NativeInt;
     FVisibleIndex: Integer;            // Index of the item across all collections (flat list across collection in group)
                                        // See TEasyItem.VisibleIndexInGroup
     function GetAlignment: TAlignment;
@@ -1762,7 +1762,7 @@ type
     property Index: Integer read GetIndex;
     property OwnerListview: TCustomEasyListview read GetOwnerListview;
     property RefCount: Integer read FRefCount;
-    property Tag: Integer read FTag write FTag default 0;
+    property Tag: NativeInt read FTag write FTag default 0;
     property ViewRect: TRect read GetViewRect;
     property VisibleIndex: Integer read FVisibleIndex;
   end;
@@ -2023,7 +2023,7 @@ type
     FHideFromDFM: Boolean;
     FList: TList;
     FReIndexCount: Integer;
-    FTag: Integer;
+    FTag: NativeInt;
     FVisibleList: TList;
     function GetCount: Integer;
     function GetItem(Index: Integer): TEasyCollectionItem;
@@ -2069,7 +2069,7 @@ type
     property ReIndexDisable: Boolean read GetReIndexDisable write SetReIndexDisable;
     property VisibleCount: Integer read GetVisibleCount;
   published
-    property Tag: Integer read FTag write FTag default 0;
+    property Tag: NativeInt read FTag write FTag default 0;
   end;
   TEasyCollectionClass = class of TEasyCollection;
 
