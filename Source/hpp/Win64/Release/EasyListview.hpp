@@ -1,8 +1,8 @@
 ﻿// CodeGear C++Builder
-// Copyright (c) 1995, 2015 by Embarcadero Technologies, Inc.
+// Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'EasyListview.pas' rev: 30.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'EasyListview.pas' rev: 31.00 (Windows)
 
 #ifndef EasylistviewHPP
 #define EasylistviewHPP
@@ -1088,7 +1088,7 @@ class PASCALIMPLEMENTATION TEasySelectionGroupList : public System::TObject
 	typedef System::TObject inherited;
 	
 public:
-	TEasyItem* operator[](int Index) { return Items[Index]; }
+	TEasyItem* operator[](int Index) { return this->Items[Index]; }
 	
 private:
 	System::Types::TRect FDisplayRect;
@@ -2134,7 +2134,7 @@ class PASCALIMPLEMENTATION TEasyCollection : public TEasyOwnedPersistent
 	typedef TEasyOwnedPersistent inherited;
 	
 public:
-	TEasyCollectionItem* operator[](int Index) { return Items[Index]; }
+	TEasyCollectionItem* operator[](int Index) { return this->Items[Index]; }
 	
 private:
 	bool FHideFromDFM;
@@ -2446,7 +2446,7 @@ class PASCALIMPLEMENTATION TEasyItems : public TEasyCollection
 	typedef TEasyCollection inherited;
 	
 public:
-	TEasyItem* operator[](int Index) { return Items[Index]; }
+	TEasyItem* operator[](int Index) { return this->Items[Index]; }
 	
 private:
 	TEasyGroup* FOwnerGroup;
@@ -2480,7 +2480,7 @@ class PASCALIMPLEMENTATION TEasyGlobalItems : public System::TObject
 	typedef System::TObject inherited;
 	
 public:
-	TEasyItem* operator[](int Index) { return Items[Index]; }
+	TEasyItem* operator[](int Index) { return this->Items[Index]; }
 	
 private:
 	TCustomEasyListview* FOwner;
@@ -2802,7 +2802,7 @@ class PASCALIMPLEMENTATION TEasyGroup : public TEasyCollectionItem
 	typedef TEasyCollectionItem inherited;
 	
 public:
-	TEasyItem* operator[](int Index) { return Item[Index]; }
+	TEasyItem* operator[](int Index) { return this->Item[Index]; }
 	
 private:
 	bool FExpanded;
@@ -3195,7 +3195,7 @@ class PASCALIMPLEMENTATION TEasyGroups : public TEasyCollection
 	typedef TEasyCollection inherited;
 	
 public:
-	TEasyGroup* operator[](int Index) { return Groups[Index]; }
+	TEasyGroup* operator[](int Index) { return this->Groups[Index]; }
 	
 private:
 	TEasyGroupsStates FGroupsState;
@@ -3312,7 +3312,7 @@ class PASCALIMPLEMENTATION TEasyGroupsTaskPanel : public TEasyGroups
 	typedef TEasyGroups inherited;
 	
 public:
-	TEasyGroupTaskPanel* operator[](int Index) { return Groups[Index]; }
+	TEasyGroupTaskPanel* operator[](int Index) { return this->Groups[Index]; }
 	
 private:
 	HIDESBASE TEasyGroupTaskPanel* __fastcall GetGroup(int Index);
@@ -3864,7 +3864,7 @@ class PASCALIMPLEMENTATION TEasyColumns : public TEasyCollection
 	typedef TEasyCollection inherited;
 	
 public:
-	TEasyColumn* operator[](int Index) { return Columns[Index]; }
+	TEasyColumn* operator[](int Index) { return this->Columns[Index]; }
 	
 private:
 	TEasyColumn* __fastcall GetColumns(int Index);
@@ -3898,7 +3898,7 @@ class PASCALIMPLEMENTATION TColumnPos : public System::Classes::TList
 	typedef System::Classes::TList inherited;
 	
 public:
-	TEasyColumn* operator[](int Index) { return Items[Index]; }
+	TEasyColumn* operator[](int Index) { return this->Items[Index]; }
 	
 private:
 	HIDESBASE TEasyColumn* __fastcall Get(int Index);
