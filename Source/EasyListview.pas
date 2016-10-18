@@ -10029,7 +10029,7 @@ var
 begin
   iIndex := Index;
   Canvas := OwnerListview.Canvas;
-  W := 0;
+  W:= TextExtentW(Self.Caption, Canvas).cx+CheckIndent + RectWidth(Checks.Bound[CheckSize])+20;
   for i := 0 to OwnerListview.Groups.Count - 1 do
     for j := 0 to OwnerListview.Groups[i].ItemCount - 1 do
     begin
