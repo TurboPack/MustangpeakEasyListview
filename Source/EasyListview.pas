@@ -8530,7 +8530,6 @@ end;
 
 function TEasyGroup.GetDefaultGridClass: TEasyGridGroupClass;
 begin
-  Result := nil;
   case OwnerListview.View of
     elsIcon: Result := TEasyGridIconGroup;
     elsSmallIcon: Result := TEasyGridSmallIconGroup;
@@ -18042,7 +18041,6 @@ end;
 
 function TEasyCollectionItem.DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList;
 begin
-  Result := nil;
   case ImageSize of
    eisSmall: Result := OwnerListview.ImagesSmall;
    eisLarge: Result := OwnerListview.ImagesLarge;
