@@ -116,7 +116,6 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DllSuffix>260</DllSuffix>
-        <DCC_HppOutput>..\source\hpp\$(Platform)\$(Config)</DCC_HppOutput>
         <IntermediateOutputDir>.\$(Platform)\$(Config)</IntermediateOutputDir>
         <IncludePath>..\Design\;$(IncludePath)</IncludePath>
         <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
