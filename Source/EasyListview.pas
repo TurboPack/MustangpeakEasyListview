@@ -8540,6 +8540,8 @@ begin
     elsReportThumb: Result := TEasyGridReportThumbGroup;
     elsFilmStrip: Result := TEasyGridFilmStripGroup;
     elsGrid: Result := TEasyGridGridGroup;
+  else
+    Result := nil;
   end
 end;
 
@@ -18045,6 +18047,8 @@ begin
    eisSmall: Result := OwnerListview.ImagesSmall;
    eisLarge: Result := OwnerListview.ImagesLarge;
    eisExtraLarge: Result := OwnerListview.ImagesExLarge;
+  else
+    Result := nil;
   end
 end;
 
