@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{B89D86B8-E874-4360-91DE-BC0B877FE5EE}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="EasyListviewC.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EasyListviewCD.cbproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="EasyListviewC">
+        <MSBuild Projects="EasyListviewC.cbproj"/>
+    </Target>
+    <Target Name="EasyListviewC:Clean">
+        <MSBuild Projects="EasyListviewC.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EasyListviewC:Make">
+        <MSBuild Projects="EasyListviewC.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="EasyListviewCD">
+        <MSBuild Projects="EasyListviewCD.cbproj"/>
+    </Target>
+    <Target Name="EasyListviewCD:Clean">
+        <MSBuild Projects="EasyListviewCD.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EasyListviewCD:Make">
+        <MSBuild Projects="EasyListviewCD.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="EasyListviewC;EasyListviewCD"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="EasyListviewC:Clean;EasyListviewCD:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="EasyListviewC:Make;EasyListviewCD:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
