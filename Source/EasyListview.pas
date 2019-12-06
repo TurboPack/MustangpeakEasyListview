@@ -14569,9 +14569,9 @@ begin
         begin
           inherited;
 
-          Msg.Result := Longint(ControlAtPos(ScreenToClient(Msg.DragRec^.Pos), False));
+          Msg.Result := LRESULT(ControlAtPos(ScreenToClient(Msg.DragRec^.Pos), False));
           if Msg.Result = 0 then
-            Msg.Result := Longint(Self);
+            Msg.Result := LRESULT(Self);
         end;
   else
     inherited;
