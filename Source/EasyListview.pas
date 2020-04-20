@@ -8530,7 +8530,6 @@ end;
 
 function TEasyGroup.GetDefaultGridClass: TEasyGridGroupClass;
 begin
-  Result := nil;
   case OwnerListview.View of
     elsIcon: Result := TEasyGridIconGroup;
     elsSmallIcon: Result := TEasyGridSmallIconGroup;
@@ -8541,6 +8540,8 @@ begin
     elsReportThumb: Result := TEasyGridReportThumbGroup;
     elsFilmStrip: Result := TEasyGridFilmStripGroup;
     elsGrid: Result := TEasyGridGridGroup;
+  else
+    Result := nil;
   end
 end;
 
@@ -14568,9 +14569,9 @@ begin
         begin
           inherited;
 
-          Msg.Result := Longint(ControlAtPos(ScreenToClient(Msg.DragRec^.Pos), False));
+          Msg.Result := LRESULT(ControlAtPos(ScreenToClient(Msg.DragRec^.Pos), False));
           if Msg.Result = 0 then
-            Msg.Result := Longint(Self);
+            Msg.Result := LRESULT(Self);
         end;
   else
     inherited;
@@ -18042,11 +18043,12 @@ end;
 
 function TEasyCollectionItem.DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList;
 begin
-  Result := nil;
   case ImageSize of
    eisSmall: Result := OwnerListview.ImagesSmall;
    eisLarge: Result := OwnerListview.ImagesLarge;
    eisExtraLarge: Result := OwnerListview.ImagesExLarge;
+  else
+    Result := nil;
   end
 end;
 

@@ -232,9 +232,9 @@ procedure TCustomEasyScrollButton.DoPaintRect(ACanvas: TCanvas; WindowClipRect: 
 var
   Part, uState: Longword;
 begin
+    uState := 0;
     if DrawWithThemes then
     begin
-      uState := 0;
       Part := SBP_ARROWBTN;
       if Enabled then
       begin

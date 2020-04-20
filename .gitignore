@@ -1,0 +1,9 @@
+*.~dsk
+*.dsk
+*.local
+*.stat
+__history
+Win32
+*.hpp
+*.tvsconfig
+*.identcache
