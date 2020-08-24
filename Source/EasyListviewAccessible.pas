@@ -29,7 +29,6 @@ unit EasyListviewAccessible;
 //----------------------------------------------------------------------------
 
 
-{$I ..\Include\Debug.inc}
 {.$DEFINE DISABLE_ACCESSIBILITY}
 
  {$B-}

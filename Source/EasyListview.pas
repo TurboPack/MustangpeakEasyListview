@@ -31,15 +31,11 @@ unit EasyListview;
 interface
 
 {$B-}
+{.$DEFINE SpTBX}
 
 {.$DEFINE DISABLE_ACCESSIBILITY}
 
-{$I ..\Include\Debug.inc}
-
 {.$DEFINE GXDEBUG}
-{.$DEFINE LOADGXUNIT}
-{.$DEFINE SpTBXSelection}
-{.$DEFINE SpTBX}
 {.$DEFINE GXDEBUG_SIZING}
 {.$DEFINE GXDEBUG_HINT}
 
@@ -56,9 +52,6 @@ uses
   Classes,
   Graphics,
   Controls,
-  {$IFDEF LOADGXUNIT}
-  DbugIntf,
-  {$ENDIF LOADGXUNIT}
   Themes,
   UxTheme,
   {$ifndef DISABLE_ACCESSIBILITY}
@@ -106,7 +99,7 @@ const
   IID_IEasyNotficationSink = '{E4F0D3DE-B2BD-4EC0-B24B-8A9B85B23A63}';
   IID_IEasyNotifier = '{F10150F9-17E3-43B6-8C05-33283FF1B14E}';
   IID_IEasyCompare = '{0761D4F5-D451-4A6D-BFDC-B3000FFD0299}';
-  IID_IEasyDividerPersist = '{EE6C3C89-7FAE-46CD-AD30-6954B4308721}'; 
+  IID_IEasyDividerPersist = '{EE6C3C89-7FAE-46CD-AD30-6954B4308721}';
   IID_IEasyGroupKey = '{2B87BB19-A133-4D43-9164-AC456747EB19}';
   IID_IEasyGroupKeyEditable = '{26EFE2C6-2DE2-4795-94E3-0DB0CAA38B09}';
 
@@ -574,7 +567,7 @@ type
     ehtCustomDraw         // The hint will callback when it needs drawing
   );
 
-  PEasyHintInfoRec = ^TEasyHintInfoRec;  
+  PEasyHintInfoRec = ^TEasyHintInfoRec;
   // The actual record is below due to a BDS C++ bug in generating the hpp file
 
   TEasySortAlgorithm = (
@@ -826,7 +819,7 @@ type
   TColumnFocusChangeEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
   TColumnFocusChangingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Allow: Boolean) of object;
   TColumnFreeingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
-  TColumnGetCaptionEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: Integer; var Caption: WideString) of object;
+  TColumnGetCaptionEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: Integer; var Caption: string) of object;
   TColumnGetImageIndexEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger) of object;
   TColumnGetImageListEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var ImageList: TCustomImageList) of object;
   TColumnGetDetailCountEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Count: Integer) of object;
@@ -840,7 +833,7 @@ type
   TEasyColumnSaveToStreamEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; S: TStream; Version: Integer) of object;
   TColumnSelectionChangeEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
   TColumnSelectionChangingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Allow: Boolean) of object;
-  TColumnSetCaptionEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Caption: WideString) of object;
+  TColumnSetCaptionEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Caption: string) of object;
   TColumnSetImageIndexEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ImageKind: TEasyImageKind; ImageIndex: Integer) of object;
   TColumnSetDetailEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: Integer; const Detail: Integer) of object;
   TColumnSizeChangingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Width, NewWidth: Integer; var Allow: Boolean) of object;
@@ -848,13 +841,13 @@ type
   TColumnThumbnailDrawEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ACanvas: TCanvas; ARect: TRect; var DoDefault: Boolean) of object;
   TColumnVisibilityChangeEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
   TColumnVisibilityChangingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Allow: Boolean) of object;
-  TContextMenuEvent = procedure(Sender: TCustomEasyListview; MousePt: TPoint; var Handled: Boolean) of object;  
+  TContextMenuEvent = procedure(Sender: TCustomEasyListview; MousePt: TPoint; var Handled: Boolean) of object;
   TColumnCustomViewEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var View: TEasyViewColumnClass) of object;
   TCustomGridEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ViewStyle: TEasyListStyle; var Grid: TEasyGridGroupClass) of object;
   TDblClickEvent = procedure(Sender: TCustomEasyListview; Button: TCommonMouseButton; MousePos: TPoint; ShiftState: TShiftState; var Handled: Boolean) of object;
   TDragInsertDropEvent =  procedure(Sender: TCustomEasyListview; Item: TEasyItem; InsertKind: TEasyInsertKind; MouseButton: TCommonMouseButton; InsertPt: TPoint) of object;
   TEasyGenericCallback = procedure(Sender: TCustomEasyListview; Data: Pointer) of object;
-  TEasyGestureEvent = procedure(Sender: TCustomEasyListview; Button: TCommonMouseButton; KeyState: TCommonKeyStates; Gesture: WideString; var DoDefaultMouseAction: Boolean) of object;
+  TEasyGestureEvent = procedure(Sender: TCustomEasyListview; Button: TCommonMouseButton; KeyState: TCommonKeyStates; Gesture: string; var DoDefaultMouseAction: Boolean) of object;
   TGetDragImageEvent = procedure(Sender: TCustomEasyListview; Image: TBitmap; DragStartPt: TPoint; var HotSpot: TPoint; var TransparentColor: TColor; var Handled: Boolean) of object;
   TGroupClickEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; KeyStates: TCommonKeyStates; HitTest: TEasyGroupHitTestInfoSet) of object;
   TGroupCollapseEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup) of object;
@@ -868,7 +861,7 @@ type
   TGroupFocusChangeEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup) of object;
   TGroupFocusChangingEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var Allow: Boolean) of object;
   TGroupFreeingEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup) of object;
-  TGroupGetCaptionEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var Caption: WideString) of object;
+  TGroupGetCaptionEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var Caption: string) of object;
   TGroupGetClassEvent = procedure(Sender: TCustomEasyListview; var GroupClass: TEasyCollectionItemClass) of object;
   TGroupGetImageIndexEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger) of object;
   TGroupGetImageListEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var ImageList: TCustomImageList) of object;
@@ -878,11 +871,11 @@ type
   TGroupImageDrawIsCustomEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var IsCustom: Boolean) of object;
   TGroupGetDetailEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Line: Integer; var Detail: Integer) of object;
   TGroupInitializeEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup) of object;
-  TGroupHotTrackEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; State: TEasyHotTrackState; MousePos: TPoint) of object;      
+  TGroupHotTrackEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; State: TEasyHotTrackState; MousePos: TPoint) of object;
   TGroupLoadFromStreamEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; S: TStream; Version: Integer) of object;
   TGroupPaintTextEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ACanvas: TCanvas) of object;
   TGroupSaveToStreamEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; S: TStream; Version: Integer) of object;
-  TGroupSetCaptionEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Caption: WideString) of object;
+  TGroupSetCaptionEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Caption: string) of object;
   TGroupSetImageIndexEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ImageKind: TEasyImageKind; ImageIndex: Integer) of object;
   TGroupSetDetailEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Line: Integer; const Detail: Integer) of object;
   TGroupSelectionChangeEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup) of object;
@@ -893,11 +886,11 @@ type
   THintCustomDrawEvent = procedure(Sender: TCustomEasyListview; TargetObj: TEasyCollectionItem; const Info: TEasyHintInfo) of object;
   THintCustomizeInfoEvent = procedure(Sender: TCustomEasyListview; TargetObj: TEasyCollectionItem; Info: TEasyHintInfo) of object;
   THintPauseTimeEvent = procedure(Sender: TCustomEasyListview; HintWindowShown: Boolean; var PauseDelay: Integer) of object;
-  THintPopupEvent = procedure(Sender: TCustomEasyListview; TargetObj: TEasyCollectionItem; HintType: TEasyHintType; MousePos: TPoint; var AText: WideString; var HideTimeout, ReShowTimeout: Integer; var Allow: Boolean) of object;
+  THintPopupEvent = procedure(Sender: TCustomEasyListview; TargetObj: TEasyCollectionItem; HintType: TEasyHintType; MousePos: TPoint; var AText: string; var HideTimeout, ReShowTimeout: Integer; var Allow: Boolean) of object;
   THeaderClickEvent = procedure(Sender: TCustomEasyListview; MouseButton: TCommonMouseButton; Column: TEasyColumn) of object;
   THeaderDblClickEvent = procedure(Sender: TCustomEasyListview; MouseButton: TCommonMouseButton; MousePos: TPoint; ShiftState: TShiftState) of object;
   THeaderMouseEvent = procedure(Sender: TCustomEasyListview; MouseButton: TCommonMouseButton; Shift: TShiftState; X, Y: Integer; Column: TEasyColumn) of object;
-  TIncrementalSearchEvent = procedure(Item: TEasyCollectionItem; const SearchBuffer: WideString; var Handled: Boolean; var CompareResult: Integer) of object;
+  TIncrementalSearchEvent = procedure(Item: TEasyCollectionItem; const SearchBuffer: string; var Handled: Boolean; var CompareResult: Integer) of object;
   TInsertMarkPositionEvent = procedure(Sender: TCustomEasyListview; var InsertMark: TEasyInsertMarkerDir; var InsertMarkDropRange: Byte) of object;
   TItemCheckChangeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemCheckChangingEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Allow: Boolean) of object;
@@ -919,8 +912,8 @@ type
   TItemFocusChangeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemFocusChangingEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Allow: Boolean) of object;
   TItemGetStreamingCreateClassEvent = procedure(Sender: TCustomEasyListview; var AClass: TEasyColumnStoredClass) of object;
-  TItemGetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; var Caption: WideString) of object;
-  TEasyItemGetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; var Caption: WideString) of object;
+  TItemGetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; var Caption: string) of object;
+  TEasyItemGetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; var Caption: string) of object;
   TItemGetEditMenuEvent = procedure(Sender: TCustomEasyListview; Editor: TEasyBaseEditor; var Menu: TPopupMenu) of object;
   TItemGetClassEvent = procedure(Sender: TCustomEasyListview; var ItemClass: TEasyCollectionItemClass) of object;
   TItemGetGroupKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; FocusedColumn: Integer; var GroupKey: LongWord) of object;
@@ -932,7 +925,7 @@ type
   TItemImageGetSizeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; var ImageWidth, ImageHeight: Integer) of object;
   TItemImageDrawIsCustomEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; var IsCustom: Boolean) of object;
   TItemGetTileDetailEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Line: Integer; var Detail: Integer) of object;
-  TItemHotTrackEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; State: TEasyHotTrackState; MousePos: TPoint) of object;     
+  TItemHotTrackEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; State: TEasyHotTrackState; MousePos: TPoint) of object;
   TItemInitializeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemMouseDownEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Button: TCommonMouseButton; var DoDefault: Boolean) of object;
   TItemMouseUpEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Button: TCommonMouseButton; var DoDefault: Boolean) of object;
@@ -940,7 +933,7 @@ type
   TItemSelectionChangeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemSelectionChangingEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Allow: Boolean) of object;
   TEasyItemSelectionsChangedEvent = procedure(Sender: TCustomEasyListview) of object;
-  TItemSetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; Caption: WideString) of object;
+  TItemSetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; Caption: string) of object;
   TItemSetGroupKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; Key: LongWord) of object;
   TItemSetImageIndexEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; ImageIndex: Integer) of object;
   TItemSetTileDetailEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Line: Integer; const Detail: Integer) of object;
@@ -950,7 +943,7 @@ type
   TEasyMouseActivateEvent = procedure(Sender: TCustomEasyListview; TopLevelWindow: HWND; HitTest: TEasyNonClientHitTest; MouseMsg: Word; var Activate: TEasyMouseActivate; var DoDefault: Boolean) of object;
   TEasyKeyActionEvent = procedure(Sender: TCustomEasyListview; var CharCode: Word; var Shift: TShiftState; var DoDefault: Boolean) of object;
 
-  TOLEDropSourceDragEndEvent = procedure(Sender: TCustomEasyListview; ADataObject: IDataObject; DragResult: TCommonOLEDragResult; ResultEffect: TCommonDropEffects; KeyStates: TCommonKeyStates) of object;  
+  TOLEDropSourceDragEndEvent = procedure(Sender: TCustomEasyListview; ADataObject: IDataObject; DragResult: TCommonOLEDragResult; ResultEffect: TCommonDropEffects; KeyStates: TCommonKeyStates) of object;
   TOLEDropSourceDragStartEvent = procedure(Sender: TCustomEasyListview; ADataObject: IDataObject; var AvailableEffects: TCommonDropEffects; var AllowDrag: Boolean) of object;
   TOLEDropSourceQueryContineDragEvent = procedure(Sender: TCustomEasyListview; EscapeKeyPressed: Boolean; KeyStates: TCommonKeyStates; var QueryResult: TEasyQueryDragResult) of object;
   TOLEDropSourceGiveFeedbackEvent = procedure(Sender: TCustomEasyListview; Effect: TCommonDropEffects; var UseDefaultCursors: Boolean) of object;
@@ -1162,7 +1155,7 @@ type
   // **************************************************************************
   TCustomEasyFooterMargin = class(TEasyMargin)
   private
-    FCaption: WideString;
+    FCaption: string;
     FImageIndex: TCommonImageIndexInteger;
     FImageOverlayIndex: TCommonImageIndexInteger;
     FPaintInfo: TEasyPaintInfoBaseGroup;
@@ -1173,7 +1166,7 @@ type
     function GetPaintInfo: TEasyPaintInfoBaseGroup;
     function GetVAlignment: TCommonVAlignment;
     procedure SetAlignment(Value: TAlignment);
-    procedure SetCaption(Value: WideString);
+    procedure SetCaption(Value: string);
     procedure SetCaptionIndent(Value: Integer);
     procedure SetCaptionLines(Value: Integer);
     procedure SetImageIndent(Value: Integer);
@@ -1183,7 +1176,7 @@ type
     procedure SetVAlignment(Value: TCommonVAlignment);
   protected
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
-    property Caption: WideString read FCaption write SetCaption;
+    property Caption: string read FCaption write SetCaption;
     property CaptionIndent: Integer read GetCaptionIndent write SetCaptionIndent default 2;
     property CaptionLines: Integer read GetCaptionLines write SetCaptionLines default 1;
     property ImageIndent: Integer read GetImageIndent write SetImageIndent default 2;
@@ -1192,7 +1185,7 @@ type
     property PaintInfo: TEasyPaintInfoBaseGroup read GetPaintInfo write SetPaintInfo;
     property Size default 30;
     property VAlignment: TCommonVAlignment read GetVAlignment write SetVAlignment default cvaCenter;
-    
+
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     destructor Destroy; override;
@@ -1518,24 +1511,24 @@ type
   // **************************************************************************
   TEasyDynamicDataHelper = class
   private
-    FCaptionArray: TCommonWideStringDynArray;
+    FCaptionArray: TCommonStringDynArray;
     FDetailArray: TCommonIntegerDynArray;
     FGroupKeyArray: TCommonIntegerDynArray;
     FImageIndexArray: TCommonIntegerDynArray;
     FOverlayIndexArray: TCommonIntegerDynArray;
-    function GetCaptions(Index: Integer): Widestring;
+    function GetCaptions(Index: Integer): string;
     function GetDetails(Index: Integer): Integer;
     function GetImageIndexes(Index: Integer): Integer;
     function GetImageOverlayIndexes(Index: Integer): Integer;
     procedure LoadIntArrayFromStream(S: TStream; var AnArray: TCommonIntegerDynArray);
-    procedure LoadWideStrArrayFromStream(S: TStream; var AnArray: TCommonWideStringDynArray);
+    procedure LoadWideStrArrayFromStream(S: TStream; var AnArray: TCommonStringDynArray);
     procedure SaveIntArrayToStream(S: TStream; var AnArray: TCommonIntegerDynArray);
-    procedure SaveWideStrArrayToStream(S: TStream; var AnArray: TCommonWideStringDynArray);
-    procedure SetCaptions(Index: Integer; Value: Widestring);
+    procedure SaveStrArrayToStream(S: TStream; var AnArray: TCommonStringDynArray);
+    procedure SetCaptions(Index: Integer; Value: string);
     procedure SetDetails(Index: Integer; Value: Integer);
     procedure SetImageIndexes(Index: Integer; Value: Integer);
     procedure SetImageOverlayIndexes(Index: Integer; Value: Integer);
-    property CaptionArray: TCommonWideStringDynArray read FCaptionArray write FCaptionArray;
+    property CaptionArray: TCommonStringDynArray read FCaptionArray write FCaptionArray;
     property DetailArray: TCommonIntegerDynArray read FDetailArray write FDetailArray;
     property GroupKeyArray: TCommonIntegerDynArray read FGroupKeyArray write FGroupKeyArray;
     property ImageIndexArray: TCommonIntegerDynArray read FImageIndexArray write FImageIndexArray;
@@ -1544,7 +1537,7 @@ type
     procedure Clear;
     procedure LoadFromStream(S: TStream; Version: Integer); virtual;
     procedure SaveToStream(S: TStream; Version: Integer); virtual;
-    property Captions[Index: Integer]: Widestring read GetCaptions write SetCaptions;
+    property Captions[Index: Integer]: string read GetCaptions write SetCaptions;
     property Details[Index: Integer]: Integer read GetDetails write SetDetails;
     property ImageIndexes[Index: Integer]: Integer read GetImageIndexes write SetImageIndexes;
     property ImageOverlayIndexes[Index: Integer]: Integer read GetImageOverlayIndexes write SetImageOverlayIndexes;
@@ -1657,7 +1650,7 @@ type
     function CanChangeVisibility(NewValue: Boolean): Boolean; virtual; abstract;
     function DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList; virtual;
     function GetChecked: Boolean; virtual;
-    function GetDisplayName: WideString; virtual;
+    function GetDisplayName: string; virtual;
     function LocalPaintInfo: TEasyPaintInfoBasic; virtual; abstract;
     procedure Freeing; virtual; abstract;
     procedure GainingBold; virtual; abstract;
@@ -1669,8 +1662,8 @@ type
     procedure GainingHotTracking(MousePos: TPoint); virtual; abstract;
     procedure GainingSelection; virtual; abstract;
     procedure GainingVisibility; virtual; abstract;
-    function GetCaption: WideString; virtual;
-    function GetCaptions(Column: Integer): Widestring; virtual; abstract;
+    function GetCaption: string; virtual;
+    function GetCaptions(Column: Integer): string; virtual; abstract;
     function GetImageIndex: TCommonImageIndexInteger; virtual;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; virtual; abstract;
     function GetImageOverlayIndex: TCommonImageIndexInteger; virtual;
@@ -1695,8 +1688,8 @@ type
     procedure LosingHilight; virtual; abstract;
     procedure LosingSelection; virtual; abstract;
     procedure LosingVisibility; virtual; abstract;
-    procedure SetCaptions(Column: Integer; Value: Widestring); virtual; abstract;
-    procedure SetCaption(Value: WideString); virtual;
+    procedure SetCaptions(Column: Integer; Value: string); virtual; abstract;
+    procedure SetCaption(Value: string); virtual;
     procedure SetChecked(Value: Boolean); virtual;
     procedure SetDestroyFlags;
     procedure SetDetailCount(Value: Integer); virtual; abstract;
@@ -1738,7 +1731,7 @@ type
     property Visible: Boolean read GetVisible write SetVisible default True;
   public
     constructor Create(ACollection: TEasyCollection); reintroduce; virtual;
-    destructor Destroy; override;   
+    destructor Destroy; override;
 
     function EditAreaHitPt(ViewportPoint: TPoint): Boolean; virtual; abstract;
     function SelectionHit(SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; virtual; abstract;
@@ -1748,8 +1741,8 @@ type
     procedure MakeVisible(Position: TEasyMakeVisiblePos); virtual;
     procedure SaveToStream(S: TStream; AVersion: Integer = EASYLISTVIEW_STREAM_VERSION); virtual;
     {$ifndef DISABLE_ACCESSIBILITY}property Accessible: IAccessible read FAccessible write FAccessible;{$endif}
-    property Caption: WideString read GetCaption write SetCaption;
-    property Captions[Column: Integer]: Widestring read GetCaptions write SetCaptions;
+    property Caption: string read GetCaption write SetCaption;
+    property Captions[Column: Integer]: string read GetCaptions write SetCaptions;
     property Data: TObject read FData write SetData;
     property DetailCount: Integer read GetDetailCount write SetDetailCount;
     property Details[Line: Integer]: Integer read GetDetails write SetDetails;
@@ -1909,7 +1902,7 @@ type
     function GetCommonImageIndex(Column: Integer; Kind: TEasyImageKind): TCommonImageIndexInteger;
     procedure SetCommonImageIndex(Column: Integer; Kind: TEasyImageKind; Value: TCommonImageIndexInteger);
   protected
-    function GetCaptions(Column: Integer): Widestring; override;
+    function GetCaptions(Column: Integer): string; override;
     function GetChecked: Boolean; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
@@ -1922,7 +1915,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW, ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetChecked(Value: Boolean); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
@@ -1942,7 +1935,7 @@ type
   // **************************************************************************
   TEasyItemVirtual = class(TEasyItem)
   protected
-    function GetCaptions(Column: Integer): Widestring; override;
+    function GetCaptions(Column: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetGroupKey(FocusedColumn: Integer): LongWord; override;
@@ -1954,7 +1947,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
     procedure SetGroupKey(FocusedColumn: Integer; Value: LongWord); override;
@@ -1973,7 +1966,7 @@ type
   private
     FDataHelper: TEasyItemDynamicDataHelper;
   protected
-    function GetCaptions(Column: Integer): Widestring; override;
+    function GetCaptions(Column: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetGroupKey(FocusedColumn: Integer): LongWord; override;
@@ -1985,7 +1978,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Column: Integer; Value: Integer); override;
     procedure SetGroupKey(FocusedColumn: Integer; Value: LongWord); override;
@@ -2088,8 +2081,8 @@ type
     function PaintStateImage: Boolean; virtual;
     function ValidateColumnIndex(Column: TEasyColumn): Integer;
   public
-    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect); virtual;
-    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalSelRect: TRect); virtual;
+    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect); virtual;
+    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect); virtual;
     procedure CalculateTextRect(Item: TEasyItem; Column: TEasyColumn; var TextR: TRect; ACanvas: TControlCanvas);
     function DropMarkerDir: TEasyInsertMarkerDir; virtual;
     function EditAreaHitPt(Item: TEasyItem; ViewportPoint: TPoint): Boolean; virtual;
@@ -2100,18 +2093,18 @@ type
     procedure GetImageSize(Item: TEasyItem; Column: TEasyColumn; var ImageW, ImageH: Integer; Image: TEasyImageKind); virtual;
     function GetStateImageList(Column: TEasyColumn; Item: TEasyItem): TCustomImageList; virtual;
     function ItemRect(Item: TEasyItem; Column: TEasyColumn; RectType: TEasyCellRectType): TRect; virtual;
-    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject); virtual;
+    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); virtual;
     procedure LoadTextFont(Item: TEasyItem; Position: Integer; ACanvas: TCanvas; Hilightable: Boolean); virtual;
     function OverlappedFocus: Boolean; virtual;
     procedure Paint(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean); virtual;
-    procedure PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject); virtual;
-    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); virtual;
+    procedure PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject); virtual;
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); virtual;
     procedure PaintCheckBox(Item: TEasyItem; Column: TEasyColumn; RectArray: TEasyRectArrayObject; ACanvas: TCanvas); virtual;
-    procedure PaintFocusRect(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas); virtual;
-    procedure PaintImage(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize; ACanvas: TCanvas); virtual;
+    procedure PaintFocusRect(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas); virtual;
+    procedure PaintImage(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize; ACanvas: TCanvas); virtual;
     function PaintImageSize: TEasyImageSize; virtual;
-    procedure PaintSelectionRect(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean); virtual;
-    procedure PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer); virtual;
+    procedure PaintSelectionRect(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean); virtual;
+    procedure PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer); virtual;
     function PaintTextAlignment(Item: TEasyItem; Column: TEasyColumn): TAlignment; virtual;
     function PaintTextLineCount(Item: TEasyItem; Column: TEasyColumn): Integer; virtual;
     function PaintTextVAlignment(Item: TEasyItem; Column: TEasyColumn): TCommonVAlignment; virtual;
@@ -2134,10 +2127,10 @@ type
     function OverlappedFocus: Boolean; override;
     function PaintImageSize: TEasyImageSize; override;
     function PaintTextLineCount(Item: TEasyItem; Column: TEasyColumn): Integer; override;
-    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect); override;
-    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalSelRect: TRect); override;
-    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject); override;
-    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
+    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect); override;
+    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect); override;
+    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); override;
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
   end;
 
   // **************************************************************************
@@ -2149,8 +2142,8 @@ type
     function CalculateDisplayRect(Item: TEasyItem; Column: TEasyColumn): TRect; virtual;
     function ExpandIconR(Item: TEasyItem; RectArray: TEasyRectArrayObject; SelectType: TEasySelectHitType): TRect; override;
     function ExpandTextR(Item: TEasyItem; RectArray: TEasyRectArrayObject; SelectType: TEasySelectHitType): TRect; override;
-    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject); override;
-    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
+    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); override;
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
     function PaintTextAlignment(Item: TEasyItem; Column: TEasyColumn): TAlignment; override;
     function PaintTextLineCount(Item: TEasyItem; Column: TEasyColumn): Integer; override;
     function PaintTextVAlignment(Item: TEasyItem; Column: TEasyColumn): TCommonVAlignment; override;
@@ -2189,7 +2182,7 @@ type
     function GetImageList(Column: TEasyColumn; Item: TEasyItem; Image: TEasyImageKind): TCustomImageList; override;
     function PaintImageSize: TEasyImageSize; override;
     procedure GetImageSize(Item: TEasyItem; Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer; Image: TEasyImageKind); override;
-    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject); override;
+    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); override;
   end;
 
   // **************************************************************************
@@ -2209,12 +2202,12 @@ type
     function ExpandTextR(Item: TEasyItem; RectArray: TEasyRectArrayObject; SelectType: TEasySelectHitType): TRect; override;
     function GetImageList(Column: TEasyColumn; Item: TEasyItem; Image: TEasyImageKind): TCustomImageList; override;
     function PaintImageSize: TEasyImageSize; override;
-    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect); override;
-    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalSelRect: TRect); override;
-    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject); override;
+    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect); override;
+    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect); override;
+    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); override;
     function OverlappedFocus: Boolean; override;
-    procedure PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject); override;
-    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
+    procedure PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject); override;
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
     function PaintTextLineCount(Item: TEasyItem; Column: TEasyColumn): Integer; override;
     function PaintTextVAlignment(Item: TEasyItem; Column: TEasyColumn): TCommonVAlignment; override;
     function SelectionHit(Item: TEasyItem; SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; override;
@@ -2233,11 +2226,11 @@ type
     function GetImageList(Column: TEasyColumn; Item: TEasyItem; Image: TEasyImageKind): TCustomImageList; override;
     function PaintImageSize: TEasyImageSize; override;
     function PaintTextAlignment(Item: TEasyItem; Column: TEasyColumn): TAlignment; override;
-    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect); override;
-    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalSelRect: TRect); override;
-    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject); override;
-    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
-    procedure PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer); override;
+    procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect); override;
+    procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect); override;
+    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); override;
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
+    procedure PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer); override;
   end;
 
   // **************************************************************************
@@ -2308,7 +2301,7 @@ type
     function AddCustom(CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
     function AddInterfaced(const DataInf: IUnknown; Data: TObject = nil): TEasyItemInterfaced;
     function AddVirtual(Data: TObject = nil): TEasyItemVirtual;
-    function FindByCaption(const Caption: WideString; Column: Integer = 0): TEasyItem;
+    function FindByCaption(const Caption: string; Column: Integer = 0): TEasyItem;
     function IndexOf(Item: TEasyItem): Integer;
     function Insert(Index: Integer; Data: TObject = nil): TEasyItem;
     function InsertCustom(Index: Integer; CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
@@ -2713,7 +2706,7 @@ type
 
   TEasyGroupInterfaced = class(TEasyGroup)
   protected
-    function GetCaptions(Line: Integer): Widestring; override;
+    function GetCaptions(Line: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
@@ -2722,7 +2715,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
     procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
@@ -2736,7 +2729,7 @@ type
   private
     FDataHelper: TEasyDynamicDataHelper;
   protected
-    function GetCaptions(Line: Integer): Widestring; override;
+    function GetCaptions(Line: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
@@ -2745,7 +2738,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
     procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
@@ -2810,7 +2803,7 @@ type
 
   TEasyGroupVirtual = class(TEasyGroup)
   protected
-    function GetCaptions(Line: Integer): Widestring; override;
+    function GetCaptions(Line: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
@@ -2819,7 +2812,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
     procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
@@ -3043,7 +3036,7 @@ type
     property WidthRaw: Integer read GetWidthRaw;
     property WidthAutoSizeRaw: Integer read FWidthAutoSizeRaw;
   published
-    
+
     property Height: Integer read GetHeight write SetHeight default DEFAULT_HEIGHT_ICON;
     property Width: Integer read GetWidth write SetWidth default DEFAULT_WIDTH_ICON;
   end;
@@ -3211,7 +3204,7 @@ type
     constructor Create(AnOwner: TEasyColumn);
     property AlwaysShow: Boolean read FAlwaysShow write SetAlwaysShow default False;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
-    property Menu: TPopupMenu read FMenu write FMenu;  
+    property Menu: TPopupMenu read FMenu write FMenu;
     property Visible: Boolean read FVisible write SetVisible default False;
   end;
 
@@ -3344,7 +3337,7 @@ type
 
   TEasyColumnInterfaced = class(TEasyColumn)
   protected
-    function GetCaptions(Line: Integer): Widestring; override;
+    function GetCaptions(Line: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
@@ -3353,7 +3346,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
     procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
@@ -3367,7 +3360,7 @@ type
   private
     FDataHelper: TEasyDynamicDataHelper;
   protected
-    function GetCaptions(Line: Integer): Widestring; override;
+    function GetCaptions(Line: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
@@ -3376,7 +3369,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
     procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
@@ -3413,7 +3406,7 @@ type
 
   TEasyColumnVirtual = class(TEasyColumn)
   protected
-    function GetCaptions(Line: Integer): Widestring; override;
+    function GetCaptions(Line: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
@@ -3422,7 +3415,7 @@ type
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: Widestring); override;
+    procedure SetCaptions(Column: Integer; Value: string); override;
     procedure SetDetailCount(Value: Integer); override;
     procedure SetDetails(Line: Integer; Value: Integer); override;
     procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
@@ -3733,7 +3726,7 @@ type
     procedure DoOnQueryGetData(const FormatEtcIn: TFormatEtc; var FormatAvailable: Boolean; var Handled: Boolean); override;
   public
     property Listview: TCustomEasyListview read FListview write FListview;
-  end;     
+  end;
 
   // **************************************************************************
   // TEasyDragManagerBase
@@ -3902,7 +3895,7 @@ type
   published
     property AutoMove: Boolean read FAutoMove write FAutoMove default True;
     property CenterMark: Boolean read FCenterMark write FCenterMark default True;
-    property Color: TColor read FColor write FColor default clBlack;
+    property Color: TColor read FColor write FColor default clGrayText;
     property Enabled: Boolean read FEnabled write FEnabled default False;
     property ReSelectAfterMove: Boolean read FReSelectAfterMove write FReSelectAfterMove default True;
     property Width: Integer read FWidth write FWidth default 2;
@@ -4117,7 +4110,7 @@ type
     property GroupSelections: Boolean read FGroupSelections write SetGroupSelections default False;
     property InactiveBorderColor: TColor read FInactiveBorderColor write FInactiveBorderColor default clInactiveBorder;
     property InactiveColor: TColor read FInactiveColor write FInactiveColor default clInactiveBorder;
-    property InactiveTextColor: TColor read FInactiveTextColor write FInactiveTextColor default clBlack;
+    property InactiveTextColor: TColor read FInactiveTextColor write FInactiveTextColor default clWindowText;
     property MouseButton: TCommonMouseButtons read GeTCommonMouseButton write SeTCommonMouseButton default [cmbLeft];
     property MouseButtonSelRect: TCommonMouseButtons read GetMouseButtonSelRect write SetMouseButtonSelRect default [cmbLeft, cmbRight];
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
@@ -4264,7 +4257,7 @@ type
     FAlphaBlender: TEasyAlphaBlender;
     FBlendAlpha: Integer;
     FBlendMode: TCommonBlendMode;
-    FCaption: WideString;
+    FCaption: string;
     FCaptionAlignment: TAlignment;
     FCaptionShow: Boolean;
     FCaptionShowOnlyWhenEmpty: Boolean;
@@ -4281,7 +4274,7 @@ type
     procedure SetAlphaBlend(const Value: Boolean);
     procedure SetAlphaImage(const Value: TBitmap);
     procedure SetBlendAlpha(const Value: Integer);
-    procedure SetCaption(const Value: WideString);
+    procedure SetCaption(const Value: string);
     procedure SetCaptionAlignment(const Value: TAlignment);
     procedure SetCaptionShow(const Value: Boolean);
     procedure SetCaptionShowOnlyWhenEmpty(const Value: Boolean);
@@ -4311,7 +4304,7 @@ type
     property AlphaImage: TBitmap read FAlphaImage write SetAlphaImage;
     property BlendAlpha: Integer read FBlendAlpha write SetBlendAlpha default 128;
     property BlendMode: TCommonBlendMode read FBlendMode write SetCommonBlendMode default cbmConstantAlphaAndColor;
-    property Caption: WideString read FCaption write SetCaption;
+    property Caption: string read FCaption write SetCaption;
     property CaptionAlignment: TAlignment read FCaptionAlignment write SetCaptionAlignment default taCenter;
     property CaptionShow: Boolean read FCaptionShow write SetCaptionShow default False;
     property CaptionShowOnlyWhenEmpty: Boolean read FCaptionShowOnlyWhenEmpty write SetCaptionShowOnlyWhenEmpty default True;
@@ -4365,7 +4358,7 @@ type
   TEasyDropSourceManager = class(TEasyOwnedInterfacedPersistent, IDropSource)
   protected
     function QueryContinueDrag(fEscapePressed: BOOL; grfKeyState: Longint): HResult; stdcall;
-    function GiveFeedback(dwEffect: Longint): HResult; stdcall;     
+    function GiveFeedback(dwEffect: Longint): HResult; stdcall;
   end;
 
   // **************************************************************************
@@ -4416,7 +4409,7 @@ type
   // > 0 (positive)  Item1 is less than Item2
   //  0  Item1 is equal to Item2
   // < 0 (negative)  Item1 is greater than Item2
-  TEasySortProc = function(Column: TEasyColumn; Item1, Item2: TEasyCollectionItem): Integer;  
+  TEasySortProc = function(Column: TEasyColumn; Item1, Item2: TEasyCollectionItem): Integer;
 
   TEasySorter = class
   private
@@ -4517,7 +4510,7 @@ type
     FHintType: TEasyHintType;
     FMaxWidth: Integer;
     FReshowTimeout: Integer;
-    FText: WideString;
+    FText: string;
     FWindowPos: TPoint;
   public
     property Canvas: TCanvas read FCanvas write FCanvas;
@@ -4528,7 +4521,7 @@ type
     property HintType: TEasyHintType read FHintType write FHintType;
     property MaxWidth: Integer read FMaxWidth write FMaxWidth;
     property ReshowTimeout: Integer read FReshowTimeout write FReshowTimeout;
-    property Text: WideString read FText write FText;
+    property Text: string read FText write FText;
     property WindowPos: TPoint read FWindowPos write FWindowPos;
   end;
 
@@ -4580,7 +4573,7 @@ type
     FItemType: TEasyIncrementalSearchItemType;
     FNextSearchItem: TEasyItem;
     FResetTime: Integer;
-    FSearchBuffer: WideString;
+    FSearchBuffer: string;
     FSearchItem: TEasyItem;
     FStart: TCoolIncrementalSearchStart;
     FState: TEasyIncrementalSearchStates;
@@ -4601,7 +4594,7 @@ type
 
     property hTimer: THandle read FhTimer write FhTimer;
     property NextSearchItem: TEasyItem read FNextSearchItem write FNextSearchItem;
-    property SearchBuffer: WideString read FSearchBuffer write FSearchBuffer;
+    property SearchBuffer: string read FSearchBuffer write FSearchBuffer;
     property SearchItem: TEasyItem read FSearchItem write SetSearchItem;
     property TimerStub: ICallBackStub read FTimerStub write FTimerStub;
   public
@@ -4626,10 +4619,10 @@ type
   private
     FButton: TCommonMouseButtons;
     FEnabled: Boolean;
-    FPath: WideString;
+    FPath: string;
     FTolerance: Integer;
   protected
-    property Path: WideString read FPath write FPath;
+    property Path: string read FPath write FPath;
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
   published
@@ -4638,7 +4631,7 @@ type
     property Tolerance: Integer read FTolerance write FTolerance default 3;
   end;
 
-  //  Down here due to a bug in C++ BDS2006 hpp generated files 
+  //  Down here due to a bug in C++ BDS2006 hpp generated files
   TEasyHintInfoRec = record
     HintControl: TControl;
     HintWindowClass: THintWindowClass;
@@ -4650,7 +4643,7 @@ type
     CursorPos: TPoint;
     ReshowTimeout: Integer;
     HideTimeout: Integer;
-    HintStr: WideString;
+    HintStr: string;
     HintData: Pointer;
     Listview: TCustomEasyListview;
     TargetObj: TEasyCollectionItem;  // What the hint is being popped up over (EasyItem, EasyGroup, EasyColumn etc.)
@@ -4907,7 +4900,7 @@ type
     {$IFDEF SpTBX}
     function PaintSpTBXSelection: Boolean; virtual;
     {$ENDIF SpTBX}
-    function ToolTipNeeded(TargetObj: TEasyCollectionItem; var TipCaption: WideString): Boolean;
+    function ToolTipNeeded(TargetObj: TEasyCollectionItem; var TipCaption: string): Boolean;
     function UseInternalDragImage(DataObject: IDataObject): Boolean; virtual;
     function ViewSupportsHeader: Boolean;
     procedure AfterPaintRect(ACanvas: TCanvas; ClipRect: TRect); override;
@@ -4948,7 +4941,7 @@ type
     procedure DoColumnFocusChanged(Column: TEasyColumn); virtual;
     procedure DoColumnFocusChanging(Column: TEasyColumn; var Allow: Boolean); virtual;
     procedure DoColumnFreeing(Column: TEasyColumn); virtual;
-    procedure DoColumnGetCaption(Column: TEasyColumn; Line: Integer; var Caption: WideString); virtual;
+    procedure DoColumnGetCaption(Column: TEasyColumn; Line: Integer; var Caption: string); virtual;
     procedure DoColumnGetImageIndex(Column: TEasyColumn; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger); virtual;
     procedure DoColumnGetImageList(Column: TEasyColumn; var ImageList: TCustomImageList); virtual;
     procedure DoColumnGetDetail(Column: TEasyColumn; Line: Integer; var Detail: Integer); virtual;
@@ -4962,7 +4955,7 @@ type
     procedure DoColumnSaveToStream(Column: TEasyColumn; S: TStream; Version: Integer); virtual;
     procedure DoColumnSelectionChanged(Column: TEasyColumn); virtual;
     procedure DoColumnSelectionChanging(Column: TEasyColumn; var Allow: Boolean); virtual;
-    procedure DoColumnSetCaption(Column: TEasyColumn; const Caption: WideString); virtual;
+    procedure DoColumnSetCaption(Column: TEasyColumn; const Caption: string); virtual;
     procedure DoColumnSetImageIndex(Column: TEasyColumn; ImageKind: TEasyImageKind; ImageIndex: Integer); virtual;
     procedure DoColumnSetDetail(Column: TEasyColumn; Line: Integer; Detail: Integer); virtual;
     procedure DoColumnSetDetailCount(Column: TEasyColumn; DetailCount: Integer); virtual;
@@ -4988,7 +4981,7 @@ type
     procedure DoGroupExpand(Group: TEasyGroup); virtual;
     procedure DoGroupExpanding(Group: TEasyGroup; var Allow: Boolean); virtual;
     procedure DoGroupFreeing(Group: TEasyGroup); virtual;
-    procedure DoGroupGetCaption(Group: TEasyGroup; var Caption: WideString); virtual;
+    procedure DoGroupGetCaption(Group: TEasyGroup; var Caption: string); virtual;
     procedure DoGroupGetImageIndex(Group: TEasyGroup; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger); virtual;
     procedure DoGroupGetImageList(Group: TEasyGroup; var ImageList: TCustomImageList); virtual;
     procedure DoGroupGetDetail(Group: TEasyGroup; Line: Integer; var Detail: Integer); virtual;
@@ -5003,7 +4996,7 @@ type
     procedure DoGroupSaveToStream(Group: TEasyGroup; S: TStream; Version: Integer); virtual;
     procedure DoGroupSelectionChanged(Group: TEasyGroup); virtual;
     procedure DoGroupSelectionChanging(Group: TEasyGroup; var Allow: Boolean); virtual;
-    procedure DoGroupSetCaption(Group: TEasyGroup; const Caption: WideString); virtual;
+    procedure DoGroupSetCaption(Group: TEasyGroup; const Caption: string); virtual;
     procedure DoGroupSetImageIndex(Group: TEasyGroup; ImageKind: TEasyImageKind; ImageIndex: Integer); virtual;
     procedure DoGroupSetDetail(Group: TEasyGroup; Line: Integer; Detail: Integer); virtual;
     procedure DoGroupSetDetailCount(Group: TEasyGroup; DetailCount: Integer); virtual;
@@ -5014,9 +5007,9 @@ type
     procedure DoHeaderDblClick(Button: TCommonMouseButton; MousePos: TPoint; ShiftState: TShiftState); virtual;
     procedure DoHintCustomInfo(TargetObj: TEasyCollectionItem; const Info: TEasyHintInfo); virtual;
     procedure DoHintCustomDraw(TargetObj: TEasyCollectionItem; const Info: TEasyHintInfo); virtual;
-    procedure DoHintPopup(TargetObj: TEasyCollectionItem; HintType: TEasyHintType; MousePos: TPoint; var AText: WideString; var HideTimeout, ReshowTimeout: Integer; var Allow: Boolean); virtual;
+    procedure DoHintPopup(TargetObj: TEasyCollectionItem; HintType: TEasyHintType; MousePos: TPoint; var AText: string; var HideTimeout, ReshowTimeout: Integer; var Allow: Boolean); virtual;
     procedure DoHintShowPause(HintShowingNow: Boolean; var PauseTime: Integer);
-    procedure DoIncrementalSearch(Item: TEasyItem; const SearchBuffer: WideString; var CompareResult: Integer); virtual;
+    procedure DoIncrementalSearch(Item: TEasyItem; const SearchBuffer: string; var CompareResult: Integer); virtual;
     procedure DoInsertMarkPosition(var InsertMark: TEasyInsertMarkerDir; var InsertMarkDropRange: Byte); virtual;
     procedure DoItemCheckChanged(Item: TEasyItem); virtual;
     procedure DoItemCheckChanging(Item: TEasyItem; var Allow: Boolean); virtual;
@@ -5036,8 +5029,8 @@ type
     procedure DoItemFreeing(Item: TEasyItem); virtual;
     procedure DoItemFocusChanged(Item: TEasyItem); virtual;
     procedure DoItemFocusChanging(Item: TEasyItem; var Allow: Boolean); virtual;
-    procedure DoItemGetCaption(Item: TEasyItem; Column: Integer; var ACaption: WideString); virtual;
-    procedure DoItemGetEditCaption(Item: TEasyItem; Column: TEasyColumn; var Caption: WideString); virtual;
+    procedure DoItemGetCaption(Item: TEasyItem; Column: Integer; var ACaption: string); virtual;
+    procedure DoItemGetEditCaption(Item: TEasyItem; Column: TEasyColumn; var Caption: string); virtual;
     procedure DoItemGetGroupKey(Item: TEasyItem; FocusedColumn: Integer; var Key: LongWord); virtual;
     procedure DoItemGetImageIndex(Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger); virtual;
     procedure DoItemGetImageList(Item: TEasyItem; Column: Integer; var ImageList: TCustomImageList); virtual;
@@ -5057,7 +5050,7 @@ type
     procedure DoItemSelectionChanged(Item: TEasyItem); virtual;
     procedure DoItemSelectionChanging(Item: TEasyItem; var Allow: Boolean); virtual;
     procedure DoItemSelectionsChanged; virtual;
-    procedure DoItemSetCaption(Item: TEasyItem; Column: Integer; const Caption: WideString); virtual;
+    procedure DoItemSetCaption(Item: TEasyItem; Column: Integer; const Caption: string); virtual;
     procedure DoItemSetGroupKey(Item: TEasyItem; FocusedColumn: Integer; Key: LongWord); virtual;
     procedure DoItemSetImageIndex(Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; ImageIndex: Integer); virtual;
     procedure DoItemSetTileDetail(Item: TEasyItem; Line: Integer; Detail: Integer); virtual;
@@ -5066,7 +5059,7 @@ type
     procedure DoItemThumbnailDraw(Item: TEasyItem; ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); virtual;
     procedure DoItemVisibilityChanged(Item: TEasyItem); virtual;
     procedure DoItemVisibilityChanging(Item: TEasyItem; var Allow: Boolean); virtual;
-    procedure DoMouseGesture(Gesture: WideString; Button: TCommonMouseButton; KeyState: TCommonKeyStates; var Handled: Boolean); virtual;
+    procedure DoMouseGesture(Gesture: string; Button: TCommonMouseButton; KeyState: TCommonKeyStates; var Handled: Boolean); virtual;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -5374,10 +5367,10 @@ type
     procedure BeginUpdate; override;
     procedure EndUpdate(Invalidate: Boolean = True); override;
     procedure Loaded; override;
-    procedure LoadFromFile(FileName: WideString; Mode: Word);
+    procedure LoadFromFile(FileName: string; Mode: Word);
     procedure LoadFromStream(S: TStream); virtual;
     procedure PaintThemedNCBkgnd(ACanvas: TCanvas; ARect: TRect); override;
-    procedure SaveToFile(FileName: WideString; Mode: Word);
+    procedure SaveToFile(FileName: string; Mode: Word);
     procedure SaveToStream(S: TStream); virtual;
     property States: TEasyControlStates read FStates write FStates;
     property TopItem: TEasyItem read GetTopItem;
@@ -5396,9 +5389,9 @@ type
     function GetListview: TCustomEasyListview;
     procedure SetEditor(const Value: TWinControl); virtual;
   protected
-    function EditText(Item: TEasyItem; Column: TEasyColumn): WideString; virtual;
+    function EditText(Item: TEasyItem; Column: TEasyColumn): string; virtual;
     function GetEditorColor: TColor;
-    procedure CalculateEditorRect(NewText: WideString; var NewRect: TRect); virtual; abstract;
+    procedure CalculateEditorRect(NewText: string; var NewRect: TRect); virtual; abstract;
     procedure CreateEditor(var AnEditor: TWinControl; Column: TEasyColumn; Parent: TWinControl); virtual; abstract;
     function GetEditorFont: TFont; virtual; abstract;
     function GetText: Variant; virtual; abstract;
@@ -5428,7 +5421,7 @@ type
 
   TEasyStringEditor = class(TEasyBaseEditor)
   protected
-    procedure CalculateEditorRect(NewText: WideString; var NewRect: TRect); override;
+    procedure CalculateEditorRect(NewText: string; var NewRect: TRect); override;
     procedure CreateEditor(var AnEditor: TWinControl; Column: TEasyColumn; Parent: TWinControl); override;
     function GetEditorFont: TFont; override;
     function GetText: Variant; override;
@@ -5442,7 +5435,7 @@ type
 
   TEasyMemoEditor = class(TEasyBaseEditor)
   protected
-    procedure CalculateEditorRect(NewText: WideString; var NewRect: TRect); override;
+    procedure CalculateEditorRect(NewText: string; var NewRect: TRect); override;
     procedure CreateEditor(var AnEditor: TWinControl; Column: TEasyColumn; Parent: TWinControl); override;
     function GetEditorFont: TFont; override;
     function GetText: Variant; override;
@@ -5869,7 +5862,7 @@ type
     property Items;
     property States;
     property Scrollbars;
-  published 
+  published
     property Align;
     property Anchors;
     property BevelInner;
@@ -6090,7 +6083,7 @@ TWinControlCracker = class(TWinControl) end;
 // filename in NT. Use TnT Uniocode package for a full blown implementation
 TWideFileStream = class(THandleStream)
 public
-  constructor Create(const FileName: WideString; Mode: Word);
+  constructor Create(const FileName: string; Mode: Word);
   destructor Destroy; override;
 end;
 
@@ -6210,17 +6203,13 @@ begin
     Strings.Add(EASYSORTALGORITHMS[ListStyle]);
 end;
 
-function WideFileCreate(const FileName: WideString): Integer;
+function WideFileCreate(const FileName: string): Integer;
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Result := Integer(CreateFileW(PWideChar(FileName), GENERIC_READ or GENERIC_WRITE, 0,
-      nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0))
-  else
-    Result := Integer(CreateFileA(PAnsiChar(AnsiString(PWideChar(FileName))), GENERIC_READ or GENERIC_WRITE, 0,
-      nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0));
+  Result := Integer(CreateFileW(PWideChar(FileName), GENERIC_READ or GENERIC_WRITE, 0,
+    nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0));
 end;
 
-function WideFileOpen(const FileName: WideString; Mode: LongWord): Integer;
+function WideFileOpen(const FileName: string; Mode: LongWord): Integer;
 const
   AccessMode: array[0..2] of LongWord = (
     GENERIC_READ,
@@ -6233,17 +6222,13 @@ const
     FILE_SHARE_WRITE,
     FILE_SHARE_READ or FILE_SHARE_WRITE);
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Result := Integer(CreateFileW(PWideChar(FileName), AccessMode[Mode and 3], ShareMode[(Mode and $F0) shr 4],
-      nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0))
-  else
-    Result := Integer(CreateFileA(PAnsiChar(AnsiString(FileName)), AccessMode[Mode and 3], ShareMode[(Mode and $F0) shr 4],
-      nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0));
+  Result := Integer(CreateFileW(PWideChar(FileName), AccessMode[Mode and 3], ShareMode[(Mode and $F0) shr 4],
+    nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0));
 end;
 
 { TWideFileStream }
 
-constructor TWideFileStream.Create(const FileName: WideString; Mode: Word);
+constructor TWideFileStream.Create(const FileName: string; Mode: Word);
 var
   CreateHandle: Integer;
 begin
@@ -6524,7 +6509,7 @@ begin
 
   // Delete the item, it will also unfocus the item
   inherited;
-  
+
   // Focus the next or prev visible item
   if Assigned(Temp) then
     Temp.Focused := True;
@@ -6633,7 +6618,7 @@ begin
     raise Exception.Create('exchange of items between different groups is not yet supported'); // TODO
 end;
 
-function TEasyGlobalItems.FindByCaption(const Caption: WideString; Column: Integer = 0): TEasyItem;
+function TEasyGlobalItems.FindByCaption(const Caption: string; Column: Integer = 0): TEasyItem;
 var
   i: Integer;
 begin
@@ -7354,7 +7339,7 @@ begin
     OwnerListview.EndUpdate;
   end;
   LastItem.MakeVisible(emvAuto);
-  OwnerListview.DoItemSelectionsChanged; 
+  OwnerListview.DoItemSelectionsChanged;
 end;
 
 function TEasyGroups.MoveUp: Boolean;
@@ -7961,7 +7946,7 @@ begin
     // This does not free the item
     Item.OwnerGroup.Items.List.Delete(Item.Index);
     NewGroup.Items.List.Add(Item);
-    Item.FCollection := NewGroup.Items;  
+    Item.FCollection := NewGroup.Items;
     DoStructureChange;
   end
 end;
@@ -8017,7 +8002,7 @@ begin
           if i > 0 then
             Groups[i].Rebuild(Groups[i-1], VisibleItemIndex)
           else
-            Groups[i].Rebuild(nil, VisibleItemIndex);    
+            Groups[i].Rebuild(nil, VisibleItemIndex);
 
           UnionRect(ViewRect, ViewRect, Groups[i].DisplayRect);
           ViewRect.Left := 0;
@@ -8539,9 +8524,7 @@ begin
     elsTile: Result := TEasyGridTileGroup;
     elsReportThumb: Result := TEasyGridReportThumbGroup;
     elsFilmStrip: Result := TEasyGridFilmStripGroup;
-    elsGrid: Result := TEasyGridGridGroup;
-  else
-    Result := nil;
+    {elsGrid:} else Result := TEasyGridGridGroup;
   end
 end;
 
@@ -9048,7 +9031,7 @@ begin
       if Value then
         OwnerListview.DoGroupExpand(Self)
       else
-        OwnerListview.DoGroupCollapse(Self);  
+        OwnerListview.DoGroupCollapse(Self);
       OwnerListview.Groups.Rebuild(True);
     finally
       OwnerListview.EndUpdate;
@@ -9207,7 +9190,7 @@ var
   ImageW, ImageH, ExpandImageW, ExpandImageH, BandOffset: Integer;
 begin
   Group.Initialized := True;
-  
+
   FillChar(RectArray, SizeOf(RectArray), #0);
 
   RectArray.GroupRect := ObjRect;
@@ -9733,14 +9716,14 @@ begin
 
         // Get the "normalized" rectangle for the image
         RectArray.IconRect.Left := RectArray.IconRect.Left + (RectWidth(RectArray.IconRect) - Images.Width) div 2;
-        
+
 
         case Group.VAlignment of
           cvaTop: RectArray.IconRect.Top := RectArray.IconRect.Top + 2;
           cvaBottom: RectArray.IconRect.Top := RectArray.IconRect.Bottom - (Images.Height + 2);
           cvaCenter: RectArray.IconRect.Top := RectArray.IconRect.Top + (RectHeight(RectArray.IconRect) - Images.Height) div 2;
         end;
-        
+
         ImageList_DrawEx(Images.Handle,
           ImageIndex,
           ACanvas.Handle,
@@ -9778,7 +9761,7 @@ procedure TEasyViewGroup.PaintText(Group: TEasyGroup; MarginEdge: TEasyGroupMarg
 //
 var
   DrawTextFlags: TCommonDrawTextWFlags;
-  Caption: WideString;
+  Caption: string;
   Alignment: TAlignment;
   VAlignment: TCommonVAlignment;
 begin
@@ -10024,13 +10007,13 @@ var
   Group: TEasyGroup;
   Canvas: TCanvas;
   Item: TEasyItem;
-  Caption: WideString;
+  Caption: string;
   Size: TSize;
   ImageW, ImageH: Integer;
 begin
   iIndex := Index;
   Canvas := OwnerListview.Canvas;
-  W:= TextExtentW(Self.Caption, Canvas).cx+CheckIndent + RectWidth(Checks.Bound[CheckSize])+20;
+  W := 0;
   for i := 0 to OwnerListview.Groups.Count - 1 do
     for j := 0 to OwnerListview.Groups[i].ItemCount - 1 do
     begin
@@ -10905,7 +10888,7 @@ begin
     begin
       DropTarget.Hilighted := False;
       OwnerListview.Groups.InvalidateItem(DropTarget, True);
-    end 
+    end
   end;
   FDropTarget := nil;
 end;
@@ -10952,7 +10935,7 @@ begin
       Image.Height := RectHeight(R);
       Bits.PixelFormat := pf32Bit;
       Bits.Width := Image.Width;
-      Bits.Height := Image.Height; 
+      Bits.Height := Image.Height;
       Bits.Canvas.Brush.Color := OwnerListview.Color;
       Bits.Canvas.FillRect(Rect(0, 0, Bits.Width, Bits.Height));
       OwnerListview.DoPaintRect(Bits.Canvas, R, True);
@@ -10961,7 +10944,7 @@ begin
       Bits.Free;
     end;
     Handled := True;
-  end  
+  end
 end;
 
 procedure TEasyOLEDragManager.DoDrag(Canvas: TCanvas; WindowPoint: TPoint; KeyState: TCommonKeyStates; var Effects: TCommonDropEffect);
@@ -10978,7 +10961,7 @@ begin
     Effects := cdeNone
   else begin
     ViewPortPoint := OwnerListview.Scrollbars.MapWindowToView(WindowPoint);
-    Item := OwnerListview.Groups.ItemByPoint(ViewportPoint);     
+    Item := OwnerListview.Groups.ItemByPoint(ViewportPoint);
 
     // See if we can drop on the group itself
     if not Assigned(Item) then
@@ -11018,7 +11001,7 @@ begin
       end else
         ClearDropTarget;
     end;
-    
+
     if InsertMark.Enabled then
     begin
       if Assigned(Item) then
@@ -11157,7 +11140,7 @@ begin
           begin
             List.Add(Item);
             Item := OwnerListview.Selection.Next(Item);
-          end;  
+          end;
           OwnerListview.Selection.ClearAll;
 
           TargetCollection := InsertMark.Target;
@@ -11482,7 +11465,7 @@ begin
   FBorderColor := clHighlight;
   FInactiveBorderColor := clInactiveBorder;
   FInactiveColor := clInactiveBorder;
-  FInactiveTextColor := clBlack;
+  FInactiveTextColor := clWindowText;
   FTextColor := clHighlightText;
   FRoundRectRadius := 4;
   FBlendColorSelRect := clHighlight;
@@ -11705,7 +11688,7 @@ begin
   begin
     FGroupSelectUpdateCount := 0;
  //   OwnerListview.Groups.ReIndexItems(nil, True);
-    BuildSelectionGroupings(False);     
+    BuildSelectionGroupings(False);
   end
 end;
 
@@ -11913,7 +11896,7 @@ end;
 procedure TEasySelectionManager.SetAnchorItem(Value: TEasyItem);
 begin
   if Assigned(Value) then
-  begin          
+  begin
     if Value.Visible and Value.Enabled then
       FAnchorItem := Value;
   end else
@@ -13075,7 +13058,7 @@ begin
   end
 end;
 
-procedure TEasyBackgroundManager.SetCaption(const Value: WideString);
+procedure TEasyBackgroundManager.SetCaption(const Value: string);
 begin
   if FCaption <> Value then
   begin
@@ -13402,7 +13385,7 @@ begin
         else
         if PtInAutoScrollRightRegion(Pt) then
           DoAutoScroll(OwnerListview.CellSizes.List.Width, 0)
-      end else     
+      end else
       begin
         if PtInAutoScrollLeftRegion(Pt) then
           DoAutoScroll(-(ScrollDeltaLeft(Pt) * AutoScrollAccelerator), 0)
@@ -13503,7 +13486,7 @@ end;
 
 procedure TCustomEasyDragManagerBase.DoOLEDragEnd(const ADataObject: IDataObject; DragResult: TCommonOLEDragResult; ResultEffect: TCommonDropEffects; KeyStates: TCommonKeyStates);
 begin
-  
+
 end;
 
 procedure TCustomEasyDragManagerBase.DoOLEDragStart(const ADataObject: IDataObject; var AvailableEffects: TCommonDropEffects; var AllowDrag: Boolean);
@@ -13558,7 +13541,7 @@ begin
 end;
 
 procedure TCustomEasyDragManagerBase.DragEnter(const ADataObject: IDataObject; Canvas: TCanvas; WindowPoint: TPoint; KeyState: TCommonKeyStates; var Effects: TCommonDropEffect);
-begin   
+begin
   Include(FDragState, edmsDragging);
   DataObject := ADataObject;
   Timer.Enabled := False;
@@ -13792,10 +13775,10 @@ begin
 
  // Always have to update if the selection rectangle if it gets smaller or full
  // update if full row select (leaves white bands at the column interfaces)
-  if OwnerListview.Selection.FullRowSelect then 
-    OwnerListview.SafeInvalidateRect(nil, True) 
-  else 
-    OwnerListview.SafeInvalidateRect(@ARect, True); 
+  if OwnerListview.Selection.FullRowSelect then
+    OwnerListview.SafeInvalidateRect(nil, True)
+  else
+    OwnerListview.SafeInvalidateRect(@ARect, True);
 
 end;
 
@@ -13887,7 +13870,7 @@ begin
     if SelectRect.Top < OwnerListview.Header.Height then
       SelectRect.Top := OwnerListview.Header.Height;
   end;
-  
+
   if OwnerListview.Selection.AlphaBlendSelRect and HasMMX then
   begin
     Canvas.Brush.Color := OwnerListview.Selection.BorderColorSelRect;
@@ -13998,12 +13981,9 @@ begin
   {$IFDEF SpTBX}
   SkinManager.AddSkinNotification(Self);
   {$ENDIF}
-  if IsUnicode then
-  begin
-//    GroupFont.Name := 'MS Shell Dlg 2';
- //   Font.Name := 'MS Shell Dlg 2';
- //   Header.Font.Name := 'MS Shell Dlg 2';
-  end
+  //    GroupFont.Name := 'MS Shell Dlg 2';
+  //   Font.Name := 'MS Shell Dlg 2';
+  //   Header.Font.Name := 'MS Shell Dlg 2';
 end;
 
 destructor TCustomEasyListview.Destroy;
@@ -14114,8 +14094,7 @@ begin
   uiParam := 0;
   pvParam := 3;
 
-  if IsWinNT then
-    SystemParametersInfo(SPI_GETWHEELSCROLLLINES, uiParam, @pvParam, 0);
+  SystemParametersInfo(SPI_GETWHEELSCROLLLINES, uiParam, @pvParam, 0);
 
   if WheelMouseDefaultScroll = edwsVert then
   begin
@@ -14137,7 +14116,7 @@ begin
 
   if IsNeg then
     WheelDelta := -WheelDelta;
-    
+
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 
   LocalMouseScroll := WheelMouseDefaultScroll;
@@ -14296,7 +14275,7 @@ begin
 end;
 
 function TCustomEasyListview.ToolTipNeeded(TargetObj: TEasyCollectionItem;
-  var TipCaption: WideString): Boolean;
+  var TipCaption: string): Boolean;
 // Calcuates if the text is being truncated in the current view of the object
 // If so the result is true.
 var
@@ -14491,41 +14470,7 @@ var
   Keys: TCommonKeyStates;
   P: TPoint;
   Effects: TCommonDropEffect;
-
-  {$IFDEF LOG_VCL_CMDRAG}
-  F: TFileStream;
-  S: string;
-  Buffer: array[0..MAX_PATH] of char;
-  {$ENDIF}
 begin
-
-  {$IFDEF LOG_VCL_CMDRAG}
-  FillChar(Buffer, SizeOf(Buffer), #0);
-  GetModuleFileName(hInstance, Buffer, MAX_PATH);
-  S := ExtractFilePath(Buffer) + 'VCL Drag.log';
-  if not FileExists(S) then
-    F := TFileStream.Create(S, fmCreate or fmShareExclusive)
-  else
-    F := TFileStream.Create(S, fmOpenReadWrite or fmShareExclusive);
-
-  F.Seek(0, soFromEnd);
-
-  case Msg.DragMessage of
-    dmDragEnter:  S := 'dmDragEnter';
-    dmDragLeave:  S := 'dmDragLeave';
-    dmDragMove:   S := 'dmDragMove';
-    dmDragDrop:   S := 'dmDragDrop';
-    dmDragCancel: S := 'dmDragCancel';
-    dmFindTarget: S := 'dmFindTarget';
-  end;
-
-  SendDebug(S);
-  
-  S := S + #13+#10;
-  F.Write(PChar(S)^, Length(S));
-  F.Free;
-  {$ENDIF}
-
   Keys := [];
   Effects := cdeNone;
   case Msg.DragMessage of
@@ -14569,9 +14514,9 @@ begin
         begin
           inherited;
 
-          Msg.Result := LRESULT(ControlAtPos(ScreenToClient(Msg.DragRec^.Pos), False));
+          Msg.Result := Longint(ControlAtPos(ScreenToClient(Msg.DragRec^.Pos), False));
           if Msg.Result = 0 then
-            Msg.Result := LRESULT(Self);
+            Msg.Result := Longint(Self);
         end;
   else
     inherited;
@@ -14909,7 +14854,7 @@ begin
     OnColumnFreeing(Self, Column)
 end;
 
-procedure TCustomEasyListview.DoColumnGetCaption(Column: TEasyColumn; Line: Integer; var Caption: WideString);
+procedure TCustomEasyListview.DoColumnGetCaption(Column: TEasyColumn; Line: Integer; var Caption: string);
 begin
   if Assigned(OnColumnGetCaption) then
    OnColumnGetCaption(Self, Column, Line, Caption)
@@ -14995,7 +14940,7 @@ begin
     OnColumnSelectionChanging(Self, Column, Allow)
 end;
 
-procedure TCustomEasyListview.DoColumnSetCaption(Column: TEasyColumn; const Caption: WideString);
+procedure TCustomEasyListview.DoColumnSetCaption(Column: TEasyColumn; const Caption: string);
 begin
   if Assigned(OnColumnSetCaption) then
     OnColumnSetCaption(Self, Column, Caption)
@@ -15181,7 +15126,7 @@ begin
     OnGroupFreeing(Self, Group)
 end;
 
-procedure TCustomEasyListview.DoGroupGetCaption(Group: TEasyGroup; var Caption: WideString);
+procedure TCustomEasyListview.DoGroupGetCaption(Group: TEasyGroup; var Caption: string);
 begin
   if Assigned(OnGroupGetCaption) then
    OnGroupGetCaption(Self, Group, Caption)
@@ -15267,7 +15212,7 @@ begin
     OnGroupSelectionChanging(Self, Group, Allow)
 end;
 
-procedure TCustomEasyListview.DoGroupSetCaption(Group: TEasyGroup; const Caption: WideString);
+procedure TCustomEasyListview.DoGroupSetCaption(Group: TEasyGroup; const Caption: string);
 begin
   if Assigned(OnGroupSetCaption) then
     OnGroupSetCaption(Self, Group, Caption)
@@ -15326,7 +15271,7 @@ begin
     OnHintCustomDraw(Self, TargetObj, Info);
 end;
 
-procedure TCustomEasyListview.DoHintPopup(TargetObj: TEasyCollectionItem; HintType: TEasyHintType; MousePos: TPoint; var AText: WideString; var HideTimeout, ReshowTimeout: Integer; var Allow: Boolean);
+procedure TCustomEasyListview.DoHintPopup(TargetObj: TEasyCollectionItem; HintType: TEasyHintType; MousePos: TPoint; var AText: string; var HideTimeout, ReshowTimeout: Integer; var Allow: Boolean);
 begin
   if Assigned(OnHintPopup) then
     OnHintPopup(Self, TargetObj, HintType, MousePos, AText, HideTimeout, ReshowTimeout, Allow)
@@ -15340,7 +15285,7 @@ begin
 end;
 
 procedure TCustomEasyListview.DoIncrementalSearch(Item: TEasyItem;
-  const SearchBuffer: WideString; var CompareResult: Integer);
+  const SearchBuffer: string; var CompareResult: Integer);
 var
   Handled: Boolean;
 begin
@@ -15480,13 +15425,13 @@ begin
     OnItemFreeing(Self, Item)
 end;
 
-procedure TCustomEasyListview.DoItemGetCaption(Item: TEasyItem; Column: Integer; var ACaption: WideString);
+procedure TCustomEasyListview.DoItemGetCaption(Item: TEasyItem; Column: Integer; var ACaption: string);
 begin
   if Assigned(OnItemGetCaption) then
     OnItemGetCaption(Self, Item, Column, ACaption)
 end;
 
-procedure TCustomEasyListview.DoItemGetEditCaption(Item: TEasyItem; Column: TEasyColumn; var Caption: WideString);
+procedure TCustomEasyListview.DoItemGetEditCaption(Item: TEasyItem; Column: TEasyColumn; var Caption: string);
 begin
   if Assigned(OnItemGetEditCaption) then
     OnItemGetEditCaption(Self, Item, Column, Caption)
@@ -15618,7 +15563,7 @@ begin
     OnItemSelectionsChanged(Self)
 end;
 
-procedure TCustomEasyListview.DoItemSetCaption(Item: TEasyItem; Column: Integer; const Caption: WideString);
+procedure TCustomEasyListview.DoItemSetCaption(Item: TEasyItem; Column: Integer; const Caption: string);
 begin
   if HandleAllocated then
     NotifyWinEvent(EVENT_OBJECT_NAMECHANGE, Handle, OBJID_CLIENT, CHILDID_SELF);
@@ -15696,7 +15641,7 @@ begin
   HotTrack.PendingObject[Point(0, 0)] := nil
 end;
 
-procedure TCustomEasyListview.DoMouseGesture(Gesture: WideString; Button: TCommonMouseButton; KeyState: TCommonKeyStates; var Handled: Boolean);
+procedure TCustomEasyListview.DoMouseGesture(Gesture: string; Button: TCommonMouseButton; KeyState: TCommonKeyStates; var Handled: Boolean);
 begin
   if Assigned(OnMouseGesture) then
     OnMouseGesture(Self, Button, KeyState, Gesture, Handled)
@@ -15890,7 +15835,7 @@ procedure TCustomEasyListview.DoPaintRect(ACanvas: TCanvas; ClipRect: TRect; Sel
           if DragManager.InsertMark.DropMarkerDir = dmdVert then
           begin
             RectDiv3 := RectWidth(InsertMarkR) div 3;
-            Start := InsertMarkR.Left + RectDiv3;   
+            Start := InsertMarkR.Left + RectDiv3;
             for i := Start to Start + RectDiv3 - 1 do
             begin
               ACanvas.MoveTo(i, InsertMarkR.Top);
@@ -15946,9 +15891,9 @@ begin
   GetWindowOrgEx(ACanvas.Handle, OrgPt);
   try
     SetRect(FocusRect, 0, 0, 0, 0);  // Initialize so not to get trailings
-    
+
     HeaderRect := Rect(0, 0, ClientWidth, Header.RuntimeHeight);
-    
+
     if ClipRectInViewPortCoords then
     begin
       ViewClipRect := ClipRect;
@@ -16860,11 +16805,11 @@ begin
           end
         end else
         begin
+          if (Button in Selection.MouseButton) then
+            Selection.ClearAll;
           Group := ClickTestGroup(Pt, KeyState, GroupHitInfo);
           if Assigned(Group) then
             DoGroupClick(Group, KeyState, GroupHitInfo);
-          if (Button in Selection.MouseButton) then
-            Selection.ClearAll
         end
       end
     end
@@ -16928,7 +16873,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TCustomEasyListview.LoadFromFile(FileName: WideString; Mode: Word);
+procedure TCustomEasyListview.LoadFromFile(FileName: string; Mode: Word);
 var
   F: TWideFileStream;
 begin
@@ -17019,7 +16964,7 @@ begin
   DoClipboardPaste(Handled)
 end;
 
-procedure TCustomEasyListview.SaveToFile(FileName: WideString; Mode: Word);
+procedure TCustomEasyListview.SaveToFile(FileName: string; Mode: Word);
 var
   F: TWideFileStream;
 begin
@@ -17028,7 +16973,7 @@ begin
     SaveToStream(F)
   finally
     F.Free
-  end  
+  end
 end;
 
 procedure TCustomEasyListview.SaveToStream(S: TStream);
@@ -17222,7 +17167,7 @@ end;
 
 procedure TCustomEasyListview.WMClose(var Msg: TWMClose);
 begin
-  EditManager.EndEdit; 
+  EditManager.EndEdit;
   inherited;
 end;
 
@@ -17356,7 +17301,7 @@ procedure TCustomEasyListview.WMGetObject(var Msg: TMessage);
 var
   i, j: Integer;
 begin
-  inherited;  
+  inherited;
   if not Assigned(Accessible) then
   begin
     if not (csDesigning in ComponentState) then
@@ -17589,8 +17534,7 @@ begin
   begin
     if not EditManager.Editing then
     begin
-      if IsWinNT4 then
-        CheckFocus;
+      CheckFocus;
       Msg.Result := MA_ACTIVATE;
     end else
       Msg.Result := MA_NOACTIVATE;
@@ -17879,7 +17823,7 @@ begin
 end;
 
 procedure TCustomEasyListview.WMSetCursor(var Msg: TWMSetCursor);
-begin       
+begin
   inherited;
 end;
 
@@ -17976,7 +17920,7 @@ begin
       ScrollBars.ReCalculateScrollbars(True, False);
     finally
       ResizeBackBits(Msg.WindowPos.cx, Msg.WindowPos.cy);
-    end;     
+    end;
   end
 end;
 
@@ -18046,9 +17990,7 @@ begin
   case ImageSize of
    eisSmall: Result := OwnerListview.ImagesSmall;
    eisLarge: Result := OwnerListview.ImagesLarge;
-   eisExtraLarge: Result := OwnerListview.ImagesExLarge;
-  else
-    Result := nil;
+   {eisExtraLarge:} else Result := OwnerListview.ImagesExLarge;
   end
 end;
 
@@ -18072,7 +18014,7 @@ begin
   Result := PaintInfo.BorderColor
 end;
 
-function TEasyCollectionItem.GetCaption: WideString;
+function TEasyCollectionItem.GetCaption: string;
 begin
   Result := GetCaptions(0)
 end;
@@ -18137,7 +18079,7 @@ begin
   Result := esosDestroying in State
 end;
 
-function TEasyCollectionItem.GetDisplayName: WideString;
+function TEasyCollectionItem.GetDisplayName: string;
 begin
   if Caption <> '' then
     Result := Caption
@@ -18380,7 +18322,7 @@ begin
   end
 end;
 
-procedure TEasyCollectionItem.SetCaption(Value: WideString);
+procedure TEasyCollectionItem.SetCaption(Value: string);
 begin
   Captions[0] := Value
 end;
@@ -18797,7 +18739,7 @@ constructor TEasyCollection.Create(AnOwner: TCustomEasyListview);
 begin
   inherited Create(AnOwner);
   FItemClass := TEasyCollectionItem;
-  FList := TList.Create;         
+  FList := TList.Create;
   VisibleList := TList.Create;
 end;
 
@@ -19033,7 +18975,7 @@ begin
     // object to make sure it creates the correct item type
     for i := 0 to ItemCount - 1 do
     begin
-      Cls := GetClass(string(StreamHelper.ReadString(Stream)));
+      Cls := GetClass(string(StreamHelper.ReadAnsiString(Stream)));
       Assert(Cls <> nil, 'If using custom item types for Item, Groups or Columns you must register them with the streaming system with RegisterClass(TMyEasyClassItemType)');
       if Assigned(Cls) then
       begin
@@ -19091,7 +19033,7 @@ begin
   StreamHelper.WriteInteger(Stream, FList.Count);
   for i := 0 to FList.Count - 1 do
   begin
-    StreamHelper.WriteString(Stream, AnsiString(TEasyCollectionItem( Items[i]).ClassName));
+    StreamHelper.WriteAnsiString(Stream, AnsiString(TEasyCollectionItem( Items[i]).ClassName));
     TEasyCollectionItem( Items[i]).SaveToStream(Stream); // Write custom data to the stream
   end
 end;
@@ -19528,7 +19470,7 @@ begin
   Exclude(FState, ehsLButtonDown);
   Exclude(FState, ehsRButtonDown);
   Exclude(FState, ehsMButtonDown);
-  ReleaseMouse;   
+  ReleaseMouse;
 end;
 
 procedure TEasyHeader.ClickColumn(Column: TEasyColumn);
@@ -19852,7 +19794,7 @@ begin
           if NewAccumulator >= 1 then
             FColumns[I].SetWidth(FColumns[I].FWidth + (Trunc(NewAccumulator) * Sign));
           FColumns[I].FSpringRest := Frac(NewAccumulator);
-          
+
           // Keep track of the size count.
           ChangeBy := ChangeBy - Difference;
           // Exit loop if resize count drops below freezing point.
@@ -20193,7 +20135,7 @@ begin
 
   if OwnerListview.PaintInfoColumn.HotTrack then
     HandleHotTrack(Msg, False);
-                                  
+
   if ehsResizing in State then
   begin
     Allow := True;
@@ -20276,7 +20218,7 @@ begin
   end else
   begin
     OwnerListview.Cursor := crDefault;
-    DoMouseMove(Msg, KeysToShiftState(Msg.Keys));  
+    DoMouseMove(Msg, KeysToShiftState(Msg.Keys));
   end;
 
   if (ehsCheckboxClickPending in State) then
@@ -20434,13 +20376,13 @@ begin
     Result := 0
 end;
 
-procedure TEasyViewItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect);
+procedure TEasyViewItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect);
 begin
 
 end;
 
 procedure TEasyViewItem.AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn;
-  const Caption: WideString; var LocalSelRect: TRect);
+  const Caption: string; var LocalSelRect: TRect);
 begin
 
 end;
@@ -20554,7 +20496,7 @@ begin
   Result := Item.StateImageList[Column.Index]
 end;
 
-procedure TEasyViewItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject);
+procedure TEasyViewItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 //
 // Grabs all the rectangles for the items within a cell in one call
 //
@@ -20618,7 +20560,7 @@ procedure TEasyViewItem.Paint(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCa
 // of the item can be use direct within the method
 var
   RectArray: TEasyRectArrayObject;
-  Caption: WideString;
+  Caption: string;
   Handled: Boolean;
 begin
   if Item.Visible then
@@ -20673,7 +20615,7 @@ begin
   end
 end;
 
-procedure TEasyViewItem.PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject);
+procedure TEasyViewItem.PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject);
 begin
 //
 //  Called after all other drawing is done
@@ -20720,7 +20662,7 @@ begin
       GlassBits.Free;
     end
     else
-              // AlphaBlend the memory bitmap
+    // AlphaBlend the memory bitmap
       AlphaBlend(0, Bits.Canvas.Handle, Rect(0, 0, Bits.Width, Bits.Height), Point(0, 0),
         cbmConstantAlphaAndColor, OwnerListview.Selection.BlendAlphaTextRect,
         ColorToRGB(AlphaColor));
@@ -20770,7 +20712,7 @@ begin
   Rectangle(ACanvas.Handle, LocalSelRect.Left, LocalSelRect.Top, LocalSelRect.Right, LocalSelRect.Bottom);
 end;
 
-procedure TEasyViewItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
+procedure TEasyViewItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 //
 //  Called before all other drawing is done
 //
@@ -20815,7 +20757,7 @@ begin
 
 end;
 
-procedure TEasyViewItem.PaintFocusRect(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
+procedure TEasyViewItem.PaintFocusRect(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
 var
   AbsIndex: Integer;
   LocalFocusRect: TRect;
@@ -20880,7 +20822,7 @@ begin
   end;
 end;
 
-procedure TEasyViewItem.PaintImage(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize; ACanvas: TCanvas);
+procedure TEasyViewItem.PaintImage(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize; ACanvas: TCanvas);
 var
   rgbBk, rgbFg: Longword;
   fStyle: Integer;
@@ -20946,7 +20888,7 @@ begin
 
               RectArray.StateRect.Left := RectArray.StateRect.Left + (RectWidth(RectArray.StateRect) - StateImages.Width) div 2;
               RectArray.StateRect.Top := RectArray.StateRect.Top + (RectHeight(RectArray.StateRect) - StateImages.Height) div 2;
-            
+
               ImageList_DrawEx(StateImages.Handle, StateImageIndex, ACanvas.Handle, RectArray.StateRect.Left, RectArray.StateRect.Top, 0, 0, rgbBk, rgbFg, fStyle);
             end
           end;
@@ -21021,7 +20963,7 @@ begin
             begin
             RectArray.IconRect.Left := RectArray.IconRect.Left + (RectWidth(RectArray.IconRect) - Images.Width) div 2;
             RectArray.IconRect.Top := RectArray.IconRect.Top + (RectHeight(RectArray.IconRect) - Images.Height) div 2;
-          
+
             ImageList_DrawEx(Images.Handle, ImageIndex, ACanvas.Handle, RectArray.IconRect.Left,
               RectArray.IconRect.Top, 0, 0, rgbBk, rgbFg, fStyle);
             end
@@ -21054,7 +20996,7 @@ begin
       LocalSelRect.Bottom);
 end;
 
-procedure TEasyViewItem.PaintSelectionRect(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean);
+procedure TEasyViewItem.PaintSelectionRect(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean);
 var
   Rgn: HRGN;
   AlphaColor,
@@ -21244,7 +21186,7 @@ begin
   end
 end;
 
-procedure TEasyViewItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
+procedure TEasyViewItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
 var
   DrawTextFlags: TCommonDrawTextWFlags;
   AbsIndex: Integer;
@@ -21582,26 +21524,26 @@ begin
     Result := 2
 end;
 
-procedure TEasyViewIconItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect);
+procedure TEasyViewIconItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalFocusRect, -2, -2)
 end;
 
 procedure TEasyViewIconItem.AfterSelRectCalc(Item: TEasyItem;
-  Column: TEasyColumn; const Caption: WideString; var LocalSelRect: TRect);
+  Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalSelRect, -2, -2)
 end;
 
-procedure TEasyViewIconItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject);
+procedure TEasyViewIconItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 var
   ImageW, ImageH, Left: Integer;
   DrawTextFlags: TCommonDrawTextWFlags;
   R: TRect;
   PositionIndex, AbsIndex: Integer;
-  ACaption: WideString;
+  ACaption: string;
 begin
   if Assigned(Item) then
   begin
@@ -21721,7 +21663,7 @@ begin
   end
 end;
 
-procedure TEasyViewIconItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
+procedure TEasyViewIconItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 begin
  // Skip inherited
 end;
@@ -21746,7 +21688,7 @@ begin
   Result.Bottom := RectArray.BoundsRect.Bottom;
 end;
 
-procedure TEasyViewSmallIconItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject);
+procedure TEasyViewSmallIconItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 var
   TextSize: TSize;
   SelectW, BoundsH, CheckH: Integer;
@@ -21754,7 +21696,7 @@ var
   R: TRect;
   CheckIndent, CaptionIndent, Checksize, ImageIndex, ImageIndent, PositionIndex, AbsIndex, StateImageIndex: Integer;
   ImageW, ImageH: Integer;
-  ACaption: WideString;
+  ACaption: string;
 begin
   if Assigned(Item) then
   begin
@@ -21783,7 +21725,7 @@ begin
         RectArray.BoundsRect := CalculateDisplayRect(Item, OwnerListview.Header.Positions[0])
       else
         RectArray.BoundsRect := CalculateDisplayRect(Item, Column);
-        
+
       CheckType := Item.CheckType;
       Checksize := Item.Checksize;
       ImageIndex := Item.ImageIndexes[AbsIndex];
@@ -21807,7 +21749,7 @@ begin
                                     RectArray.BoundsRect.Top,
                                     RectArray.BoundsRect.Left,
                                     RectArray.BoundsRect.Bottom); // Check Rect has a width of 0
-                                 
+
       // Set the rectangle of the Image if avaialable, note Bitmap is not supported
       if PaintStateImage and  ((StateImageIndex > -1) or (GetImageList(Column, Item, eikState) <> nil)) then
       begin
@@ -21822,7 +21764,7 @@ begin
                                 RectArray.CheckRect.Top,
                                 RectArray.CheckRect.Right,
                                 RectArray.CheckRect.Bottom);
-      
+
       // Set the rectangle of the Image if avaialable, note Bitmap is not supported
       if (ImageIndex > -1) then
       begin
@@ -21907,7 +21849,7 @@ begin
   end
 end;
 
-procedure TEasyViewSmallIconItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
+procedure TEasyViewSmallIconItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 begin
   // Don't do default
 end;
@@ -22154,22 +22096,22 @@ begin
   Result := taLeftJustify
 end;
 
-procedure TEasyViewTileItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect);
+procedure TEasyViewTileItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalFocusRect, -2, -2)
 end;
 
 procedure TEasyViewTileItem.AfterSelRectCalc(Item: TEasyItem;
-  Column: TEasyColumn; const Caption: WideString; var LocalSelRect: TRect);
+  Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalSelRect, -2, -2)
 end;
 
-procedure TEasyViewTileItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject);
+procedure TEasyViewTileItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 var
-  ACaption: WideString;
+  ACaption: string;
   PositionIndex, i, YOffset, ImageW, ImageH, DetailCount: Integer;
   DrawTextFlags: TCommonDrawTextWFlags;
   R: TRect;
@@ -22358,12 +22300,12 @@ begin
 end;
 
 
-procedure TEasyViewTileItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
+procedure TEasyViewTileItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 begin
 
 end;
 
-procedure TEasyViewTileItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
+procedure TEasyViewTileItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
 //
 //  Need to handle this paint directly
 //
@@ -22486,27 +22428,27 @@ begin
   end
 end;
 
-procedure TEasyViewThumbnailItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; var LocalFocusRect: TRect);
+procedure TEasyViewThumbnailItem.AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalFocusRect, -2, -2)
 end;
 
 procedure TEasyViewThumbnailItem.AfterSelRectCalc(Item: TEasyItem;
-  Column: TEasyColumn; const Caption: WideString; var LocalSelRect: TRect);
+  Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalSelRect, -2, -2)
 end;
 
-procedure TEasyViewThumbnailItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject);
+procedure TEasyViewThumbnailItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 var
   DrawTextFlags: TCommonDrawTextWFlags;
   Canvas: TControlCanvas;
   R: TRect;
   PositionIndex, AbsIndex: Integer;
   Metrics: TTextMetric;
-  ACaption: WideString;
+  ACaption: string;
 begin
   if Assigned(Item) then
   begin
@@ -22649,7 +22591,7 @@ begin
   Result := cvaCenter
 end;
 
-procedure TEasyViewThumbnailItem.PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject);
+procedure TEasyViewThumbnailItem.PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject);
 begin
   if OwnerListview.PaintInfoItem.ShowBorder then
   begin
@@ -22673,7 +22615,7 @@ begin
   end
 end;
 
-procedure TEasyViewThumbnailItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
+procedure TEasyViewThumbnailItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 begin
   // Skip inherited
 end;
@@ -22940,7 +22882,7 @@ begin
             RectArray.TextRect.Right := RectArray.TextRect.Right - Column.CaptionIndent;
             RectArray.TextRect.Left := RectArray.TextRect.Left + 4;
           end;
-      end;   
+      end;
 
       // Leave room for a small border between edge of the selection rect and text
       InflateRect(RectArray.TextRect, -2, -2);
@@ -23145,7 +23087,7 @@ begin
       StateID := HIS_HOT
     else
       StateID := HIS_NORMAL;
-    
+
     if ((HiWord(ComCtl32Version) = 6) and (LoWord(ComCtl32Version) >= 10 )) or
        ((HiWord(ComCtl32Version) > 6)) then
     begin
@@ -24364,7 +24306,7 @@ begin
   end;
 end;
 
-procedure TCustomEasyFooterMargin.SetCaption(Value: WideString);
+procedure TCustomEasyFooterMargin.SetCaption(Value: string);
 begin
   if FCaption <> Value then
   begin
@@ -25129,7 +25071,7 @@ begin
       taLeftJustify:   TextFlags := [dtLeft, dtCalcRect, dtCalcRectAdjR, dtWordBreak];
       taRightJustify:  TextFlags := [dtRight, dtCalcRect, dtCalcRectAdjR, dtWordBreak];
       taCenter:        TextFlags := [dtCenter, dtCalcRect, dtCalcRectAdjR, dtWordBreak];
-    end;   
+    end;
     DrawTextWEx(Canvas.Handle, HintInfo.HintStr, EasyHintInfo.FBounds, TextFlags, -1);
     Inc(EasyHintInfo.FBounds.Right, 6);
     Inc(EasyHintInfo.FBounds.Bottom, 2)
@@ -25261,7 +25203,7 @@ begin
     if DefaultAction then
     begin
       if Key > 0 then
-        Group.Caption := UpperCase( WideChar(Key))
+        Group.Caption := SysUtils.AnsiUpperCase(WideChar(Key))
     end;
 
     Group.Key := Key;
@@ -25276,7 +25218,7 @@ var
   Item: TEasyItem;
   i, j, ColumnIndex, Index: Integer;
   Key: Integer;
-  Caption: WideString;
+  Caption: string;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -25302,7 +25244,7 @@ begin
             if Length(Caption) = 0 then
               SortList[Index].Key := 0
             else
-              SortList[Index].Key := Ord(WideLowerCase(Caption)[1])
+              SortList[Index].Key := Ord(SysUtils.AnsiLowerCase(Caption)[1]);
           end else
             Item.GroupKey[ColumnIndex] := SortList[Index].Key;
         end;
@@ -25819,7 +25761,7 @@ begin
   FOldWndProc(Message)
 end;
 
-function TEasyBaseEditor.EditText(Item: TEasyItem; Column: TEasyColumn): WideString;
+function TEasyBaseEditor.EditText(Item: TEasyItem; Column: TEasyColumn): string;
 begin
   Result := '';
   Item.OwnerListview.DoItemGetEditCaption(Item, Column, Result);
@@ -25832,7 +25774,7 @@ begin
   end
 end;
 
-procedure TEasyBaseEditor.Finalize;     
+procedure TEasyBaseEditor.Finalize;
 begin
   EditColumn := nil;
   // Only unhook if it is our hook
@@ -25890,7 +25832,7 @@ end;
 
 procedure TEasyBaseEditor.Show;
 begin
-  Editor.Visible := True;   
+  Editor.Visible := True;
 end;
 
 { TEasySelectionGroupList }
@@ -26009,7 +25951,7 @@ begin
     Result := nil
 end;
 
-function TEasyItemInterfaced.GetCaptions(Column: Integer): Widestring;
+function TEasyItemInterfaced.GetCaptions(Column: Integer): string;
 var
   CaptionInf: IEasyCaptions;
 begin
@@ -26131,7 +26073,7 @@ begin
     ImageInf.CustomDrawn(Column, IsCustom)
 end;
 
-procedure TEasyItemInterfaced.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyItemInterfaced.SetCaptions(Column: Integer; Value: string);
 var
   CaptionInf: IEasyCaptionsEditable;
 begin
@@ -26404,7 +26346,7 @@ begin
       FreeAndNil(FView);
   end;
   if not Assigned(FView) then
-    FView := ViewClass.Create(OwnerGroup);  
+    FView := ViewClass.Create(OwnerGroup);
   Result := FView
 end;
 
@@ -26421,7 +26363,7 @@ function TEasyItem.HitTestAt(ViewportPoint: TPoint; var HitInfo: TEasyItemHitTes
 var
   RectArray: TEasyRectArrayObject;
   R: TRect;
-begin       
+begin
   HitInfo := [];
   ItemRectArray(OwnerListview.Header.FirstColumn, OwnerListview.ScratchCanvas, RectArray);
   R := RectArray.IconRect;
@@ -26772,7 +26714,7 @@ begin
 end;
 
 { TEasyItemVirtual}
-function TEasyItemVirtual.GetCaptions(Column: Integer): Widestring;
+function TEasyItemVirtual.GetCaptions(Column: Integer): string;
 begin
   Result := '';
   OwnerListview.DoItemGetCaption(Self, Column, Result)
@@ -26846,7 +26788,7 @@ begin
   OwnerListview.DoItemImageGetSize(Self, Column, ImageW, ImageH)
 end;
 
-procedure TEasyItemVirtual.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyItemVirtual.SetCaptions(Column: Integer; Value: string);
 begin
   OwnerListview.DoItemSetCaption(Self, Column, Value);
   Invalidate(False)
@@ -26908,7 +26850,7 @@ begin
   FreeAndNil(FDataHelper);
 end;
 
-function TEasyItemStored.GetCaptions(Column: Integer): Widestring;
+function TEasyItemStored.GetCaptions(Column: Integer): string;
 begin
   Result := '';
   if Assigned(DataHelper) then
@@ -27008,7 +26950,7 @@ begin
   // end
 end;
 
-procedure TEasyItemStored.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyItemStored.SetCaptions(Column: Integer; Value: string);
 begin
   if Assigned(DataHelper) then
   begin
@@ -27072,7 +27014,7 @@ end;
 
 { TEasyDynamicDataHelper}
 
-function TEasyDynamicDataHelper.GetCaptions(Index: Integer): Widestring;
+function TEasyDynamicDataHelper.GetCaptions(Index: Integer): string;
 begin
   if Index < Length(CaptionArray) then
     Result := CaptionArray[Index]
@@ -27131,7 +27073,7 @@ begin
     S.ReadBuffer(AnArray[i], SizeOf(Integer))
 end;
 
-procedure TEasyDynamicDataHelper.LoadWideStrArrayFromStream(S: TStream; var AnArray: TCommonWideStringDynArray);
+procedure TEasyDynamicDataHelper.LoadWideStrArrayFromStream(S: TStream; var AnArray: TCommonStringDynArray);
 var
   Len, Count, i: Integer;
 begin
@@ -27156,7 +27098,7 @@ begin
     S.WriteBuffer(AnArray[i], SizeOf(Integer))
 end;
 
-procedure TEasyDynamicDataHelper.SaveWideStrArrayToStream(S: TStream; var AnArray: TCommonWideStringDynArray);
+procedure TEasyDynamicDataHelper.SaveStrArrayToStream(S: TStream; var AnArray: TCommonStringDynArray);
 var
   Len, i, Count: Integer;
 begin
@@ -27172,13 +27114,13 @@ end;
 
 procedure TEasyDynamicDataHelper.SaveToStream(S: TStream; Version: Integer);
 begin
-  SaveWideStrArrayToStream(S, FCaptionArray);
+  SaveStrArrayToStream(S, FCaptionArray);
   SaveIntArrayToStream(S, FDetailArray);
   SaveIntArrayToStream(S, FImageIndexArray);
   SaveIntArrayToStream(S, FOverlayIndexArray);
 end;
 
-procedure TEasyDynamicDataHelper.SetCaptions(Index: Integer; Value: Widestring);
+procedure TEasyDynamicDataHelper.SetCaptions(Index: Integer; Value: string);
 var
   OldLen, i: Integer;
 begin
@@ -27248,7 +27190,7 @@ begin
   FreeAndNil(FDataHelper);
 end;
 
-function TEasyBaseGroupStored.GetCaptions(Line: Integer): Widestring;
+function TEasyBaseGroupStored.GetCaptions(Line: Integer): string;
 begin
   Result := DataHelper.Captions[Line]
 end;
@@ -27319,7 +27261,7 @@ begin
   // end
 end;
 
-procedure TEasyBaseGroupStored.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyBaseGroupStored.SetCaptions(Column: Integer; Value: string);
 begin
   DataHelper.Captions[Column] := Value;
   Invalidate(False)
@@ -27355,7 +27297,7 @@ begin
 end;
 
 { TEasyGroupVirtual}
-function TEasyGroupVirtual.GetCaptions(Line: Integer): Widestring;
+function TEasyGroupVirtual.GetCaptions(Line: Integer): string;
 begin
   Result := '';
   OwnerListview.DoGroupGetCaption(Self, Result)
@@ -27409,7 +27351,7 @@ begin
   OwnerListview.DoGroupImageDrawIsCustom(Self, IsCustom)
 end;
 
-procedure TEasyGroupVirtual.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyGroupVirtual.SetCaptions(Column: Integer; Value: string);
 begin
   OwnerListview.DoGroupSetCaption(Self, Value);
   Invalidate(False)
@@ -27446,7 +27388,7 @@ begin
 end;
 
 { TEasyGroupInterfaced}
-function TEasyGroupInterfaced.GetCaptions(Line: Integer): Widestring;
+function TEasyGroupInterfaced.GetCaptions(Line: Integer): string;
 var
   CaptionInf: IEasyCaptions;
 begin
@@ -27532,7 +27474,7 @@ begin
     ImageInf.CustomDrawn(Column, IsCustom)
 end;
 
-procedure TEasyGroupInterfaced.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyGroupInterfaced.SetCaptions(Column: Integer; Value: string);
 var
   CaptionInf: IEasyCaptionsEditable;
 begin
@@ -27613,7 +27555,7 @@ begin
   FreeAndNil(FDataHelper);
 end;
 
-function TEasyColumnStored.GetCaptions(Line: Integer): Widestring;
+function TEasyColumnStored.GetCaptions(Line: Integer): string;
 begin
   Result := DataHelper.Captions[Line]
 end;
@@ -27684,7 +27626,7 @@ begin
   // end
 end;
 
-procedure TEasyColumnStored.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyColumnStored.SetCaptions(Column: Integer; Value: string);
 begin
   DataHelper.Captions[Column] := Value;
   Invalidate(False)
@@ -27719,7 +27661,7 @@ begin
   // not implemented
 end;
 
-function TEasyColumnInterfaced.GetCaptions(Line: Integer): Widestring;
+function TEasyColumnInterfaced.GetCaptions(Line: Integer): string;
 var
   CaptionInf: IEasyCaptions;
 begin
@@ -27805,7 +27747,7 @@ begin
     ImageInf.CustomDrawn(Column, IsCustom)
 end;
 
-procedure TEasyColumnInterfaced.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyColumnInterfaced.SetCaptions(Column: Integer; Value: string);
 var
   CaptionInf: IEasyCaptionsEditable;
 begin
@@ -27870,7 +27812,7 @@ begin
 end;
 
 { TEasyColumnVirtual}
-function TEasyColumnVirtual.GetCaptions(Line: Integer): Widestring;
+function TEasyColumnVirtual.GetCaptions(Line: Integer): string;
 begin
   Result := '';
   OwnerListview.DoColumnGetCaption(Self, Line, Result)
@@ -27925,7 +27867,7 @@ begin
   OwnerListview.DoColumnImageDrawIsCustom(Self, IsCustom)
 end;
 
-procedure TEasyColumnVirtual.SetCaptions(Column: Integer; Value: Widestring);
+procedure TEasyColumnVirtual.SetCaptions(Column: Integer; Value: string);
 begin
   OwnerListview.DoColumnSetCaption(Self, Value);
   Invalidate(False)
@@ -28162,7 +28104,7 @@ begin
         dwEffect := 0;
         AllowDrag := False;
         if Self is TEasyOLEDragManager then
-          OwnerListview.DoOLEGetDataObject(DataObjectInf);  
+          OwnerListview.DoOLEGetDataObject(DataObjectInf);
         if not Assigned(DataObjectInf) then
         begin
           DataObject := TEasyDataObjectManager.Create;
@@ -28233,14 +28175,14 @@ begin
     Exclude(TargetColumn.FState, esosDropTarget);
     TargetColumn.Invalidate(True);
   end;
-  TargetColumn := nil; 
+  TargetColumn := nil;
 end;
 
 procedure TEasyHeaderDragManager.DoDragEnter(const DataObject: IDataObject; Canvas: TCanvas; WindowPoint: TPoint; KeyState: TCommonKeyStates; var Effects: TCommonDropEffect);
 var
   Medium: TStgMedium;
   DataPtr: PHeaderClipData;
-begin        
+begin
   AllowDrop := False;
   Effects := cdeNone;
   if Succeeded(DataObject.GetData(HeaderClipFormat, Medium)) then
@@ -28545,6 +28487,7 @@ end;
 destructor TEasyIncrementalSearchManager.Destroy;
 begin
   EndTimer;
+  TimerStub := nil;
   inherited
 end;
 
@@ -28575,7 +28518,6 @@ begin
     begin
       hTimer := 0;
       Exclude(FState, eissTimerRunning);
-      TimerStub := nil;
     end else
       Exception.Create('Can not Destroy Incremental Search Timer');
   end
@@ -28650,7 +28592,7 @@ procedure TEasyIncrementalSearchManager.HandleWMChar(var Msg: TWMChar);
         end
       end
     end;
-    
+
     if CompareResult <> 0 then
       SearchItem := nil
   end;
@@ -28922,7 +28864,8 @@ procedure TEasyIncrementalSearchManager.StartTimer;
 begin
   if Enabled and not(eissTimerRunning in State) then
   begin
-    TimerStub := TCallbackStub.Create(Self, @TEasyIncrementalSearchManager.TimerProc, 4);
+    if not Assigned(TimerStub) then
+      TimerStub := TCallbackStub.Create(Self, @TEasyIncrementalSearchManager.TimerProc, 4);
     hTimer := SetTimer(0, 0, ResetTime, TimerStub.StubPointer);
     Include(FState, eissTimerRunning);
   end
@@ -29893,7 +29836,7 @@ begin
   Font.Assign(Canvas.Font)
 end;
 
-procedure TEasyMemoEditor.CalculateEditorRect(NewText: WideString; var NewRect: TRect);
+procedure TEasyMemoEditor.CalculateEditorRect(NewText: string; var NewRect: TRect);
 var
   DrawFlags: TCommonDrawTextWFlags;
   DC: HDC;
@@ -30016,7 +29959,7 @@ begin
 end;
 
 { TEasyStringEditor}
-procedure TEasyStringEditor.CalculateEditorRect(NewText: WideString; var NewRect: TRect);
+procedure TEasyStringEditor.CalculateEditorRect(NewText: string; var NewRect: TRect);
 var
   DrawFlags: TCommonDrawTextWFlags;
   DC: HDC;
@@ -30502,7 +30445,7 @@ end;
 constructor TEasyInsertMark.Create;
 begin
   inherited Create;
-  FColor := clBlack;
+  FColor := clGrayText;
   FWidth := 2;
   FAutoMove := True;
   FReSelectAfterMove := True;
@@ -30572,7 +30515,7 @@ begin
   end
 end;
 
-procedure TEasyViewReportThumbItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject);
+procedure TEasyViewReportThumbItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 begin
   inherited ItemRectArray(Item, Column, ACanvas, Caption, RectArray);
 end;
@@ -30606,7 +30549,7 @@ initialization
   RegisterClass(TEasyColumn);
   RegisterClass(TEasyColumnVirtual);
   RegisterClass(TEasyColumnInterfaced);
-  RegisterClass(TEasyColumnStored);   
+  RegisterClass(TEasyColumnStored);
 
 finalization
   FreeAndNil(AlphaBlender);

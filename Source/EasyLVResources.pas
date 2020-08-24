@@ -23,8 +23,6 @@ unit EasyLVResources;
 
 interface
 
-{$I ..\Include\Debug.inc}
-
 {$B-}
 
 const
