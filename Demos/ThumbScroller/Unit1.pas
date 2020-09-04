@@ -48,7 +48,7 @@ function IsImageFile(Filename: string): Boolean;
 var
   Ext: string;
 begin
-  Ext := LowerCase(ExtractFileExt(Filename));
+  Ext := SysUtils.AnsiLowerCase(ExtractFileExt(Filename));
   Result := (Ext = '.jpg') or (Ext = '.jpeg') or (Ext = '.jif') or
     (Ext = '.bmp') or (Ext = '.wmf') or (Ext = '.emf') or (Ext = '.ico');
 end;

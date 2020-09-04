@@ -14,7 +14,7 @@ type
   // a lot more abstract methods.
   TMyEasyItem = class(TEasyItemVirtual)
   protected
-    function GetCaptions(Column: Integer): WideString; override;
+    function GetCaptions(Column: Integer): string; override;
     function GetDetailCount: Integer; override;
     function GetDetails(Line: Integer): Integer; override;
     function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
@@ -24,7 +24,7 @@ implementation
 
 { TMyEasyItem }
 
-function TMyEasyItem.GetCaptions(Column: Integer): WideString;
+function TMyEasyItem.GetCaptions(Column: Integer): string;
 begin
   if Column = 0 then
     Result := 'Item ' + IntToStr(Index)

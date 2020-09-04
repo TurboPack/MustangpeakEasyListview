@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 204
   Top = 221
-  Width = 595
-  Height = 469
   Caption = 'Form1'
+  ClientHeight = 430
+  ClientWidth = 579
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,9 +17,14 @@ object Form1: TForm1
   object LV: TEasyListview
     Left = 0
     Top = 33
-    Width = 587
-    Height = 402
+    Width = 579
+    Height = 397
     Align = alClient
+    EditManager.Font.Charset = DEFAULT_CHARSET
+    EditManager.Font.Color = clWindowText
+    EditManager.Font.Height = -11
+    EditManager.Font.Name = 'MS Shell Dlg 2'
+    EditManager.Font.Style = []
     UseDockManager = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -31,6 +36,10 @@ object Form1: TForm1
     GroupFont.Height = -11
     GroupFont.Name = 'MS Shell Dlg 2'
     GroupFont.Style = []
+    Header.Columns.Items = {
+      0600000001000000110000005445617379436F6C756D6E53746F726564FFFECE
+      0006000000800800010100010000000000000140020000FFFFFF1F0001000000
+      00000000000000000000000000000000}
     Header.Font.Charset = DEFAULT_CHARSET
     Header.Font.Color = clWindowText
     Header.Font.Height = -11
@@ -38,9 +47,7 @@ object Form1: TForm1
     Header.Font.Style = []
     PaintInfoGroup.MarginBottom.CaptionIndent = 4
     ParentFont = False
-    Selection.MouseButtonSelRect = [cmbLeft, cmbRight]
     TabOrder = 0
-    View = elsIcon
     OnItemGetCaption = LVItemGetCaption
     OnItemGetImageIndex = LVItemGetImageIndex
     OnItemGetTileDetail = LVItemGetTileDetail
@@ -49,7 +56,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 587
+    Width = 579
     Height = 33
     Align = alTop
     BevelOuter = bvNone
@@ -67,7 +74,6 @@ object Form1: TForm1
       Width = 165
       Height = 21
       Style = csDropDownList
-      ItemHeight = 13
       TabOrder = 0
       OnChange = cbViewsChange
     end

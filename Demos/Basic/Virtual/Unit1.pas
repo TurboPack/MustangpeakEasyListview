@@ -20,15 +20,11 @@ unit Unit1;
 
 interface
 
-{$I ..\..\..\Source\Compilers.inc}
-
 uses
   Windows,
   Messages,
   SysUtils,
-  {$IFDEF COMPILER_6_UP}
   Variants,
-  {$ENDIF COMPILER_6_UP}
   Classes,
   Graphics,
   Controls,
@@ -48,7 +44,7 @@ type
       const Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind;
       var ImageIndex: TCommonImageIndexInteger);
     procedure LVItemGetCaption(Sender: TCustomEasyListview;
-      const Item: TEasyItem; Column: Integer; var Caption: WideString);
+      const Item: TEasyItem; Column: Integer; var Caption: string);
     procedure cbViewsChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure LVItemGetTileDetailCount(Sender: TCustomEasyListview;
@@ -123,7 +119,7 @@ begin
 end;
 
 procedure TForm1.LVItemGetCaption(Sender: TCustomEasyListview;
-  const Item: TEasyItem; Column: Integer; var Caption: WideString);
+  const Item: TEasyItem; Column: Integer; var Caption: string);
 begin
   case Column of
     0: Caption := 'Item ' + IntToStr(Item.Index);

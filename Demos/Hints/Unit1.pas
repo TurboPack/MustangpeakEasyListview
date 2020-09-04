@@ -38,7 +38,7 @@ type
       const TargetObj: TEasyCollectionItem; Info: TEasyHintInfo);
     procedure VCLvHintPopup(Sender: TCustomEasyListview;
       TargetObj: TEasyCollectionItem; HintType: TEasyHintType;
-      MousePos: TPoint; var Text: WideString; var HideTimeout,
+      MousePos: TPoint; var Text: string; var HideTimeout,
       ReShowTimeout: Integer; var Allow: Boolean);
   private
     { Private declarations }
@@ -182,7 +182,7 @@ end;
 
 procedure TForm1.VCLvHintPopup(Sender: TCustomEasyListview;
   TargetObj: TEasyCollectionItem; HintType: TEasyHintType;
-  MousePos: TPoint; var Text: WideString; var HideTimeout,
+  MousePos: TPoint; var Text: string; var HideTimeout,
   ReShowTimeout: Integer; var Allow: Boolean);
 var
   ItemInfo: TEasyItemHitTestInfoSet;

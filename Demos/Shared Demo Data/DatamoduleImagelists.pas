@@ -2,16 +2,11 @@ unit DatamoduleImagelists;
 
 interface
 
-{$I ..\..\Source\Compilers.inc}
-
 uses
   SysUtils,
   Classes,
   ImgList,
   Controls,
-  {$IFNDEF COMPILER_6_UP}
-  Forms,
-  {$ENDIF}
   EasyListview;
 
 type

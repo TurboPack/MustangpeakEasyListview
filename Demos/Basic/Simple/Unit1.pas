@@ -4,15 +4,11 @@ unit Unit1;
 
 interface
 
-{$I ..\..\..\Source\Compilers.inc}
-
 uses
   Windows,
   Messages,
   SysUtils,
-  {$IFDEF COMPILER_6_UP}
   Variants,
-  {$ENDIF COMPILER_6_UP}
   Classes,
   Graphics,
   Controls,

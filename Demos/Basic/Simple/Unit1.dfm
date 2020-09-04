@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 135
   Top = 189
-  Width = 593
-  Height = 467
   Caption = 'Form1'
+  ClientHeight = 428
+  ClientWidth = 577
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,9 +17,14 @@ object Form1: TForm1
   object LV: TEasyListview
     Left = 0
     Top = 33
-    Width = 585
-    Height = 400
+    Width = 577
+    Height = 395
     Align = alClient
+    EditManager.Font.Charset = DEFAULT_CHARSET
+    EditManager.Font.Color = clWindowText
+    EditManager.Font.Height = -11
+    EditManager.Font.Name = 'MS Shell Dlg 2'
+    EditManager.Font.Style = []
     UseDockManager = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -31,6 +36,10 @@ object Form1: TForm1
     GroupFont.Height = -11
     GroupFont.Name = 'MS Shell Dlg 2'
     GroupFont.Style = []
+    Header.Columns.Items = {
+      0600000001000000110000005445617379436F6C756D6E53746F726564FFFECE
+      000600000080080001010001000000000000013E020000FFFFFF1F0001000000
+      00000000000000000000000000000000}
     Header.Font.Charset = DEFAULT_CHARSET
     Header.Font.Color = clWindowText
     Header.Font.Height = -11
@@ -39,14 +48,12 @@ object Form1: TForm1
     PaintInfoGroup.MarginBottom.CaptionIndent = 4
     PaintInfoItem.TileDetailCount = 2
     ParentFont = False
-    Selection.MouseButtonSelRect = [cmbLeft, cmbRight]
     TabOrder = 0
-    View = elsIcon
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 585
+    Width = 577
     Height = 33
     Align = alTop
     BevelOuter = bvNone
@@ -64,7 +71,6 @@ object Form1: TForm1
       Width = 165
       Height = 21
       Style = csDropDownList
-      ItemHeight = 13
       TabOrder = 0
       OnChange = cbViewsChange
     end

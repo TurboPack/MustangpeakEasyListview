@@ -26,7 +26,7 @@ type
 
   TCustomViewReportItem = class(TEasyViewReportItem)
   public
-    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
   end;
 
 var
@@ -37,7 +37,7 @@ implementation
 {$R *.dfm}
 
 { TCustomViewReportItem }
-procedure TCustomViewReportItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
+procedure TCustomViewReportItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 var
   R: TRect;
 begin

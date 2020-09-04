@@ -2,15 +2,11 @@ unit Unit2;
 
 interface
 
-{$I ..\..\..\Source\Compilers.inc}
-
 uses
   SysUtils,
   Classes,
   Contnrs,
-  {$IFDEF COMPILER_6_UP}
   Variants,
-  {$ENDIF COMPILER_6_UP}
   StrUtils,
   EasyListview;
 
@@ -24,9 +20,9 @@ type
                     IEasyCaptionsEditable,
                     IEasyCompare)
   private
-    FFirstname: WideString;
+    FFirstname: string;
     FImageIndex: Integer;
-    FLastname: WideString;
+    FLastname: string;
     FNotifier: IEasyNotificationSink;
   protected
     // IUnknown: in this case we don't use reference counting (although we could)
@@ -48,11 +44,11 @@ type
     // IEasyCompareData: compare data to allow listitem sorting
     function Compare(const Data: IUnknown; Column: TEasyColumn): Integer;
   public
-    constructor Create(Lastname, Firstname: WideString; ImageIndex: Integer);
+    constructor Create(Lastname, Firstname: string; ImageIndex: Integer);
     destructor Destroy; override;
     procedure ToggleFunnyName;
-    property Firstname: WideString read FFirstname;
-    property Lastname: WideString read FLastname;
+    property Firstname: string read FFirstname;
+    property Lastname: string read FLastname;
   end;
 
   TEmployees = class
@@ -78,7 +74,7 @@ begin
   Result := 0; // TODO
 end;
 
-constructor TEmployee.Create(Lastname, Firstname: WideString;
+constructor TEmployee.Create(Lastname, Firstname: string;
   ImageIndex: Integer);
 begin
   inherited Create;
@@ -145,7 +141,7 @@ end;
 
 function TEmployee.SetCaption(Column: Integer; const Value: Variant): Boolean;
 var
-  NewName: WideString;
+  NewName: string;
 begin
   // The caption of the given column has been edited. For this demo we
   // allow editing column 0 only.

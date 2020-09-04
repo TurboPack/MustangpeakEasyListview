@@ -14,11 +14,11 @@ type
     Email,
     Street,
     City,
-    Country: WideString;
+    Country: string;
   end;
 
 const
-  COLUMNNAMES: array[0..4] of WideString = (
+  COLUMNNAMES: array[0..4] of string = (
     'First Name',
     'Last Name',
     'Email',
@@ -51,24 +51,24 @@ type
   TTestData = class
   private
     FAvatar: TBitmap;
-    FCity: WideString;
-    FCountry: WideString;
-    FEMail: WideString;
-    FFirstName: WideString;
-    FLastName: WideString;
+    FCity: string;
+    FCountry: string;
+    FEMail: string;
+    FFirstName: string;
+    FLastName: string;
     FMailBoxSize: Integer;
-    FStreet: WideString;
+    FStreet: string;
   public
     constructor Create;
     destructor Destroy; override;
     property Avatar: TBitmap read FAvatar write FAvatar;
-    property City: WideString read FCity write FCity;
-    property Country: WideString read FCountry write FCountry;
-    property EMail: WideString read FEMail write FEMail;
-    property FirstName: WideString read FFirstName write FFirstName;
-    property LastName: WideString read FLastName write FLastName;
+    property City: string read FCity write FCity;
+    property Country: string read FCountry write FCountry;
+    property EMail: string read FEMail write FEMail;
+    property FirstName: string read FFirstName write FFirstName;
+    property LastName: string read FLastName write FLastName;
     property MailBoxSize: Integer read FMailBoxSize write FMailBoxSize;
-    property Street: WideString read FStreet write FStreet;
+    property Street: string read FStreet write FStreet;
   end;
 
 type
@@ -96,9 +96,9 @@ type
     function ExpandTextR(Item: TEasyItem; RectArray: TEasyRectArrayObject; SelectType: TEasySelectHitType): TRect; override;
     function SelectionHit(Item: TEasyItem; SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; override;
     function SelectionHitPt(Item: TEasyItem; ViewportPoint: TPoint; SelectType: TEasySelectHitType): Boolean; override;
-    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject); override;
-    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
-    procedure PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer); override;
+    procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); override;
+    procedure PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean); override;
+    procedure PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer); override;
   end;
 
   TCustomViewColumn = class(TEasyViewColumn)
@@ -223,7 +223,7 @@ begin
   Result:= True;
 end;
 
-procedure TCustomViewReportItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: WideString; var RectArray: TEasyRectArrayObject);
+procedure TCustomViewReportItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 begin
   inherited ItemRectArray(Item, Column, ACanvas, Caption, RectArray);
   // The Text is the same as the Label
@@ -238,7 +238,7 @@ begin
 end;
 
 
-procedure TCustomViewReportItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
+procedure TCustomViewReportItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 var
   R: TRect;
 begin
@@ -255,7 +255,7 @@ begin
   end
 end;
 
-procedure TCustomViewReportItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: WideString; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
+procedure TCustomViewReportItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
 var
   R: TRect;
   DrawTextFlags: TCommonDrawTextWFlags;
