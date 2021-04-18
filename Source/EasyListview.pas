@@ -6203,13 +6203,13 @@ begin
     Strings.Add(EASYSORTALGORITHMS[ListStyle]);
 end;
 
-function WideFileCreate(const FileName: string): Integer;
+function WideFileCreate(const FileName: string): THandle;
 begin
-  Result := Integer(CreateFileW(PWideChar(FileName), GENERIC_READ or GENERIC_WRITE, 0,
-    nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0));
+  Result := CreateFileW(PWideChar(FileName), GENERIC_READ or GENERIC_WRITE, 0,
+    nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 end;
 
-function WideFileOpen(const FileName: string; Mode: LongWord): Integer;
+function WideFileOpen(const FileName: string; Mode: LongWord): THandle;
 const
   AccessMode: array[0..2] of LongWord = (
     GENERIC_READ,
@@ -6222,15 +6222,15 @@ const
     FILE_SHARE_WRITE,
     FILE_SHARE_READ or FILE_SHARE_WRITE);
 begin
-  Result := Integer(CreateFileW(PWideChar(FileName), AccessMode[Mode and 3], ShareMode[(Mode and $F0) shr 4],
-    nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0));
+  Result := CreateFileW(PWideChar(FileName), AccessMode[Mode and 3], ShareMode[(Mode and $F0) shr 4],
+    nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 end;
 
 { TWideFileStream }
 
 constructor TWideFileStream.Create(const FileName: string; Mode: Word);
 var
-  CreateHandle: Integer;
+  CreateHandle: THandle;
 begin
   if Mode = fmCreate then
   begin
@@ -25752,7 +25752,7 @@ begin
         Menu := nil;
         Listview.DoItemGetEditMenu(Self, Menu);
         if Assigned(Menu) then
-          Menu.Popup(LOWORD(Message.LParam), HIWORD(Message.LParam))
+          Menu.Popup(Message.LParamLo, Message.LParamHi)
         else
           // Don't let the VCL hook the parent window background menu to the editor
           CallWindowProc(TWinControlHack(Editor).DefWndProc, Editor.Handle, Message.Msg, Message.wParam, Message.lParam);
