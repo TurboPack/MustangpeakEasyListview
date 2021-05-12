@@ -20934,7 +20934,10 @@ begin
             end;
 
             if OverlayIndex > -1 then
-              fStyle := FStyle or IndexToOverLayMask(OverlayIndex);
+            begin
+              ImageList_SetOverlayImage(Images.Handle, OverlayIndex, 1);
+              fStyle := FStyle or IndexToOverLayMask(1);
+            end;
 
             if (RectWidth(RectArray.IconRect) < Images.Width) or (RectHeight(RectArray.IconRect) < Images.Height) then
             begin
