@@ -4871,6 +4871,7 @@ type
     function GetPaintInfoItem: TEasyPaintInfoBaseItem; virtual;
     function GetScratchCanvas: TControlCanvas;
     function GetTopItem: TEasyItem;
+    procedure InternalKeyDown(var AMsg: TWMKey);
     procedure SetBackGround(const Value: TEasyBackgroundManager);
     procedure SetGroupCollapseImage(Value: TBitmap);
     procedure SetGroupExpandImage(Value: TBitmap);
@@ -5118,7 +5119,8 @@ type
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     {$ifndef DISABLE_ACCESSIBILITY}procedure WMGetObject(var Msg: TMessage); message WM_GETOBJECT;{$endif}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
-    procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
+    procedure WMKeyDown(var AMsg: TWMKeyDown); message WM_KEYDOWN;
+    procedure WMSysKeyDown(var AMsg: TWMSysKeyDown); message WM_SYSKEYDOWN;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
@@ -6235,12 +6237,12 @@ begin
   if Mode = fmCreate then
   begin
     CreateHandle := WideFileCreate(FileName);
-    if CreateHandle < 0 then
+    if CreateHandle = 0 then
      raise EFCreateError.CreateResFmt(PResStringRec(@SFCreateError), [FileName]);
   end else
   begin
     CreateHandle := WideFileOpen(FileName, Mode);
-    if CreateHandle < 0 then
+    if CreateHandle = 0 then
      raise EFCreateError.CreateResFmt(PResStringRec(@SFCreateError), [FileName]);
   end;
   inherited Create(CreateHandle);
@@ -16858,6 +16860,27 @@ begin
   end;
 end;
 
+procedure TCustomEasyListview.InternalKeyDown(var AMsg: TWMKey);
+// Called when the user pressed a key on the keyboard.  The Scrollbars need to
+// know in case the user is scrolling using the keys.
+var
+  lDoDefault: Boolean;
+  lShift: TShiftState;
+begin
+  if ebcsDragSelecting in States then
+    DragRect.WMKeyDown(AMsg)
+  else
+  begin
+    IncrementalSearch.HandleWMKeyDown(AMsg);
+
+    lShift := KeyDataToShiftState(AMsg.KeyData);
+    lDoDefault := True;
+    DoKeyAction(AMsg.CharCode, lShift, lDoDefault);
+    if lDoDefault then
+      HandleKeyDown(AMsg);
+  end;
+end;
+
 function TCustomEasyListview.IsGrouped: Boolean;
 begin
   // Default definition that the control is in grouped mode is if the Top Margin is enabled
@@ -17341,27 +17364,16 @@ begin
   SafeInvalidateRect(nil, False);
 end;
 
-procedure TCustomEasyListview.WMKeyDown(var Msg: TWMKeyDown);
-// Called when the user pressed a key on the keyboard.  The Scrollbars need to
-// know in case the user is scrolling using the keys.
-var
-  Shift: TShiftState;
-  DoDefault: Boolean;
+procedure TCustomEasyListview.WMKeyDown(var AMsg: TWMKeyDown);
 begin
   inherited;
-  if (ebcsDragSelecting in States) then
-  begin
-    DragRect.WMKeyDown(Msg);
-  end else
-  begin
-    IncrementalSearch.HandleWMKeyDown(Msg);
+  InternalKeyDown(AMsg);
+end;
 
-    Shift := KeyDataToShiftState(Msg.KeyData);
-    DoDefault := True;
-    DoKeyAction(Msg.CharCode, Shift, DoDefault);
-    if DoDefault then
-      HandleKeyDown(Msg);
-  end;
+procedure TCustomEasyListview.WMSysKeyDown(var AMsg: TWMSysKeyDown);
+begin
+  inherited;
+  InternalKeyDown(AMsg);
 end;
 
 procedure TCustomEasyListview.WMKillFocus(var Msg: TWMKillFocus);
