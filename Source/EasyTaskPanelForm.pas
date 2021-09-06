@@ -82,7 +82,7 @@ type
     property Height stored True;
     property HorzScrollBar;
     property KeyPreview;
-    property OldCreateOrder;
+{$IF COMPILERVERSION <= 34}property OldCreateOrder;{$IFEND}
     property PixelsPerInch;
     property PopupMenu;
     property PrintScale;
