@@ -33,7 +33,7 @@ MustangpeakEasyListView package names have the following form:
 To install Mustangpeak EasyListView into your IDE, take the following
 steps:
 
-  1. Install first [MustangpeakCommonLib](https://github.com/pyscripter/MustangpeakCommonLib).
+  1. Install first [MustangpeakCommonLib](https://github.com/TurboPack/MustangpeakCommonLib).
 
   2. Clone or download and unzip the Github repository into a directory (e.g., D:\MustangpeakEasyListView). 
 
