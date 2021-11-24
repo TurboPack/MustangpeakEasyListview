@@ -25767,10 +25767,10 @@ begin
         Menu := nil;
         Listview.DoItemGetEditMenu(Self, Menu);
         if Assigned(Menu) then
-          Menu.Popup(Message.LParamLo, Message.LParamHi)
-        else
-          // Don't let the VCL hook the parent window background menu to the editor
-          CallWindowProc(TWinControlHack(Editor).DefWndProc, Editor.Handle, Message.Msg, Message.wParam, Message.lParam);
+          Menu.Popup(Message.LParamLo, Message.LParamHi);
+//        else
+//          // Don't let the VCL hook the parent window background menu to the editor
+//          CallWindowProc(TWinControlHack(Editor).DefWndProc, Editor.Handle, Message.Msg, Message.wParam, Message.lParam);
         Message.Result := 1;
       end;
   end;
