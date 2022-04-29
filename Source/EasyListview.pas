@@ -24918,18 +24918,14 @@ end;
 { TEasyViewReportItem}
 function TEasyViewReportItem.AllowDrag(Item: TEasyItem; ViewportPoint: TPoint): Boolean;
 var
-  RectArray: TEasyRectArrayObject;
   R: TRect;
 begin
   if FullRowSelect then
   begin
-    ItemRectArray(Item, nil, OwnerListview.ScratchCanvas, Item.Caption, RectArray);
-    UnionRect(R, RectArray.TextRect, RectArray.IconRect);
-    if Item.Selected and Windows.PtInRect(R, ViewportPoint) then
-      Result := True
-    else
-      Result := False
-  end else
+    R := Item.DisplayRect;
+    Result := Item.Selected and Windows.PtInRect(R, ViewportPoint);
+  end
+  else
     Result := inherited AllowDrag(Item, ViewportPoint);
 end;
 
