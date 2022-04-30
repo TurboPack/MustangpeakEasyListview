@@ -1648,7 +1648,7 @@ type
     function CanChangeHotTracking(NewValue: Boolean): Boolean; virtual; abstract;
     function CanChangeSelection(NewValue: Boolean): Boolean; virtual; abstract;
     function CanChangeVisibility(NewValue: Boolean): Boolean; virtual; abstract;
-    function DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList; virtual;
+    function DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList; virtual;
     function GetChecked: Boolean; virtual;
     function GetDisplayName: string; virtual;
     function LocalPaintInfo: TEasyPaintInfoBasic; virtual; abstract;
@@ -2610,7 +2610,7 @@ type
     function CanChangeHotTracking(NewValue: Boolean): Boolean; override;
     function CanChangeSelection(NewValue: Boolean): Boolean; override;
     function CanChangeVisibility(NewValue: Boolean): Boolean; override;
-    function DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList; override;
+    function DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList; override;
     function GetDefaultGridClass: TEasyGridGroupClass; virtual;
     function GetDefaultViewClass: TEasyViewGroupClass; virtual;
     function LocalPaintInfo: TEasyPaintInfoBasic; override;
@@ -2899,6 +2899,7 @@ type
     procedure SetCellWidth(Value: Integer);
     procedure SetGroup(Index: Integer; Value: TEasyGroup);
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
     function FirstGroupInternal(VisibleOnly: Boolean): TEasyGroup;
     function FirstInGroupInternal(Group: TEasyGroup; VisibleOnly: Boolean): TEasyItem;
     function FirstItemInternal(NextItemType: TEasyNextItemType): TEasyItem;
@@ -3097,6 +3098,7 @@ type
   // **************************************************************************
   TEasyCellSizeList = class(TEasyCellSize)
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     procedure RestoreDefaults; override;
@@ -3161,6 +3163,8 @@ type
     FGrid: TEasyCellGrid;
     FThumbnail: TEasyCellSizeThumbnail;
     FTile: TEasyCellSizeTile;
+  protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     destructor Destroy; override;
@@ -3261,7 +3265,8 @@ type
     function CanChangeHotTracking(NewValue: Boolean): Boolean; override;
     function CanChangeSelection(NewValue: Boolean): Boolean; override;
     function CanChangeVisibility(NewValue: Boolean): Boolean; override;
-    function DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList; override;
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+    function DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList; override;
     function GetDefaultViewClass: TEasyViewColumnClass; virtual;
     function LocalPaintInfo: TEasyPaintInfoBasic; override;
     procedure Freeing; override;
@@ -3463,6 +3468,7 @@ type
     function GetOwnerHeader: TEasyHeader;
     procedure SetColumns(Index: Integer; Value: TEasyColumn);
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
     procedure DoItemAdd(Item: TEasyCollectionItem; Index: Integer); override;
     procedure DoStructureChange; override;
   public
@@ -3541,6 +3547,7 @@ type
     procedure SetVisible(Value: Boolean);
     function GetViewWidth: Integer;
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
     function InCheckZone(ViewportPt: TPoint; var Column: TEasyColumn): Boolean;
     function InDropDownButtonZone(ViewportPt: TPoint; var Column: TEasyColumn): Boolean;
     function InHotTrackZone(ViewportPt: TPoint; var Column: TEasyColumn): Boolean;
@@ -4682,6 +4689,11 @@ type
     FImagesGroup: TCustomImageList;
     FImagesLarge: TCustomImageList;
     FImagesSmall: TCustomImageList;
+{$IF CompilerVersion >= 33}
+    FScaledImagesExLarge: TCommonVirtualImageList;  // used to scale system images
+    FScaledImagesLarge: TCommonVirtualImageList;  // used to scale system images
+    FScaledImagesSmall: TCommonVirtualImageList;  // used to scale system images
+{$IFEND}
     FImagesState: TCustomImageList;
     FIncrementalSearch: TEasyIncrementalSearchManager;
     FItems: TEasyGlobalItems;
@@ -4881,6 +4893,11 @@ type
     procedure SetImagesGroup(Value: TCustomImageList);
     procedure SetImagesLarge(Value: TCustomImageList);
     procedure SetImagesSmall(Value: TCustomImageList);
+{$IF COMPILERVERSION >= 33}
+    procedure SetScaledImagesExLarge(AValue: TCommonVirtualImageList);
+    procedure SetScaledImagesLarge(AValue: TCommonVirtualImageList);
+    procedure SetScaledImagesSmall(AValue: TCommonVirtualImageList);
+{$ENDIF}
     procedure SetImagesState(const Value: TCustomImageList);
     procedure SetPaintInfoColumn(const Value: TEasyPaintInfoBaseColumn); virtual;
     procedure SetPaintInfoGroup(const Value: TEasyPaintInfoBaseGroup); virtual;
@@ -4890,6 +4907,7 @@ type
     procedure SetShowInactive(const Value: Boolean);
     procedure SetShowGroupMargins(const Value: Boolean);
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean); override;
     function CreateColumnPaintInfo: TEasyPaintInfoBaseColumn; virtual;
     function CreateGroupPaintInfo: TEasyPaintInfoBaseGroup; virtual;
     function CreateGroups: TEasyGroups; virtual;
@@ -5171,6 +5189,11 @@ type
     property ImagesGroup: TCustomImageList read FImagesGroup write SetImagesGroup;
     property ImagesSmall: TCustomImageList read FImagesSmall write SetImagesSmall;
     property ImagesLarge: TCustomImageList read FImagesLarge write SetImagesLarge;
+{$IF COMPILERVERSION >= 33}
+    property ScaledImagesExLarge: TCommonVirtualImageList read FScaledImagesExLarge write SetScaledImagesExLarge;
+    property ScaledImagesLarge: TCommonVirtualImageList read FScaledImagesLarge write SetScaledImagesLarge;
+    property ScaledImagesSmall: TCommonVirtualImageList read FScaledImagesSmall write SetScaledImagesSmall;
+{$IFEND}
     property ImagesExLarge: TCustomImageList read FImagesExLarge write SetImagesExLarge;
     property ImagesState: TCustomImageList read FImagesState write SetImagesState;
     property IncrementalSearch: TEasyIncrementalSearchManager read FIncrementalSearch write FIncrementalSearch;
@@ -6831,6 +6854,12 @@ begin
     ((FirstItem.Index > 0) or (LastItem.Index - FirstItem.Index > Count - 1));
 end;
 
+procedure TEasyGroups.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  CellHeight := MulDiv(CellHeight, AM, AD);
+  CellWidth := MulDiv(CellWidth, AM, AD);
+end;
+
 function TEasyGroups.FirstGroup: TEasyGroup;
 begin
   Result := FirstGroupInternal(False)
@@ -8204,6 +8233,14 @@ begin
   DoStructureChange
 end;
 
+procedure TEasyColumns.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+var
+  lCount: Integer;
+begin
+  for lCount := 0 to Count - 1 do
+    Columns[lCount].ChangeScale(AM, AD, AIsDpiChange);
+end;
+
 procedure TEasyColumns.Clear(FreeItems: Boolean = True);
 begin
   inherited Clear(FreeItems);
@@ -8447,9 +8484,9 @@ begin
   OwnerListview.DoGroupVisibilityChanging(Self, Result)
 end;
 
-function TEasyGroup.DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList;
+function TEasyGroup.DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList;
 begin
-  Result:= OwnerListview.ImagesGroup
+  Result := OwnerListview.ImagesGroup;
 end;
 
 function TEasyGroup.EditAreaHitPt(ViewportPoint: TPoint): Boolean;
@@ -9726,7 +9763,7 @@ begin
           cvaCenter: RectArray.IconRect.Top := RectArray.IconRect.Top + (RectHeight(RectArray.IconRect) - Images.Height) div 2;
         end;
 
-        ImageList_DrawEx(Images.Handle,
+        ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle,
           ImageIndex,
           ACanvas.Handle,
           RectArray.IconRect.Left,
@@ -9889,9 +9926,14 @@ begin
   OwnerListview.DoColumnVisibilityChanging(Self, Result)
 end;
 
-function TEasyColumn.DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList;
+procedure TEasyColumn.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  Result := OwnerListview.Header.Images
+  FWidth := MulDiv(FWidth, AM, AD);
+end;
+
+function TEasyColumn.DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList;
+begin
+  Result := OwnerListview.Header.Images;
 end;
 
 function TEasyColumn.EditAreaHitPt(ViewportPoint: TPoint): Boolean;
@@ -14063,6 +14105,14 @@ begin
   Result := Scrollbars.MapWindowRectToViewRect(Result)
 end;
 
+procedure TCustomEasyListview.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  inherited ChangeScale(AM, AD, AIsDpiChange);
+  FHeader.ChangeScale(AM, AD, AIsDpiChange);
+  FCellSizes.ChangeScale(AM, AD, AIsDpiChange);
+  FGroups.ChangeScale(AM, AD, AIsDpiChange);
+end;
+
 function TCustomEasyListview.CreateColumnPaintInfo: TEasyPaintInfoBaseColumn;
 begin
   Result := TEasyPaintInfoColumn.Create(Self)
@@ -16959,6 +17009,14 @@ begin
       FImagesLarge := nil;
     if AComponent = FImagesSmall then
       FImagesSmall := nil;
+{$IF COMPILERVERSION >= 33}
+    if AComponent = FScaledImagesExLarge then
+      FScaledImagesExLarge := nil;
+    if AComponent = FScaledImagesLarge then
+      FScaledImagesLarge := nil;
+    if AComponent = FScaledImagesSmall then
+      FScaledImagesSmall := nil;
+{$IFEND}
     if AComponent = FImagesState then
       FImagesState := nil;
     if AComponent = Header.Images then
@@ -17076,6 +17134,37 @@ begin
     SafeInvalidateRect(nil, False);
   end
 end;
+
+{$IF COMPILERVERSION >= 33}
+
+procedure TCustomEasyListview.SetScaledImagesExLarge(AValue: TCommonVirtualImageList);
+begin
+  if AValue <> FScaledImagesExLarge then
+  begin
+    FScaledImagesExLarge := AValue;
+    SafeInvalidateRect(nil, False);
+  end
+end;
+
+procedure TCustomEasyListview.SetScaledImagesLarge(AValue: TCommonVirtualImageList);
+begin
+  if AValue <> FScaledImagesLarge then
+  begin
+    FScaledImagesLarge := AValue;
+    SafeInvalidateRect(nil, False);
+  end
+end;
+
+procedure TCustomEasyListview.SetScaledImagesSmall(AValue: TCommonVirtualImageList);
+begin
+  if AValue <> FScaledImagesSmall then
+  begin
+    FScaledImagesSmall := AValue;
+    SafeInvalidateRect(nil, False);
+  end
+end;
+
+{$IFEND}
 
 procedure TCustomEasyListview.SetImagesState(const Value: TCustomImageList);
 begin
@@ -18002,12 +18091,13 @@ begin
   Result := True
 end;
 
-function TEasyCollectionItem.DefaultImageList(ImageSize: TEasyImageSize): TCustomImageList;
+function TEasyCollectionItem.DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList;
 begin
-  case ImageSize of
-   eisSmall: Result := OwnerListview.ImagesSmall;
-   eisLarge: Result := OwnerListview.ImagesLarge;
-   {eisExtraLarge:} else Result := OwnerListview.ImagesExLarge;
+  case AImageSize of
+    eisSmall: Result := {$IF COMPILERVERSION >= 33}OwnerListview.ScaledImagesSmall{$ELSE}OwnerListview.ImagesSmall{$IFEND};
+    eisLarge: Result := {$IF COMPILERVERSION >= 33}OwnerListview.ScaledImagesLarge{$ELSE}OwnerListview.ImagesLarge{$IFEND};
+  else {eisExtraLarge:}
+    Result := {$IF COMPILERVERSION >= 33}OwnerListview.ScaledImagesExLarge{$ELSE}OwnerListview.ImagesExLarge{$IFEND};
   end
 end;
 
@@ -19084,6 +19174,12 @@ begin
   FreeAndNil(FPositions);
   FreeAndNil(FFont);
   FreeAndNil(FDragManager);
+end;
+
+procedure TEasyHeader.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  FHeight := MulDiv(FHeight, AM, AD);
+  FColumns.ChangeScale(AM, AD, AIsDpiChange);
 end;
 
 function TEasyHeader.FirstColumn: TEasyColumn;
@@ -20908,7 +21004,7 @@ begin
               RectArray.StateRect.Left := RectArray.StateRect.Left + (RectWidth(RectArray.StateRect) - StateImages.Width) div 2;
               RectArray.StateRect.Top := RectArray.StateRect.Top + (RectHeight(RectArray.StateRect) - StateImages.Height) div 2;
 
-              ImageList_DrawEx(StateImages.Handle, StateImageIndex, ACanvas.Handle, RectArray.StateRect.Left, RectArray.StateRect.Top, 0, 0, rgbBk, rgbFg, fStyle);
+              ImageList_DrawEx(ImagesForPPI(StateImages, OwnerListview.CurrentPPI).Handle, StateImageIndex, ACanvas.Handle, RectArray.StateRect.Left, RectArray.StateRect.Top, 0, 0, rgbBk, rgbFg, fStyle);
             end
           end;
 
@@ -20951,7 +21047,7 @@ begin
                   TmpBits.PixelFormat := pf32Bit;
                   TmpBits.Width := Images.Width;
                   TmpBits.Height := Images.Height;
-                  ImageList_DrawEx(Images.Handle, ImageIndex, TmpBits.Canvas.Handle, 0, 0, 0, 0, rgbBk, rgbFg, fStyle);
+                  ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, ImageIndex, TmpBits.Canvas.Handle, 0, 0, 0, 0, rgbBk, rgbFg, fStyle);
 
 
                   W := RectWidth(RectArray.IconRect)/Images.Width;
@@ -20983,7 +21079,7 @@ begin
             RectArray.IconRect.Left := RectArray.IconRect.Left + (RectWidth(RectArray.IconRect) - Images.Width) div 2;
             RectArray.IconRect.Top := RectArray.IconRect.Top + (RectHeight(RectArray.IconRect) - Images.Height) div 2;
 
-            ImageList_DrawEx(Images.Handle, ImageIndex, ACanvas.Handle, RectArray.IconRect.Left,
+            ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, ImageIndex, ACanvas.Handle, RectArray.IconRect.Left,
               RectArray.IconRect.Top, 0, 0, rgbBk, rgbFg, fStyle);
             end
           end
@@ -21924,6 +22020,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TEasyCellSizes.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  FList.ChangeScale(AM, AD, AIsDpiChange);
+end;
+
 { TEasyDefaultSmallIconCellSize }
 
 constructor TEasyCellSizeSmallIcon.Create(
@@ -22034,6 +22135,12 @@ begin
   finally
     ReleaseDC(GetDesktopWindow, hdcScreen)
   end
+end;
+
+procedure TEasyCellSizeList.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  FHeight := MulDiv(FHeight, AM, AD);
+  FWidth := MulDiv(FWidth, AM, AD);
 end;
 
 procedure TEasyCellSizeList.RestoreDefaults;
@@ -23301,7 +23408,7 @@ begin
       // Get the "normalized" rectangle for the image
       RectArray.IconRect.Left := RectArray.IconRect.Left + (RectWidth(RectArray.IconRect) - Images.Width) div 2;
       RectArray.IconRect.Top := RectArray.IconRect.Top + (RectHeight(RectArray.IconRect) - Images.Height) div 2;
-      ImageList_DrawEx(Images.Handle,
+      ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle,
         Column.ImageIndex,
         ACanvas.Handle,
         RectArray.IconRect.Left,
