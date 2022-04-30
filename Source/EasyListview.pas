@@ -3556,7 +3556,7 @@ type
     procedure ReleaseMouse;
     procedure SizeFixedSingleColumn(NewWidth: Integer);
     procedure SpringColumns(NewWidth: Integer);
-    procedure WMContextMenu(var Msg: TMessage); message WM_CONTEXTMENU;
+    procedure WMContextMenu(var AMsg: TWMContextMenu); message WM_CONTEXTMENU;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
@@ -5112,7 +5112,7 @@ type
     {$ENDIF}
     procedure WMChar(var Msg: TWMChar); message WM_CHAR;
     procedure WMClose(var Msg: TWMClose); message WM_CLOSE;
-    procedure WMContextMenu(var Msg: TMessage); message WM_CONTEXTMENU;
+    procedure WMContextMenu(var AMsg: TWMContextMenu); message WM_CONTEXTMENU;
     procedure WMDestroy(var Msg: TMessage); message WM_DESTROY;
     procedure WMEasyThreadCallback(var Msg: TWMThreadRequest); message WM_COMMONTHREADCALLBACK;
     procedure WMEraseBkGnd(var Msg: TWMEraseBkGnd); message WM_ERASEBKGND;
@@ -17194,101 +17194,105 @@ begin
   inherited;
 end;
 
-procedure TCustomEasyListview.WMContextMenu(var Msg: TMessage);
+procedure TCustomEasyListview.WMContextMenu(var AMsg: TWMContextMenu);
 var
-  Item: TEasyItem;
-  Group: TEasyGroup;
-  Pt: TPoint;
-  HitInfoGroup: TEasyHitInfoGroup;
-  HitInfoItem: TEasyHitInfoItem;
-  Menu: TPopupMenu;
-  Handled, SkipHitTest, MenuKey: Boolean;
+  lGroup: TEasyGroup;
+  lHandled: Boolean;
+  lHitInfoGroup: TEasyHitInfoGroup;
+  lHitInfoItem: TEasyHitInfoItem;
+  lItem: TEasyItem;
+  lMenu: TPopupMenu;
+  lMenuKey: Boolean;
+  lPt: TPoint;
+  lSkipHitTest: Boolean;
 begin
   if not EditManager.Editing and not (Gesture.Enabled and (Gesture.Path <> '')) then
   begin
-    Handled := False;
-    MenuKey := False;
-    Menu := nil;
+    lHandled := False;
+    lMenuKey := False;
+    lMenu := nil;
     if not (ebcsCancelContextMenu in States) then
     begin
-      SkipHitTest := False;
+      lSkipHitTest := False;
       // Support Dual monitors with SmallPointToPoint
-      Pt:= SmallPointToPoint(SmallPoint(Msg.LParamLo, Msg.LParamHi));
-      if ((Pt.X = 65535) and (Pt.Y = 65535)) or ((Pt.X = -1) and (Pt.Y = -1)) then
+      lPt:= SmallPointToPoint(AMsg.Pos);
+      if ((lPt.X = 65535) and (lPt.Y = 65535)) or ((lPt.X = -1) and (lPt.Y = -1)) then
       begin
-        MenuKey := True;
-        Pt := ScreenToClient(Mouse.CursorPos);
-        if not PtInRect(ClientRect, Pt) or (Selection.Count = 0) then
+        lMenuKey := True;
+        lPt := ScreenToClient(Mouse.CursorPos);
+        if not PtInRect(ClientRect, lPt) or (Selection.Count = 0) then
         begin
-          Pt.X := 0;
-          Pt.Y := 0;
-          SkipHitTest := True;
+          lPt.X := 0;
+          lPt.Y := 0;
+          lSkipHitTest := True;
         end;
-        Pt := ClientToScreen(Pt);
+        lPt := ClientToScreen(lPt);
       end;
 
-      if MenuKey and (Selection.Count > 0) then
+      if lMenuKey and (Selection.Count > 0) then
       begin
-        HitInfoItem.Item := Selection.First;
-        Pt := ClientToScreen(HitInfoItem.Item.DisplayRect.TopLeft);
-        Pt.Y := Pt.Y + Header.RuntimeHeight;
-        HitInfoItem.Column := nil;
-        HitInfoItem.Group := HitInfoItem.Item.OwnerGroup;
-        HitInfoItem.HitInfo := [ehtOnLabel, ehtOnIcon];
-        DoItemContextMenu(HitInfoItem, Pt, Menu, Handled)
-      end else
-      if not SkipHitTest then
+        lHitInfoItem.Item := Selection.First;
+        lPt := ClientToScreen(lHitInfoItem.Item.DisplayRect.TopLeft);
+        lPt.Y := lPt.Y + Header.RuntimeHeight;
+        lHitInfoItem.Column := nil;
+        lHitInfoItem.Group := lHitInfoItem.Item.OwnerGroup;
+        lHitInfoItem.HitInfo := [ehtOnLabel, ehtOnIcon];
+        DoItemContextMenu(lHitInfoItem, lPt, lMenu, lHandled)
+      end
+      else if not lSkipHitTest then
       begin
-        if IsHeaderMouseMsg(PointToSmallPoint( ScreenToClient(Pt))) then
+        if IsHeaderMouseMsg(PointToSmallPoint(ScreenToClient(lPt))) then
         begin
-          Pt := ClientToScreen(Pt);
-          Header.WMContextMenu(Msg);
-          Handled := True;
-        end else
+          lPt := ClientToScreen(lPt);
+          Header.WMContextMenu(AMsg);
+          lHandled := True;
+        end
+        else
         begin
-          Menu := nil;
+          lMenu := nil;
           Exclude(FStates, ebcsDragSelectPending);
           Exclude(FStates, ebcsDragPending);
 
-          Handled := False;
-          Group := Groups.GroupByPoint(Scrollbars.MapWindowToView(ScreenToClient(Pt)));
-          if Assigned(Group) then
+          lHandled := False;
+          lGroup := Groups.GroupByPoint(Scrollbars.MapWindowToView(ScreenToClient(lPt)));
+          if Assigned(lGroup) then
           begin
-            // The hit was in a group so now see if it was in an item
-            Item := Group.ItembyPoint(Scrollbars.MapWindowToView( ScreenToClient(Pt)));
-            if Assigned(Item) then
+            // The hit was in a lGroup so now see if it was in an lItem
+            lItem := lGroup.ItembyPoint(Scrollbars.MapWindowToView( ScreenToClient(lPt)));
+            if Assigned(lItem) then
             begin
-              if Item.HitTestAt(Scrollbars.MapWindowToView( ScreenToClient(Pt)), HitInfoItem.HitInfo) then
+              if lItem.HitTestAt(Scrollbars.MapWindowToView( ScreenToClient(lPt)), lHitInfoItem.HitInfo) then
               begin
-                HitInfoItem.Column := nil;
-                HitInfoItem.Group := Group;
-                HitInfoItem.Item := Item;
-                DoItemContextMenu(HitInfoItem, Pt, Menu, Handled)
+                lHitInfoItem.Column := nil;
+                lHitInfoItem.Group := lGroup;
+                lHitInfoItem.Item := lItem;
+                DoItemContextMenu(lHitInfoItem, lPt, lMenu, lHandled)
               end
             end;
-            if not Assigned(Menu) and not Handled then
+            if not Assigned(lMenu) and not lHandled then
             begin
-              HitInfoGroup.Group := Group;
-              Group.HitTestAt(Scrollbars.MapWindowToView(ScreenToClient(Pt)), HitInfoGroup.HitInfo);
-              DoGroupContextMenu(HitInfoGroup, Pt, Menu, Handled)
+              lHitInfoGroup.Group := lGroup;
+              lGroup.HitTestAt(Scrollbars.MapWindowToView(ScreenToClient(lPt)), lHitInfoGroup.HitInfo);
+              DoGroupContextMenu(lHitInfoGroup, lPt, lMenu, lHandled)
             end
           end
         end
       end;
-      if not Handled then
-        DoContextMenu(Pt, Handled);
+      if not lHandled then
+        DoContextMenu(lPt, lHandled);
 
-      if Assigned(Menu) and not Handled then
+      if Assigned(lMenu) and not lHandled then
       begin
-        Menu.Popup(Msg.LParamLo, Msg.LParamHi);
-        Msg.Result := 1
-      end else
-      if not Handled then
+        lMenu.Popup(AMsg.Pos.x, AMsg.Pos.y);
+        AMsg.Result := 1
+      end
+      else if not lHandled then
         inherited  // Use the PopupMenu property from TControl
     end;
-  end else
+  end
+  else
   begin
-    Msg.Result := 1;
+    AMsg.Result := 1;
     inherited
   end;
   Exclude(FStates, ebcsCancelContextMenu);
@@ -19818,30 +19822,32 @@ begin
   end;
 end;
 
-procedure TEasyHeader.WMContextMenu(var Msg: TMessage);
+procedure TEasyHeader.WMContextMenu(var AMsg: TWMContextMenu);
 var
-  Column: TEasyColumn;
-  ViewPt, Pt: TPoint;
-  HitInfoColumn: TEasyHitInfoColumn;
-  Menu: TPopupMenu;
+  lColumn: TEasyColumn;
+  lHitInfoColumn: TEasyHitInfoColumn;
+  lMenu: TPopupMenu;
+  lPt: TPoint;
+  lViewPt: TPoint;
 begin
-  Menu := OwnerListview.PopupMenuHeader;
-  Pt := OwnerListview.ScreenToClient(Point( Msg.LParamLo, Msg.LParamHi));
+  lMenu := OwnerListview.PopupMenuHeader;
+  lPt := OwnerListview.ScreenToClient(SmallPointToPoint(AMsg.Pos));
   if OwnerListview.ScrollHeaderHorz then
-    ViewPt := OwnerListview.Scrollbars.MapWindowToView(Pt, False);
-  HitInfoColumn.Column := Columns.ColumnByPoint(ViewPt);
-  Column := Columns.ColumnByPoint(ViewPt);
-  if Assigned(HitInfoColumn.Column) then
-    Column.HitTestAt(ViewPt, HitInfoColumn.HitInfo)
+    lViewPt := OwnerListview.Scrollbars.MapWindowToView(lPt, False);
+  lHitInfoColumn.Column := Columns.ColumnByPoint(lViewPt);
+  lColumn := Columns.ColumnByPoint(lViewPt);
+  if Assigned(lHitInfoColumn.Column) then
+    lColumn.HitTestAt(lViewPt, lHitInfoColumn.HitInfo)
   else
-    HitInfoColumn.HitInfo := [];
-  // HitInfoColumn.Column will be nil if it hits the backgound of the header
-  OwnerListview.DoColumnContextMenu(HitInfoColumn, Pt, Menu);
-  if Assigned(Menu) then
+    lHitInfoColumn.HitInfo := [];
+  // lHitInfoColumn.lColumn will be nil if it hits the backgound of the header
+  OwnerListview.DoColumnContextMenu(lHitInfoColumn, lPt, lMenu);
+  if Assigned(lMenu) then
   begin
-    Menu.Popup(Msg.LParamLo, Msg.LParamHi);
-    Msg.Result := 1
-  end else
+    lMenu.Popup(AMsg.Pos.x, AMsg.Pos.y);
+    AMsg.Result := 1
+  end
+  else
     inherited;
 end;
 
@@ -20485,7 +20491,7 @@ begin
           Item.ImageDrawGetSize(Column, ImageW, ImageH)
         else begin
           Images := GetImageList(Column, Item, Image);
-          if  Assigned(Images) then
+          if Assigned(Images) then
           begin
             ImageW := Images.Width;
             ImageH := Images.Height
