@@ -6856,8 +6856,11 @@ end;
 
 procedure TEasyGroups.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  CellHeight := MulDiv(CellHeight, AM, AD);
-  CellWidth := MulDiv(CellWidth, AM, AD);
+  if AIsDpiChange then
+  begin
+    CellHeight := MulDiv(CellHeight, AM, AD);
+    CellWidth := MulDiv(CellWidth, AM, AD);
+  end;
 end;
 
 function TEasyGroups.FirstGroup: TEasyGroup;
@@ -9928,7 +9931,8 @@ end;
 
 procedure TEasyColumn.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  FWidth := MulDiv(FWidth, AM, AD);
+  if AIsDpiChange then
+    FWidth := MulDiv(FWidth, AM, AD);
 end;
 
 function TEasyColumn.DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList;
@@ -19178,7 +19182,8 @@ end;
 
 procedure TEasyHeader.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  FHeight := MulDiv(FHeight, AM, AD);
+  if AIsDpiChange then
+    FHeight := MulDiv(FHeight, AM, AD);
   FColumns.ChangeScale(AM, AD, AIsDpiChange);
 end;
 
@@ -22139,8 +22144,11 @@ end;
 
 procedure TEasyCellSizeList.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  FHeight := MulDiv(FHeight, AM, AD);
-  FWidth := MulDiv(FWidth, AM, AD);
+  if AIsDpiChange then
+  begin
+    FHeight := MulDiv(FHeight, AM, AD);
+    FWidth := MulDiv(FWidth, AM, AD);
+  end;
 end;
 
 procedure TEasyCellSizeList.RestoreDefaults;
