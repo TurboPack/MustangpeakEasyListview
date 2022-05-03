@@ -3097,8 +3097,6 @@ type
   //   Maintains the default sizes for the Cells a List view
   // **************************************************************************
   TEasyCellSizeList = class(TEasyCellSize)
-  protected
-    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     procedure RestoreDefaults; override;
@@ -22027,7 +22025,6 @@ end;
 
 procedure TEasyCellSizes.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  FList.ChangeScale(AM, AD, AIsDpiChange);
 end;
 
 { TEasyDefaultSmallIconCellSize }
@@ -22142,14 +22139,6 @@ begin
   end
 end;
 
-procedure TEasyCellSizeList.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
-begin
-  if AIsDpiChange then
-  begin
-    FHeight := MulDiv(FHeight, AM, AD);
-    FWidth := MulDiv(FWidth, AM, AD);
-  end;
-end;
 
 procedure TEasyCellSizeList.RestoreDefaults;
 var
