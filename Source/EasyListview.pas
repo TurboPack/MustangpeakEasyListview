@@ -3011,6 +3011,7 @@ type
   TEasyCellSize = class(TEasyOwnedPersistent)
   private
     FAutoSizeCaption: Boolean; // If the cell type supports it resizes the cell based on it content (text width etc)
+    FCurrentPPI: Integer;
     FHeightAutoSizeRaw: Integer;  // Dynamic size that is reset with each rebuild of the Groups if the Grid is AutoSized
     FWidthAutoSizeRaw: Integer;   // Dynamic size that is reset with each rebuild of the Groups if the Grid is AutoSized
     FHeight: Integer;          // Fixed size that remains constant with each rebuid of the Groups if the Grid is not AutoSized
@@ -3023,6 +3024,7 @@ type
     procedure SetHeight(Value: Integer);
     procedure SetWidth(Value: Integer);
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean); virtual;
     property AutoSizeCaption: Boolean read FAutoSizeCaption write SetAutoSizeCaption default False;
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
@@ -3037,7 +3039,6 @@ type
     property WidthRaw: Integer read GetWidthRaw;
     property WidthAutoSizeRaw: Integer read FWidthAutoSizeRaw;
   published
-
     property Height: Integer read GetHeight write SetHeight default DEFAULT_HEIGHT_ICON;
     property Width: Integer read GetWidth write SetWidth default DEFAULT_WIDTH_ICON;
   end;
@@ -3054,7 +3055,6 @@ type
   //   Maintains the default sizes for the Cells a Small Icon view
   // **************************************************************************
   TEasyCellSizeSmallIcon = class(TEasyCellSize)
-  protected
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     procedure RestoreDefaults; override;
@@ -3069,7 +3069,6 @@ type
   //   Maintains the default sizes for the Cells a Thumbnail view
   // **************************************************************************
   TEasyCellSizeThumbnail = class(TEasyCellSize)
-  protected
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     procedure RestoreDefaults; override;
@@ -3083,7 +3082,6 @@ type
   //   Maintains the default sizes for the Cells a Tile view
   // **************************************************************************
   TEasyCellSizeTile = class(TEasyCellSize)
-  protected
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     procedure RestoreDefaults; override;
@@ -3111,7 +3109,6 @@ type
   //   Maintains the default sizes for the Cells a Report view
   // **************************************************************************
   TEasyCellSizeReport = class(TEasyCellSize)
-  protected
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     procedure RestoreDefaults; override;
@@ -3166,7 +3163,6 @@ type
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
     destructor Destroy; override;
-
   published
     property FilmStrip: TEasyCellSizeFilmStrip read FFilmStrip write FFilmStrip;
     property Icon: TEasyCellSizeIcon read FIcon write FIcon;
@@ -6854,11 +6850,6 @@ end;
 
 procedure TEasyGroups.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  if AIsDpiChange then
-  begin
-    CellHeight := MulDiv(CellHeight, AM, AD);
-    CellWidth := MulDiv(CellWidth, AM, AD);
-  end;
 end;
 
 function TEasyGroups.FirstGroup: TEasyGroup;
@@ -9929,7 +9920,7 @@ end;
 
 procedure TEasyColumn.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  if AIsDpiChange then
+  if AIsDpiChange and (AM <> AD) then
     FWidth := MulDiv(FWidth, AM, AD);
 end;
 
@@ -19180,7 +19171,7 @@ end;
 
 procedure TEasyHeader.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
-  if AIsDpiChange then
+  if AIsDpiChange and (AM <> AD) then
     FHeight := MulDiv(FHeight, AM, AD);
   FColumns.ChangeScale(AM, AD, AIsDpiChange);
 end;
@@ -21460,26 +21451,36 @@ end;
 { TEasyDefaultCellSize }
 
 constructor TEasyCellSize.Create(AnOwner: TCustomEasyListview);
-var
-  hdcScreen: hDC;
 begin
   inherited Create(AnOwner);
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    FWidth := Round(DEFAULT_WIDTH_ICON * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH);
-    FHeight := Round(DEFAULT_HEIGHT_ICON * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH);
-    FHeightAutoSizeRaw := FHeight;
-    FWidthAutoSizeRaw := FWidth;
-  finally
-    ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  FWidth := DEFAULT_WIDTH_ICON;
+  FHeight := DEFAULT_HEIGHT_ICON;
+  FHeightAutoSizeRaw := FHeight;
+  FWidthAutoSizeRaw := FWidth;
+  FCurrentPPI := Screen.DefaultPixelsPerInch;
+end;
+
+procedure TEasyCellSize.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  if AIsDpiChange then
+  begin
+    if AM <> AD then
+    begin
+      FWidth := MulDiv(FWidth, AM, AD);
+      FHeight := MulDiv(FHeight, AM, AD);
+      FHeightAutoSizeRaw := MulDiv(FHeightAutoSizeRaw, AM, AD);
+      FWidthAutoSizeRaw := MulDiv(FWidthAutoSizeRaw, AM, AD);
+    end;
+    FCurrentPPI := AM;
+  end;
 end;
 
 function TEasyCellSize.GetHeight: Integer;
 begin
   if AutoSizeCaption then
     Result := FHeightAutoSizeRaw
-  else begin
+  else
+  begin
     Result := FHeight;
     if Result < 1 then
       Result := 1
@@ -21495,7 +21496,8 @@ function TEasyCellSize.GetWidth: Integer;
 begin
   if AutoSizeCaption then
     Result := FWidthAutoSizeRaw
-  else begin
+  else
+  begin
     Result := FWidth;
     if Result < 1 then
       Result := 1
@@ -21518,22 +21520,17 @@ begin
 end;
 
 procedure TEasyCellSize.RestoreDefaults;
-var
-  hdcScreen: hDC;
 begin
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    SetSize(Round(DEFAULT_WIDTH_ICON * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH),
-            Round(DEFAULT_HEIGHT_ICON * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH))
-  finally
-     ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  SetSize(DEFAULT_WIDTH_ICON, DEFAULT_HEIGHT_ICON);
+  ChangeScale(FCurrentPPI, Screen.DefaultPixelsPerInch, True);
 end;
 
 procedure TEasyCellSize.SetRawAutoSize(AWidth, AHeight: Integer);
 begin
-  if AWidth < 0 then AWidth := 0;
-  if AHeight < 0 then AHeight := 0;
+  if AWidth < 0 then
+    AWidth := 0;
+  if AHeight < 0 then
+    AHeight := 0;
 
   if (AWidth <> FWidthAutoSizeRaw) or (AHeight <> FHeightAutoSizeRaw) then
   begin
@@ -21560,8 +21557,10 @@ end;
 
 procedure TEasyCellSize.SetRawSize(AWidth, AHeight: Integer);
 begin
-  if AWidth < 0 then AWidth := 0;
-  if AHeight < 0 then AHeight := 0;
+  if AWidth < 0 then
+    AWidth := 0;
+  if AHeight < 0 then
+    AHeight := 0;
 
   if (AWidth <> FWidth) or (AHeight <> FHeight) then
   begin
@@ -21574,8 +21573,10 @@ end;
 
 procedure TEasyCellSize.SetSize(AWidth, AHeight: Integer);
 begin
-  if AWidth < 0 then AWidth := 0;
-  if AHeight < 0 then AHeight := 0;
+  if AWidth < 0 then
+    AWidth := 0;
+  if AHeight < 0 then
+    AHeight := 0;
 
   if AutoSizeCaption then
   begin
@@ -21584,7 +21585,8 @@ begin
       FWidthAutoSizeRaw := AWidth;
       FHeightAutoSizeRaw := AHeight;
     end;
-  end else
+  end
+  else
   begin
     if (AWidth <> FWidth) or (AHeight <> FHeight) then
     begin
@@ -21633,8 +21635,7 @@ begin
   Result := eisLarge
 end;
 
-function TEasyViewIconItem.PaintTextLineCount(Item: TEasyItem;
-  Column: TEasyColumn): Integer;
+function TEasyViewIconItem.PaintTextLineCount(Item: TEasyItem; Column: TEasyColumn): Integer;
 begin
   if Item.Focused and OwnerListview.Focused then
     Result := -1
@@ -21648,8 +21649,7 @@ begin
     InflateRect(LocalFocusRect, -2, -2)
 end;
 
-procedure TEasyViewIconItem.AfterSelRectCalc(Item: TEasyItem;
-  Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect);
+procedure TEasyViewIconItem.AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalSelRect, -2, -2)
@@ -21788,8 +21788,7 @@ end;
 
 { TEasySmallIconItemView }
 
-function TEasyViewSmallIconItem.CalculateDisplayRect(Item: TEasyItem;
-  Column: TEasyColumn): TRect;
+function TEasyViewSmallIconItem.CalculateDisplayRect(Item: TEasyItem; Column: TEasyColumn): TRect;
 begin
   Result := Item.DisplayRect
 end;
@@ -22025,163 +22024,101 @@ end;
 
 procedure TEasyCellSizes.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 begin
+  FIcon.ChangeScale(AM, AD, AIsDpiChange);
+  FSmallIcon.ChangeScale(AM, AD, AIsDpiChange);
+  FThumbnail.ChangeScale(AM, AD, AIsDpiChange);
+  FTile.ChangeScale(AM, AD, AIsDpiChange);
+  FList.ChangeScale(AM, AD, AIsDpiChange);
+  FReport.ChangeScale(AM, AD, AIsDpiChange);
+  FReportThumb.ChangeScale(AM, AD, AIsDpiChange);
+  FFilmStrip.ChangeScale(AM, AD, AIsDpiChange);
+  FGrid.ChangeScale(AM, AD, AIsDpiChange);
 end;
 
 { TEasyDefaultSmallIconCellSize }
 
-constructor TEasyCellSizeSmallIcon.Create(
-  AnOwner: TCustomEasyListview);
-var
-  hdcScreen: hDC;
+constructor TEasyCellSizeSmallIcon.Create(AnOwner: TCustomEasyListview);
 begin
   inherited Create(AnOwner);
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    FWidth := Round(DEFAULT_WIDTH_SMALLICON * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH);
-    FHeight := Round(DEFAULT_HEIGHT_SMALLICON * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH);
-    FHeightAutoSizeRaw := FHeight;
-    FWidthAutoSizeRaw := FWidth;
-  finally
-    ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  FWidth := DEFAULT_WIDTH_SMALLICON;
+  FHeight := DEFAULT_HEIGHT_SMALLICON;
+  FHeightAutoSizeRaw := FHeight;
+  FWidthAutoSizeRaw := FWidth;
 end;
 
 procedure TEasyCellSizeSmallIcon.RestoreDefaults;
-var
-  hdcScreen: hDC;
 begin
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    SetSize(Round(DEFAULT_WIDTH_SMALLICON * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH),
-            Round(DEFAULT_HEIGHT_SMALLICON * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH))
-  finally
-     ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  SetSize(DEFAULT_WIDTH_SMALLICON, DEFAULT_HEIGHT_SMALLICON);
+  ChangeScale(FCurrentPPI, Screen.DefaultPixelsPerInch, True);
 end;
 
 { TEasyDefaultThumbnailCellSize }
 
 constructor TEasyCellSizeThumbnail.Create(AnOwner: TCustomEasyListview);
-var
-  hdcScreen: hDC;
 begin
   inherited Create(AnOwner);
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    FWidth := Round(DEFAULT_WIDTH_THUMBNAIL * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH);
-    FHeight := Round(DEFAULT_HEIGHT_THUMBNAIL * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH);
-    FHeightAutoSizeRaw := FHeight;
-    FWidthAutoSizeRaw := FWidth;
-  finally
-    ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  FWidth := DEFAULT_WIDTH_THUMBNAIL;
+  FHeight := DEFAULT_HEIGHT_THUMBNAIL;
+  FHeightAutoSizeRaw := FHeight;
+  FWidthAutoSizeRaw := FWidth;
 end;
 
 procedure TEasyCellSizeThumbnail.RestoreDefaults;
-var
-  hdcScreen: hDC;
 begin
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    SetSize(Round(DEFAULT_WIDTH_THUMBNAIL * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH),
-            Round(DEFAULT_HEIGHT_THUMBNAIL * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH))
-  finally
-     ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  SetSize(DEFAULT_WIDTH_THUMBNAIL, DEFAULT_HEIGHT_THUMBNAIL);
+  ChangeScale(FCurrentPPI, Screen.DefaultPixelsPerInch, True);
 end;
 
 { TEasyDefaultTileCellSize }
 
 constructor TEasyCellSizeTile.Create(AnOwner: TCustomEasyListview);
-var
-  hdcScreen: hDC;
 begin
   inherited Create(AnOwner);
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    FWidth := Round(DEFAULT_WIDTH_TILE * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH);
-    FHeight := Round(DEFAULT_HEIGHT_TILE * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH);
-    FHeightAutoSizeRaw := FHeight;
-    FWidthAutoSizeRaw := FWidth;
-  finally
-    ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  FWidth := DEFAULT_WIDTH_TILE;
+  FHeight := DEFAULT_HEIGHT_TILE;
+  FHeightAutoSizeRaw := FHeight;
+  FWidthAutoSizeRaw := FWidth;
 end;
 
 procedure TEasyCellSizeTile.RestoreDefaults;
-var
-  hdcScreen: hDC;
 begin
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    SetSize(Round(DEFAULT_WIDTH_TILE * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH),
-            Round(DEFAULT_HEIGHT_TILE * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH))
-  finally
-     ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  SetSize(DEFAULT_WIDTH_TILE, DEFAULT_HEIGHT_TILE);
+  ChangeScale(FCurrentPPI, Screen.DefaultPixelsPerInch, True);
 end;
 
 { TEasyDefaultListCellSize }
 
 constructor TEasyCellSizeList.Create(AnOwner: TCustomEasyListview);
-var
-  hdcScreen: hDC;
 begin
   inherited Create(AnOwner);
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    FWidth := Round(DEFAULT_WIDTH_LIST * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH);
-    FHeight := Round(DEFAULT_HEIGHT_LIST * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH);
-    FHeightAutoSizeRaw := FHeight;
-    FWidthAutoSizeRaw := FWidth;
-  finally
-    ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  FWidth := DEFAULT_WIDTH_LIST;
+  FHeight := DEFAULT_HEIGHT_LIST;
+  FHeightAutoSizeRaw := FHeight;
+  FWidthAutoSizeRaw := FWidth;
 end;
 
 
 procedure TEasyCellSizeList.RestoreDefaults;
-var
-  hdcScreen: hDC;
 begin
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    SetSize(Round(DEFAULT_WIDTH_LIST * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH),
-            Round(DEFAULT_HEIGHT_LIST * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH))
-  finally
-     ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  SetSize(DEFAULT_WIDTH_LIST, DEFAULT_HEIGHT_LIST);
+  ChangeScale(FCurrentPPI, Screen.DefaultPixelsPerInch, True);
 end;
 
 { TEasyDefaultReportCellSize }
 
 constructor TEasyCellSizeReport.Create(AnOwner: TCustomEasyListview);
-var
-  hdcScreen: hDC;
 begin
   inherited Create(AnOwner);
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    FWidth := Round(DEFAULT_WIDTH_REPORT * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH);
-    FHeight := Round(DEFAULT_HEIGHT_REPORT * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH);
-    FHeightAutoSizeRaw := FHeight;
-    FWidthAutoSizeRaw := FWidth;
-  finally
-    ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  FWidth := DEFAULT_WIDTH_REPORT;
+  FHeight := DEFAULT_HEIGHT_REPORT;
+  FHeightAutoSizeRaw := FHeight;
+  FWidthAutoSizeRaw := FWidth;
 end;
 
 procedure TEasyCellSizeReport.RestoreDefaults;
-var
-  hdcScreen: hDC;
 begin
-  hdcScreen := GetDC(GetDesktopWindow);
-  try
-    SetSize(Round(DEFAULT_WIDTH_REPORT * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH),
-            Round(DEFAULT_HEIGHT_REPORT * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH))
-  finally
-     ReleaseDC(GetDesktopWindow, hdcScreen)
-  end
+  SetSize(DEFAULT_WIDTH_REPORT, DEFAULT_HEIGHT_REPORT);
+  ChangeScale(FCurrentPPI, Screen.DefaultPixelsPerInch, True);
 end;
 
 function TEasyViewTileItem.DropMarkerDir: TEasyInsertMarkerDir;
@@ -22213,8 +22150,7 @@ begin
   Result := eisExtraLarge
 end;
 
-function TEasyViewTileItem.PaintTextAlignment(Item: TEasyItem;
-  Column: TEasyColumn): TAlignment;
+function TEasyViewTileItem.PaintTextAlignment(Item: TEasyItem; Column: TEasyColumn): TAlignment;
 begin
   Result := taLeftJustify
 end;
@@ -22225,8 +22161,7 @@ begin
     InflateRect(LocalFocusRect, -2, -2)
 end;
 
-procedure TEasyViewTileItem.AfterSelRectCalc(Item: TEasyItem;
-  Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect);
+procedure TEasyViewTileItem.AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect);
 begin
   if OwnerListview.Selection.FullCellPaint then
     InflateRect(LocalSelRect, -2, -2)
@@ -22425,7 +22360,6 @@ end;
 
 procedure TEasyViewTileItem.PaintBefore(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject; var Handled: Boolean);
 begin
-
 end;
 
 procedure TEasyViewTileItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
