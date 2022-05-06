@@ -4681,13 +4681,9 @@ type
     FHotTrack: TEasyHotTrackManager;
     FImagesExLarge: TCustomImageList;
     FImagesGroup: TCustomImageList;
+    FImagesJumbo: TCustomImageList;
     FImagesLarge: TCustomImageList;
     FImagesSmall: TCustomImageList;
-{$IF CompilerVersion >= 33}
-    FScaledImagesExLarge: TCommonVirtualImageList;  // used to scale system images
-    FScaledImagesLarge: TCommonVirtualImageList;  // used to scale system images
-    FScaledImagesSmall: TCommonVirtualImageList;  // used to scale system images
-{$IFEND}
     FImagesState: TCustomImageList;
     FIncrementalSearch: TEasyIncrementalSearchManager;
     FItems: TEasyGlobalItems;
@@ -4885,13 +4881,9 @@ type
     procedure SetHintType(Value: TEasyHintType);
     procedure SetImagesExLarge(Value: TCustomImageList);
     procedure SetImagesGroup(Value: TCustomImageList);
+    procedure SetImagesJumbo(AValue: TCustomImageList);
     procedure SetImagesLarge(Value: TCustomImageList);
     procedure SetImagesSmall(Value: TCustomImageList);
-{$IF COMPILERVERSION >= 33}
-    procedure SetScaledImagesExLarge(AValue: TCommonVirtualImageList);
-    procedure SetScaledImagesLarge(AValue: TCommonVirtualImageList);
-    procedure SetScaledImagesSmall(AValue: TCommonVirtualImageList);
-{$ENDIF}
     procedure SetImagesState(const Value: TCustomImageList);
     procedure SetPaintInfoColumn(const Value: TEasyPaintInfoBaseColumn); virtual;
     procedure SetPaintInfoGroup(const Value: TEasyPaintInfoBaseGroup); virtual;
@@ -5116,7 +5108,7 @@ type
     function IsFontStored: Boolean;
     function IsHeaderMouseMsg(MousePos: TSmallPoint; ForceTest: Boolean = False): Boolean;
     procedure MarkSelectedCut;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     procedure PasteFromClipboard; virtual;
     procedure SetView(Value: TEasyListStyle); virtual;
     {$IFDEF SpTBX}
@@ -5183,12 +5175,8 @@ type
     property ImagesGroup: TCustomImageList read FImagesGroup write SetImagesGroup;
     property ImagesSmall: TCustomImageList read FImagesSmall write SetImagesSmall;
     property ImagesLarge: TCustomImageList read FImagesLarge write SetImagesLarge;
-{$IF COMPILERVERSION >= 33}
-    property ScaledImagesExLarge: TCommonVirtualImageList read FScaledImagesExLarge write SetScaledImagesExLarge;
-    property ScaledImagesLarge: TCommonVirtualImageList read FScaledImagesLarge write SetScaledImagesLarge;
-    property ScaledImagesSmall: TCommonVirtualImageList read FScaledImagesSmall write SetScaledImagesSmall;
-{$IFEND}
     property ImagesExLarge: TCustomImageList read FImagesExLarge write SetImagesExLarge;
+    property ImagesJumbo: TCustomImageList read FImagesJumbo write SetImagesJumbo;
     property ImagesState: TCustomImageList read FImagesState write SetImagesState;
     property IncrementalSearch: TEasyIncrementalSearchManager read FIncrementalSearch write FIncrementalSearch;
     property Items: TEasyGlobalItems read FItems;
@@ -9741,7 +9729,7 @@ begin
 
         if OverlayIndex > -1 then
         begin
-          ImageList_SetOverlayImage(Images.Handle, OverlayIndex, 1);
+          ImageList_SetOverlayImage(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, OverlayIndex, 1);
           fStyle := fStyle or INDEXTOOVERLAYMASK(1)
         end;
 
@@ -16988,28 +16976,21 @@ begin
   end
 end;
 
-procedure TCustomEasyListview.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TCustomEasyListview.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
   inherited;
-  if Operation = opRemove then
+  if AOperation = opRemove then
   begin
     if AComponent = FImagesGroup then
       FImagesGroup := nil;
     if AComponent = FImagesExLarge then
       FImagesExLarge := nil;
+    if AComponent = FImagesJumbo then
+      FImagesJumbo := nil;
     if AComponent = FImagesLarge then
       FImagesLarge := nil;
     if AComponent = FImagesSmall then
       FImagesSmall := nil;
-{$IF COMPILERVERSION >= 33}
-    if AComponent = FScaledImagesExLarge then
-      FScaledImagesExLarge := nil;
-    if AComponent = FScaledImagesLarge then
-      FScaledImagesLarge := nil;
-    if AComponent = FScaledImagesSmall then
-      FScaledImagesSmall := nil;
-{$IFEND}
     if AComponent = FImagesState then
       FImagesState := nil;
     if AComponent = Header.Images then
@@ -17110,6 +17091,15 @@ begin
   end
 end;
 
+procedure TCustomEasyListview.SetImagesJumbo(AValue: TCustomImageList);
+begin
+  if AValue <> FImagesJumbo then
+  begin
+    FImagesJumbo := AValue;
+    SafeInvalidateRect(nil, False);
+  end
+end;
+
 procedure TCustomEasyListview.SetImagesLarge(Value: TCustomImageList);
 begin
   if Value <> FImagesLarge then
@@ -17127,37 +17117,6 @@ begin
     SafeInvalidateRect(nil, False);
   end
 end;
-
-{$IF COMPILERVERSION >= 33}
-
-procedure TCustomEasyListview.SetScaledImagesExLarge(AValue: TCommonVirtualImageList);
-begin
-  if AValue <> FScaledImagesExLarge then
-  begin
-    FScaledImagesExLarge := AValue;
-    SafeInvalidateRect(nil, False);
-  end
-end;
-
-procedure TCustomEasyListview.SetScaledImagesLarge(AValue: TCommonVirtualImageList);
-begin
-  if AValue <> FScaledImagesLarge then
-  begin
-    FScaledImagesLarge := AValue;
-    SafeInvalidateRect(nil, False);
-  end
-end;
-
-procedure TCustomEasyListview.SetScaledImagesSmall(AValue: TCommonVirtualImageList);
-begin
-  if AValue <> FScaledImagesSmall then
-  begin
-    FScaledImagesSmall := AValue;
-    SafeInvalidateRect(nil, False);
-  end
-end;
-
-{$IFEND}
 
 procedure TCustomEasyListview.SetImagesState(const Value: TCustomImageList);
 begin
@@ -18087,10 +18046,11 @@ end;
 function TEasyCollectionItem.DefaultImageList(AImageSize: TEasyImageSize): TCustomImageList;
 begin
   case AImageSize of
-    eisSmall: Result := {$IF COMPILERVERSION >= 33}OwnerListview.ScaledImagesSmall{$ELSE}OwnerListview.ImagesSmall{$IFEND};
-    eisLarge: Result := {$IF COMPILERVERSION >= 33}OwnerListview.ScaledImagesLarge{$ELSE}OwnerListview.ImagesLarge{$IFEND};
-  else {eisExtraLarge:}
-    Result := {$IF COMPILERVERSION >= 33}OwnerListview.ScaledImagesExLarge{$ELSE}OwnerListview.ImagesExLarge{$IFEND};
+    eisSmall: Result := OwnerListview.ImagesSmall;
+    eisLarge: Result := OwnerListview.ImagesLarge;
+    eisExtraLarge: Result := OwnerListview.ImagesExLarge;
+  else
+    Result := OwnerListview.ImagesJumbo;
   end
 end;
 
@@ -23332,7 +23292,7 @@ begin
       fStyle := ILD_TRANSPARENT;
       if Column.ImageOverlayIndex > -1 then
       begin
-        ImageList_SetOverlayImage(Images.Handle, Column.ImageOverlayIndex, 1);
+        ImageList_SetOverlayImage(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, Column.ImageOverlayIndex, 1);
         fStyle := fStyle or INDEXTOOVERLAYMASK(1);
       end;
 
