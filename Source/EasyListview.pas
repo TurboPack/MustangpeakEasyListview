@@ -46,6 +46,7 @@ uses
 
   Types,    // This MUST come before Windows
   Variants,
+  Messaging,
   Windows,
   Messages,
   SysUtils,
@@ -2323,14 +2324,18 @@ type
   // **************************************************************************
   TEasyGlobalImageManager = class(TEasyOwnedPersistent)
   private
+    FCurrentPPI: Integer;
     FGroupExpandButton: TBitmap;
     FGroupCollapseButton: TBitmap;
     FColumnSortUp: TBitmap;
     FColumnSortDown: TBitmap;
+    FDPIChangedMessageId: Integer;
+    procedure DPIChangedMessageHandler(const ASender: TObject; const AMsg: Messaging.TMessage);
     function GetColumnSortDown: TBitmap;
     function GetColumnSortUp: TBitmap;
     function GetGroupCollapseImage: TBitmap;
     function GetGroupExpandImage: TBitmap;
+    procedure Resize(const ABitmap: TBitmap);
     procedure SetColumnSortDown(Value: TBitmap);
     procedure SetColumnSortUp(Value: TBitmap);
     procedure SetGroupCollapseImage(const Value: TBitmap);
@@ -2338,7 +2343,7 @@ type
   protected
     procedure MakeTransparent(Bits: TBitmap; TransparentColor: TColor);
   public
-    constructor Create(AnOwner: TCustomEasyListview); override;
+    constructor Create(AOwner: TCustomEasyListview); override;
     destructor Destroy; override;
   published
     property GroupExpandButton: TBitmap read GetGroupExpandImage write SetGroupExpandImage;
@@ -3445,7 +3450,7 @@ type
     procedure PaintFocusRect(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
     procedure PaintImage(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize); virtual;
     function PaintImageSize(Column: TEasyColumn; HeaderType: TEasyHeaderType): TEasyImageSize; virtual;
-    procedure PaintSortGlyph(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
+    procedure PaintSortGlyph(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject); virtual;
     procedure PaintText(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject; LinesToDraw: Integer); virtual;
     procedure ReSizeRectArray(var RectArray: TEasyRectArrayObjectArray); virtual;
     function SelectionHit(Column: TEasyColumn; SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; virtual;
@@ -8255,22 +8260,51 @@ end;
 
 { TEasyGlobalImageManager }
 
-constructor TEasyGlobalImageManager.Create(AnOwner: TCustomEasyListview);
+constructor TEasyGlobalImageManager.Create(AOwner: TCustomEasyListview);
 begin
-  inherited;
+  inherited Create(AOwner);
   FGroupExpandButton := TBitmap.Create;
   FGroupCollapseButton := TBitmap.Create;
   FColumnSortUp := TBitmap.Create;
   FColumnSortDown := TBitmap.Create;
+  FCurrentPPI := Screen.DefaultPixelsPerInch;
+  FDPIChangedMessageId := TMessageManager.DefaultManager.SubscribeToMessage(TChangeScaleMessage, DPIChangedMessageHandler);
 end;
 
 destructor TEasyGlobalImageManager.Destroy;
 begin
-  inherited;
+  inherited Destroy;
+  TMessageManager.DefaultManager.Unsubscribe(TChangeScaleMessage, FDPIChangedMessageId);
   FreeAndNil(FGroupExpandButton);
   FreeAndNil(FGroupCollapseButton);
   FreeAndNil(FColumnSortUp);
   FreeAndNil(FColumnSortDown);
+end;
+
+procedure TEasyGlobalImageManager.DPIChangedMessageHandler(const ASender: TObject; const AMsg: Messaging.TMessage);
+var
+  lMessage: TChangeScaleMessage;
+begin
+  lMessage := TChangeScaleMessage(AMsg);
+  if lMessage.M = FCurrentPPI then
+    Exit;
+
+  if UseThemes then
+  begin
+    FGroupExpandButton.Free;
+    FGroupExpandButton := TBitmap.Create;
+
+    FGroupCollapseButton.Free;
+    FGroupCollapseButton := TBitmap.Create;
+
+    FColumnSortUp.Free;
+    FColumnSortUp := TBitmap.Create;
+
+    FColumnSortDown.Free;
+    FColumnSortDown := TBitmap.Create;
+  end;
+
+  FCurrentPPI := lMessage.M;
 end;
 
 function TEasyGlobalImageManager.GetColumnSortDown: TBitmap;
@@ -8279,8 +8313,9 @@ begin
   begin
     MakeTransparent(FColumnSortDown, clFuchsia);
     FColumnSortDown.LoadFromResourceName(hInstance, BITMAP_SORTARROWDOWN);
+    Resize(FColumnSortDown);
   end;
-  Result := FColumnSortDown
+  Result := FColumnSortDown;
 end;
 
 function TEasyGlobalImageManager.GetColumnSortUp: TBitmap;
@@ -8289,8 +8324,9 @@ begin
   begin
     MakeTransparent(FColumnSortUp, clFuchsia);
     FColumnSortUp.LoadFromResourceName(hInstance, BITMAP_SORTARROWUP);
+    Resize(FColumnSortUp);
   end;
-  Result := FColumnSortUp
+  Result := FColumnSortUp;
 end;
 
 function TEasyGlobalImageManager.GetGroupCollapseImage: TBitmap;
@@ -8299,8 +8335,9 @@ begin
   begin
     MakeTransparent(FGroupCollapseButton, clFuchsia);
     FGroupCollapseButton.LoadFromResourceName(hInstance, BITMAP_DEFAULTGROUPCOLLAPSED);
+    Resize(FGroupCollapseButton);
   end;
-  Result := FGroupCollapseButton
+  Result := FGroupCollapseButton;
 end;
 
 function TEasyGlobalImageManager.GetGroupExpandImage: TBitmap;
@@ -8309,14 +8346,24 @@ begin
   begin
     MakeTransparent(FGroupExpandButton, clFuchsia);
     FGroupExpandButton.LoadFromResourceName(hInstance, BITMAP_DEFAULTGROUPEXPANDED);
+    Resize(FGroupExpandButton);
   end;
-  Result := FGroupExpandButton
+  Result := FGroupExpandButton;
 end;
 
 procedure TEasyGlobalImageManager.MakeTransparent(Bits: TBitmap; TransparentColor: TColor);
 begin
   Bits.Transparent := True;
-  Bits.TransparentColor := TransparentColor
+  Bits.TransparentColor := TransparentColor;
+end;
+
+procedure TEasyGlobalImageManager.Resize(const ABitmap: TBitmap);
+begin
+  if (FCurrentPPI <> Screen.DefaultPixelsPerInch) and UseThemes then
+  begin
+    ABitmap.Height := MulDiv(ABitmap.Height, FCurrentPPI, Screen.DefaultPixelsPerInch);
+    ABitmap.Width := MulDiv(ABitmap.Width, FCurrentPPI, Screen.DefaultPixelsPerInch);
+  end;
 end;
 
 procedure TEasyGlobalImageManager.SetColumnSortDown(Value: TBitmap);
@@ -23313,19 +23360,28 @@ begin
   end
 end;
 
-procedure TEasyViewColumn.PaintSortGlyph(Column: TEasyColumn; ACanvas: TCanvas;
-  HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject);
+procedure TEasyViewColumn.PaintSortGlyph(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject);
+const
+  cArrows: array[Boolean] of Integer = (HSAS_SORTEDDOWN, HSAS_SORTEDUP);
 var
-  Image: TBitmap;
+  lImage: TBitmap;
 begin
-  if Column.SortDirection <> esdNone then
+  if AColumn.SortDirection <> esdNone then
   begin
-    if Column.SortDirection = esdAscending then
-      Image := OwnerListview.GlobalImages.ColumnSortUp
+    if UseThemes then
+    begin
+      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle,
+        HP_HEADERSORTARROW, cArrows[AColumn.SortDirection = esdAscending],
+        ARectArray.SortRect, nil);
+    end
     else
-      Image := OwnerListview.GlobalImages.ColumnSortDown;
-
-    ACanvas.Draw(RectArray.SortRect.Left, RectArray.SortRect.Top, Image);
+    begin
+      if AColumn.SortDirection = esdAscending then
+        lImage := OwnerListview.GlobalImages.ColumnSortUp
+      else
+        lImage := OwnerListview.GlobalImages.ColumnSortDown;
+      ACanvas.Draw(ARectArray.SortRect.Left, ARectArray.SortRect.Top, lImage);
+    end;
   end
 end;
 
