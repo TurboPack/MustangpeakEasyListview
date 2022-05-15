@@ -2095,7 +2095,7 @@ type
     function GetStateImageList(Column: TEasyColumn; Item: TEasyItem): TCustomImageList; virtual;
     function ItemRect(Item: TEasyItem; Column: TEasyColumn; RectType: TEasyCellRectType): TRect; virtual;
     procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); virtual;
-    procedure LoadTextFont(Item: TEasyItem; Position: Integer; ACanvas: TCanvas; Hilightable: Boolean); virtual;
+    procedure LoadTextFont(AItem: TEasyItem; APosition: Integer; ACanvas: TCanvas; AHightable: Boolean); virtual;
     function OverlappedFocus: Boolean; virtual;
     procedure Paint(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean); virtual;
     procedure PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject); virtual;
@@ -3443,7 +3443,7 @@ type
     procedure Paint(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType); virtual;
     procedure PaintAfter(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
     procedure PaintBefore(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
-    procedure PaintBkGnd(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
+    procedure PaintBkGnd(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject); virtual;
     procedure PaintCheckBox(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
     procedure PaintDropDownArrow(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
     procedure PaintDropGlyph(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
@@ -3451,7 +3451,7 @@ type
     procedure PaintImage(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize); virtual;
     function PaintImageSize(Column: TEasyColumn; HeaderType: TEasyHeaderType): TEasyImageSize; virtual;
     procedure PaintSortGlyph(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject); virtual;
-    procedure PaintText(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject; LinesToDraw: Integer); virtual;
+    procedure PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: Integer); virtual;
     procedure ReSizeRectArray(var RectArray: TEasyRectArrayObjectArray); virtual;
     function SelectionHit(Column: TEasyColumn; SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; virtual;
     function SelectionHitPt(Column: TEasyColumn; ViewportPoint: TPoint; SelectType: TEasySelectHitType): Boolean; virtual;
@@ -3602,7 +3602,7 @@ type
     function LastColumnByPosition: TEasyColumn;
     function NextColumnInRect(Column: TEasyColumn; ViewportRect: TRect): TEasyColumn;
     procedure LoadFromStream(S: TStream; Version: Integer = EASYLISTVIEW_STREAM_VERSION); override;
-    procedure PaintTo(ACanvas: TCanvas; ARect: TRect; ViewRectCoords: Boolean); virtual;
+    procedure PaintTo(ACanvas: TCanvas; ARect: TRect; AViewRectCoords: Boolean); virtual;
     procedure Rebuild(Force: Boolean); virtual;
     procedure SaveToStream(S: TStream; Version: Integer = EASYLISTVIEW_STREAM_VERSION); override;
     {$ifndef DISABLE_ACCESSIBILITY}property Accessible: IAccessible read FAccessible;{$endif}
@@ -19712,45 +19712,52 @@ begin
     Columns.ReadItems(S)
 end;
 
-procedure TEasyHeader.PaintTo(ACanvas: TCanvas; ARect: TRect; ViewRectCoords: Boolean);
+procedure TEasyHeader.PaintTo(ACanvas: TCanvas; ARect: TRect; AViewRectCoords: Boolean);
 var
-  Column: TEasyColumn;
-  Handled: Boolean;
-  PartID,
-  StateID: LongWord;
+  lColumn: TEasyColumn;
+  lHandled: Boolean;
+  lPartID: Integer;
+  lServices: TCustomStyleServices;
+  lStateID: Integer;
 begin
-  Handled := False;
+  lHandled := False;
   CanvasStore.StoreCanvasState(ACanvas);
-  OwnerListview.DoPaintHeaderBkGnd(ACanvas, ViewRect, Handled);
+  OwnerListview.DoPaintHeaderBkGnd(ACanvas, ViewRect, lHandled);
   CanvasStore.RestoreCanvasState(ACanvas);
-  if not Handled then
+  if not lHandled then
   begin
     {$IFDEF SpTBX}
     if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
     begin
       // Paints the rightmost background of the columns, the part that never gets selected
       SpDrawXPHeader(ACanvas, ViewRect, False, False);
-    end else
+    end
+    else
     {$ENDIF SpTBX}
     if OwnerListview.DrawWithThemes then
     begin
-      PartID := HP_HEADERITEM;
-      StateID := HIS_NORMAL;
-      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, PartID, StateID, ViewRect, nil);
-    end else
+      lPartID := HP_HEADERITEM;
+      lStateID := HIS_NORMAL;
+      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, lPartID, lStateID, ViewRect, nil);
+    end
+    else
     begin
-      ACanvas.Brush.Color := Color;
+      lServices := StyleServices(OwnerListview);
+      if lServices.Enabled then
+        ACanvas.Brush.Color := lServices.GetSystemColor(Color)
+      else
+        ACanvas.Brush.Color := Color;
       ACanvas.FillRect(DisplayRect);
     end
   end;
 
-  Column := FirstColumnInRect(ARect);
-  while Assigned(Column) do
+  lColumn := FirstColumnInRect(ARect);
+  while Assigned(lColumn) do
   begin
     // Reset the clipping region
     SelectClipRgn(ACanvas.Handle, 0);
-    Column.Paint(ACanvas, ehtHeader);
-    Column := NextColumnInRect(Column, ARect);
+    lColumn.Paint(ACanvas, ehtHeader);
+    lColumn := NextColumnInRect(lColumn, ARect);
   end
 end;
 
@@ -20635,15 +20642,17 @@ begin
   SetRect(RectArray.CheckRect, 0, 0, 0, 0);
 end;
 
-procedure TEasyViewItem.LoadTextFont(Item: TEasyItem; Position: Integer; ACanvas: TCanvas; Hilightable: Boolean);
+procedure TEasyViewItem.LoadTextFont(AItem: TEasyItem; APosition: Integer; ACanvas: TCanvas; AHightable: Boolean);
+var
+  lServices: TCustomStyleServices;
 begin
   ACanvas.Font.Assign(OwnerListview.Font);
   ACanvas.Brush.Style := bsClear;
   if not OwnerListview.ShowInactive then
   begin
-    if Hilightable then
+    if AHightable then
     begin
-      if OwnerListview.Focused or Item.OwnerListview.Selection.PopupMode or Item.Hilighted then
+      if OwnerListview.Focused or AItem.OwnerListview.Selection.PopupMode or AItem.Hilighted then
       begin
         ACanvas.Font.Color := OwnerListview.Selection.TextColor;
         {$IFDEF SpTBX}
@@ -20654,21 +20663,27 @@ begin
       else
         ACanvas.Font.Color := OwnerListview.Selection.InactiveTextColor
     end;
-    if OwnerListview.HotTrack.Enabled and not Item.Hilighted then
+    if OwnerListview.HotTrack.Enabled and not AItem.Hilighted then
     begin
-      if (OwnerListview.HotTrack.FPendingObject = Item) and not Item.Selected then
+      if (OwnerListview.HotTrack.FPendingObject = AItem) and not AItem.Selected then
       begin
         ACanvas.Font.Color := OwnerListview.HotTrack.Color;
         if OwnerListview.HotTrack.Underline then
           ACanvas.Font.Style := ACanvas.Font.Style + [fsUnderline]
-      end
-    end
-  end else
+      end;
+    end;
+  end
+  else
     ACanvas.Font.Color := clGrayText;
 
-  if Item.Bold then
+  if AItem.Bold then
     ACanvas.Font.Style := ACanvas.Font.Style + [fsBold];
-  OwnerListview.DoItemPaintText(Item, Position, ACanvas);
+  lServices := StyleServices(OwnerListview);
+  if lServices.Enabled then
+    ACanvas.Font.Color := lServices.GetSystemColor(ACanvas.Font.Color)
+  else
+    ACanvas.Font.Color := ACanvas.Font.Color;
+  OwnerListview.DoItemPaintText(AItem, APosition, ACanvas);
 end;
 
 procedure TEasyViewItem.Paint(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean);
@@ -23099,138 +23114,152 @@ begin
 
 end;
 
-procedure TEasyViewColumn.PaintBkGnd(Column: TEasyColumn; ACanvas: TCanvas;
-  HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject);
+procedure TEasyViewColumn.PaintBkGnd(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject);
 
-      procedure SpiegelnHorizontal(Bitmap:TBitmap);
+      procedure SpiegelnHorizontal(ABitmap:TBitmap);
       type
         TRGBArray = array[0..0] OF TRGBQuad;
-        pRGBArray = ^TRGBArray;
+        PRGBArray = ^TRGBArray;
       var
-        i, j, w :  Integer;
-        RowIn :  pRGBArray;
-        RowOut:  pRGBArray;
+        lInnerCount: Integer;
+        lInnerInner: Integer;
+        lInnerRowIn: PRGBArray;
+        lInnerRowOut: PRGBArray;
+        lWidth: Integer;
       begin
-        w := Bitmap.Width*SizeOf(TRGBQuad);
-        GetMem(RowIn, w);
-        for j := 0 to Bitmap.Height-1 do
-        begin
-          Move(Bitmap.Scanline[j]^, RowIn^,w);
-          RowOut := Bitmap.Scanline[j];
-          for i := 0 to Bitmap.Width-1 do
-            RowOut[i] := RowIn[Bitmap.Width-1-i];
+        lWidth := ABitmap.Width * SizeOf(TRGBQuad);
+        GetMem(lInnerRowIn, lWidth);
+        try
+          for lInnerCount := 0 to ABitmap.Height - 1 do
+          begin
+            Move(ABitmap.Scanline[lInnerCount]^, lInnerRowIn^, lWidth);
+            lInnerRowOut := ABitmap.Scanline[lInnerCount];
+            for lInnerInner := 0 to ABitmap.Width - 1 do
+              lInnerRowOut[lInnerInner] := lInnerRowIn[ABitmap.Width - 1 - lInnerInner];
+          end;
+          ABitmap.Assign(ABitmap);
+        finally
+          FreeMem(lInnerRowIn);
         end;
-        Bitmap.Assign(Bitmap);
-        Freemem(RowIn);
       end;
 
 var
-  NormalButtonFlags, NormalButtonStyle, PressedButtonStyle, PressedButtonFlags,
-  RaisedButtonStyle, RaisedButtonFlags: LongWord;
-  R: TRect;
-  Pt: TPoint;
-  PartID,
-  StateID: LongWord;
-  Bits: TBitmap;
+  lBits: TBitmap;
+  lNormalButtonFlags: Cardinal;
+  lNormalButtonStyle: Cardinal;
+  lPartId: Integer;
+  lPoint: TPoint;
+  lPressedButtonFlags: Cardinal;
+  lPressedButtonStyle: Cardinal;
+  lRaisedButtonFlags: Cardinal;
+  lRaisedButtonStyle: Cardinal;
+  lRect: TRect;
+  lServices: TCustomStyleServices;
+  lStateId: Integer;
 begin
-  Pt.x := 0;
-  Pt.y := 0;
+  lPoint.x := 0;
+  lPoint.y := 0;
 
   {$IFDEF SpTBX}
   if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
-    SpDrawXPHeader(ACanvas, Column.DisplayRect, Column.HotTracking[Pt], Column.Clicking)
+    SpDrawXPHeader(ACanvas, AColumn.DisplayRect, AColumn.HotTracking[lPoint], AColumn.Clicking)
   else
   {$ENDIF SpTBX}
   if OwnerListview.DrawWithThemes then
   begin
-    PartID := HP_HEADERITEM;
-    if Column.Clicking then
-      StateID := HIS_PRESSED
+    lPartId := HP_HEADERITEM;
+    if AColumn.Clicking then
+      lStateId := HIS_PRESSED
+    else if AColumn.HotTracking[lPoint] then
+      lStateId := HIS_HOT
     else
-    if Column.HotTracking[Pt] then
-      StateID := HIS_HOT
-    else
-      StateID := HIS_NORMAL;
+      lStateId := HIS_NORMAL;
 
-    if ((HiWord(ComCtl32Version) = 6) and (LoWord(ComCtl32Version) >= 10 )) or
+    if ((HiWord(ComCtl32Version) = 6) and (LoWord(ComCtl32Version) >= 10)) or
        ((HiWord(ComCtl32Version) > 6)) then
     begin
-      if (Column.SortDirection <> esdNone) then
+      if (AColumn.SortDirection <> esdNone) then
       begin
-        if StateID = HIS_PRESSED then
-          StateID := HIS_SORTEDPRESSED
+        if lStateId = HIS_PRESSED then
+          lStateId := HIS_SORTEDPRESSED
+        else if lStateId = HIS_HOT then
+          lStateId := HIS_SORTEDHOT
         else
-        if StateID = HIS_HOT then
-          StateID := HIS_SORTEDHOT
-        else
-          StateID := HIS_SORTEDNORMAL
+          lStateId := HIS_SORTEDNORMAL
       end
     end;
 
-    if HeaderType = ehtFooter then
+    if AHeaderType = ehtFooter then
     begin
-      Bits := TBitmap.Create;
+      lBits := TBitmap.Create;
       try
-        Bits.Width := RectWidth(Column.DisplayRect);
-        Bits.Height := RectHeight(Column.DisplayRect);
-        Bits.PixelFormat := pf32Bit;
-        DrawThemeBackground(OwnerListview.Themes.HeaderTheme, Bits.Canvas.Handle, PartID, StateID, Rect(0, 0, Bits.Width, Bits.Height), nil);
-        SpiegelnHorizontal(Bits);
-        BitBlt(ACanvas.Handle, Column.DisplayRect.Left, Column.DisplayRect.Top, Bits.Width, Bits.Height, Bits.Canvas.Handle, 0, 0, SRCCOPY);
+        lBits.Width := RectWidth(AColumn.DisplayRect);
+        lBits.Height := RectHeight(AColumn.DisplayRect);
+        lBits.PixelFormat := pf32Bit;
+        DrawThemeBackground(OwnerListview.Themes.HeaderTheme, lBits.Canvas.Handle, lPartId, lStateId, Rect(0, 0, lBits.Width, lBits.Height), nil);
+        SpiegelnHorizontal(lBits);
+        BitBlt(ACanvas.Handle, AColumn.DisplayRect.Left, AColumn.DisplayRect.Top, lBits.Width, lBits.Height, lBits.Canvas.Handle, 0, 0, SRCCOPY);
       finally
-        Bits.Free
+        lBits.Free
       end;
-    end else
+    end
+    else
     begin
-      R := Column.DisplayRect;
+      lRect := AColumn.DisplayRect;
       // The divider is drawn by this as well and if shorted the divider is before the button
-  //    if Column.HotTracking[Pt] and Column.DropDownButton.Visible and (RectWidth(RectArray.DropDownArrow) > 0) then
-  //      R.Right := RectArray.DropDownArrow.Left;
-      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, PartID, StateID, R, nil);
+  //    if AColumn.HotTracking[lPoint] and AColumn.DropDownButton.Visible and (RectWidth(ARectArray.DropDownArrow) > 0) then
+  //      lRect.Right := ARectArray.DropDownArrow.Left;
+      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, lPartId, lStateId, lRect, nil);
     end;
  //   Exit;
-  end else
+  end
+  else
   begin
-    ACanvas.Brush.Color := Column.Color;
-    ACanvas.FillRect(Column.DisplayRect);
+    lServices := StyleServices(OwnerListview);
+    if lServices.Enabled then
+      ACanvas.Brush.Color := lServices.GetSystemColor(AColumn.Color)
+    else
+      ACanvas.Brush.Color := AColumn.Color;
+    ACanvas.FillRect(AColumn.DisplayRect);
 
-    RaisedButtonStyle := 0;
-    RaisedButtonFlags := 0;
+    lRaisedButtonStyle := 0;
+    lRaisedButtonFlags := 0;
 
-    case Column.Style of
+    case AColumn.Style of
       ehbsThick:
-        begin
-          NormalButtonStyle := BDR_RAISEDINNER or BDR_RAISEDOUTER;
-          NormalButtonFlags := BF_LEFT or BF_TOP or BF_BOTTOM or BF_RIGHT or BF_SOFT or BF_ADJUST;
-          PressedButtonStyle := BDR_RAISEDINNER or BDR_RAISEDOUTER;
-          PressedButtonFlags := NormalButtonFlags or BF_RIGHT or BF_FLAT or BF_ADJUST;
-        end;
+      begin
+        lNormalButtonStyle := BDR_RAISEDINNER or BDR_RAISEDOUTER;
+        lNormalButtonFlags := BF_LEFT or BF_TOP or BF_BOTTOM or BF_RIGHT or BF_SOFT or BF_ADJUST;
+        lPressedButtonStyle := BDR_RAISEDINNER or BDR_RAISEDOUTER;
+        lPressedButtonFlags := lNormalButtonFlags or BF_RIGHT or BF_FLAT or BF_ADJUST;
+      end;
       ehbsFlat:
-        begin
-          NormalButtonStyle := BDR_RAISEDINNER;
-          NormalButtonFlags := BF_LEFT or BF_TOP or BF_BOTTOM or BF_RIGHT or BF_ADJUST;
-          PressedButtonStyle := BDR_SUNKENOUTER;
-          PressedButtonFlags := BF_RECT or BF_ADJUST;
-        end;
-      else
-        begin
-          NormalButtonStyle := BDR_RAISEDINNER;
-          NormalButtonFlags := BF_RECT or BF_SOFT or BF_ADJUST;
-          PressedButtonStyle := BDR_SUNKENOUTER;
-          PressedButtonFlags := BF_RECT or BF_ADJUST;
-          RaisedButtonStyle := BDR_RAISEDINNER;
-          RaisedButtonFlags := BF_LEFT or BF_TOP or BF_BOTTOM or BF_RIGHT or BF_ADJUST;
-        end;
+      begin
+        lNormalButtonStyle := BDR_RAISEDINNER;
+        lNormalButtonFlags := BF_LEFT or BF_TOP or BF_BOTTOM or BF_RIGHT or BF_ADJUST;
+        lPressedButtonStyle := BDR_SUNKENOUTER;
+        lPressedButtonFlags := BF_RECT or BF_ADJUST;
+      end;
+    else
+      begin
+        lNormalButtonStyle := BDR_RAISEDINNER;
+        lNormalButtonFlags := BF_RECT or BF_SOFT or BF_ADJUST;
+        lPressedButtonStyle := BDR_SUNKENOUTER;
+        lPressedButtonFlags := BF_RECT or BF_ADJUST;
+        lRaisedButtonStyle := BDR_RAISEDINNER;
+        lRaisedButtonFlags := BF_LEFT or BF_TOP or BF_BOTTOM or BF_RIGHT or BF_ADJUST;
+      end;
     end;
 
-    R := Column.DisplayRect;
-    if Column.Clicking then
-      DrawEdge(ACanvas.Handle, R, PressedButtonStyle, PressedButtonFlags)
-    else begin
-      if (Column.Hilighted) and (Column.Style = ehbsPlate) then
-        DrawEdge(ACanvas.Handle, R, RaisedButtonStyle, RaisedButtonFlags)
+    lRect := AColumn.DisplayRect;
+    if AColumn.Clicking then
+      DrawEdge(ACanvas.Handle, lRect, lPressedButtonStyle, lPressedButtonFlags)
+    else
+    begin
+      if (AColumn.Hilighted) and (AColumn.Style = ehbsPlate) then
+        DrawEdge(ACanvas.Handle, lRect, lRaisedButtonStyle, lRaisedButtonFlags)
       else
-        DrawEdge(ACanvas.Handle, R, NormalButtonStyle, NormalButtonFlags)
+        DrawEdge(ACanvas.Handle, lRect, lNormalButtonStyle, lNormalButtonFlags)
     end
   end
 end;
@@ -23385,36 +23414,40 @@ begin
   end
 end;
 
-procedure TEasyViewColumn.PaintText(Column: TEasyColumn; ACanvas: TCanvas;
-  HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject;
-  LinesToDraw: Integer);
+procedure TEasyViewColumn.PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: Integer);
 var
-   DrawTextFlags: TCommonDrawTextWFlags;
+  lDrawTextFlags: TCommonDrawTextWFlags;
+  lServices: TCustomStyleServices;
 begin
-   if not IsRectEmpty(RectArray.TextRect) then
-   begin
-     ACanvas.Brush.Style := bsClear;
+  if not IsRectEmpty(ARectArray.TextRect) then
+  begin
+    ACanvas.Brush.Style := bsClear;
 
-     DrawTextFlags := [dtEndEllipsis];
+    lDrawTextFlags := [dtEndEllipsis];
 
-     if LinesToDraw = 1 then
-       Include(DrawTextFlags, dtSingleLine);
+    if ALinesToDraw = 1 then
+      Include(lDrawTextFlags, dtSingleLine);
 
-     case Column.Alignment of
-       taLeftJustify: Include(DrawTextFlags, dtLeft);
-       taRightJustify: Include(DrawTextFlags, dtRight);
-       taCenter:  Include(DrawTextFlags, dtCenter);
-     end;
+    case AColumn.Alignment of
+      taLeftJustify: Include(lDrawTextFlags, dtLeft);
+      taRightJustify: Include(lDrawTextFlags, dtRight);
+      taCenter:  Include(lDrawTextFlags, dtCenter);
+    end;
 
-     // Vertical Alignment is accounted for in the Text Rects
+    // Vertical Alignment is accounted for in the Text Rects
 
-     LoadTextFont(Column, ACanvas);
-     if Column.Bold then
-       ACanvas.Font.Style := ACanvas.Font.Style + [fsBold];
+    LoadTextFont(AColumn, ACanvas);
+    if AColumn.Bold then
+      ACanvas.Font.Style := ACanvas.Font.Style + [fsBold];
 
-     OwnerListview.DoColumnPaintText(Column, ACanvas);
-     DrawTextWEx(ACanvas.Handle, Column.Caption, RectArray.TextRects[0], DrawTextFlags, OwnerListview.PaintInfoColumn.CaptionLines);
-end;
+    OwnerListview.DoColumnPaintText(AColumn, ACanvas);
+    lServices := StyleServices(OwnerListview);
+    if lServices.Enabled then
+      ACanvas.Font.Color := lServices.GetSystemColor(ACanvas.Font.Color)
+    else
+      ACanvas.Font.Color := ACanvas.Font.Color;
+    DrawTextWEx(ACanvas.Handle, AColumn.Caption, ARectArray.TextRects[0], lDrawTextFlags, OwnerListview.PaintInfoColumn.CaptionLines);
+  end;
 
 end;
 
