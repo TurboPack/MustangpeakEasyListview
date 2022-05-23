@@ -19715,6 +19715,7 @@ end;
 procedure TEasyHeader.PaintTo(ACanvas: TCanvas; ARect: TRect; AViewRectCoords: Boolean);
 var
   lColumn: TEasyColumn;
+  lDetails: TThemedElementDetails;
   lHandled: Boolean;
   lPartID: Integer;
   lServices: TCustomStyleServices;
@@ -19726,6 +19727,7 @@ begin
   CanvasStore.RestoreCanvasState(ACanvas);
   if not lHandled then
   begin
+    lServices := StyleServices(OwnerListview);
     {$IFDEF SpTBX}
     if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
     begin
@@ -19736,13 +19738,20 @@ begin
     {$ENDIF SpTBX}
     if OwnerListview.DrawWithThemes then
     begin
-      lPartID := HP_HEADERITEM;
-      lStateID := HIS_NORMAL;
-      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, lPartID, lStateID, ViewRect, nil);
+      if lServices.Enabled then
+      begin
+        lDetails := lServices.GetElementDetails(TThemedHeader.thHeaderItemNormal);
+        lServices.DrawElement(ACanvas.Handle, lDetails, ViewRect, nil, OwnerListview.CurrentPPI);
+      end
+      else
+      begin
+        lPartID := HP_HEADERITEM;
+        lStateID := HIS_NORMAL;
+        DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, lPartID, lStateID, ViewRect, nil);
+      end;
     end
     else
     begin
-      lServices := StyleServices(OwnerListview);
       if lServices.Enabled then
         ACanvas.Brush.Color := lServices.GetSystemColor(Color)
       else
@@ -23145,6 +23154,7 @@ procedure TEasyViewColumn.PaintBkGnd(AColumn: TEasyColumn; ACanvas: TCanvas; AHe
 
 var
   lBits: TBitmap;
+  lDetails: TThemedElementDetails;
   lNormalButtonFlags: Cardinal;
   lNormalButtonStyle: Cardinal;
   lPartId: Integer;
@@ -23155,11 +23165,13 @@ var
   lRaisedButtonStyle: Cardinal;
   lRect: TRect;
   lServices: TCustomStyleServices;
+  lState: TThemedHeader;
   lStateId: Integer;
 begin
   lPoint.x := 0;
   lPoint.y := 0;
 
+  lServices := StyleServices(OwnerListview);
   {$IFDEF SpTBX}
   if SkinManager.GetSkinType in [sknSkin, sknDelphiStyle] then
     SpDrawXPHeader(ACanvas, AColumn.DisplayRect, AColumn.HotTracking[lPoint], AColumn.Clicking)
@@ -23167,55 +23179,68 @@ begin
   {$ENDIF SpTBX}
   if OwnerListview.DrawWithThemes then
   begin
-    lPartId := HP_HEADERITEM;
-    if AColumn.Clicking then
-      lStateId := HIS_PRESSED
-    else if AColumn.HotTracking[lPoint] then
-      lStateId := HIS_HOT
-    else
-      lStateId := HIS_NORMAL;
-
-    if ((HiWord(ComCtl32Version) = 6) and (LoWord(ComCtl32Version) >= 10)) or
-       ((HiWord(ComCtl32Version) > 6)) then
+    if lServices.Enabled then
     begin
-      if (AColumn.SortDirection <> esdNone) then
-      begin
-        if lStateId = HIS_PRESSED then
-          lStateId := HIS_SORTEDPRESSED
-        else if lStateId = HIS_HOT then
-          lStateId := HIS_SORTEDHOT
-        else
-          lStateId := HIS_SORTEDNORMAL
-      end
-    end;
-
-    if AHeaderType = ehtFooter then
-    begin
-      lBits := TBitmap.Create;
-      try
-        lBits.Width := RectWidth(AColumn.DisplayRect);
-        lBits.Height := RectHeight(AColumn.DisplayRect);
-        lBits.PixelFormat := pf32Bit;
-        DrawThemeBackground(OwnerListview.Themes.HeaderTheme, lBits.Canvas.Handle, lPartId, lStateId, Rect(0, 0, lBits.Width, lBits.Height), nil);
-        SpiegelnHorizontal(lBits);
-        BitBlt(ACanvas.Handle, AColumn.DisplayRect.Left, AColumn.DisplayRect.Top, lBits.Width, lBits.Height, lBits.Canvas.Handle, 0, 0, SRCCOPY);
-      finally
-        lBits.Free
-      end;
+      if AColumn.Clicking then
+        lState := TThemedHeader.thHeaderItemPressed
+      else if AColumn.HotTracking[lPoint] then
+        lState := TThemedHeader.thHeaderItemHot
+      else
+        lState := TThemedHeader.thHeaderItemNormal;
+      lDetails := lServices.GetElementDetails(lState);
+      lServices.DrawElement(ACanvas.Handle, lDetails, AColumn.DisplayRect, nil, OwnerListview.CurrentPPI);
     end
     else
     begin
-      lRect := AColumn.DisplayRect;
-      // The divider is drawn by this as well and if shorted the divider is before the button
-  //    if AColumn.HotTracking[lPoint] and AColumn.DropDownButton.Visible and (RectWidth(ARectArray.DropDownArrow) > 0) then
-  //      lRect.Right := ARectArray.DropDownArrow.Left;
-      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, lPartId, lStateId, lRect, nil);
+      lPartId := HP_HEADERITEM;
+      if AColumn.Clicking then
+        lStateId := HIS_PRESSED
+      else if AColumn.HotTracking[lPoint] then
+        lStateId := HIS_HOT
+      else
+        lStateId := HIS_NORMAL;
+
+      if ((HiWord(ComCtl32Version) = 6) and (LoWord(ComCtl32Version) >= 10)) or
+         ((HiWord(ComCtl32Version) > 6)) then
+      begin
+        if (AColumn.SortDirection <> esdNone) then
+        begin
+          if lStateId = HIS_PRESSED then
+            lStateId := HIS_SORTEDPRESSED
+          else if lStateId = HIS_HOT then
+            lStateId := HIS_SORTEDHOT
+          else
+            lStateId := HIS_SORTEDNORMAL
+        end
+      end;
+
+      if AHeaderType = ehtFooter then
+      begin
+        lBits := TBitmap.Create;
+        try
+          lBits.Width := RectWidth(AColumn.DisplayRect);
+          lBits.Height := RectHeight(AColumn.DisplayRect);
+          lBits.PixelFormat := pf32Bit;
+          DrawThemeBackground(OwnerListview.Themes.HeaderTheme, lBits.Canvas.Handle, lPartId, lStateId, Rect(0, 0, lBits.Width, lBits.Height), nil);
+          SpiegelnHorizontal(lBits);
+          BitBlt(ACanvas.Handle, AColumn.DisplayRect.Left, AColumn.DisplayRect.Top, lBits.Width, lBits.Height, lBits.Canvas.Handle, 0, 0, SRCCOPY);
+        finally
+          lBits.Free
+        end;
+      end
+      else
+      begin
+        lRect := AColumn.DisplayRect;
+        // The divider is drawn by this as well and if shorted the divider is before the button
+    //    if AColumn.HotTracking[lPoint] and AColumn.DropDownButton.Visible and (RectWidth(ARectArray.DropDownArrow) > 0) then
+    //      lRect.Right := ARectArray.DropDownArrow.Left;
+        DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle, lPartId, lStateId, lRect, nil);
+      end;
     end;
  //   Exit;
   end
   else
   begin
-    lServices := StyleServices(OwnerListview);
     if lServices.Enabled then
       ACanvas.Brush.Color := lServices.GetSystemColor(AColumn.Color)
     else
@@ -23417,10 +23442,13 @@ end;
 procedure TEasyViewColumn.PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: Integer);
 var
   lDrawTextFlags: TCommonDrawTextWFlags;
+  lOldColor: TColor;
+  lOldStyle: TBrushStyle;
   lServices: TCustomStyleServices;
 begin
   if not IsRectEmpty(ARectArray.TextRect) then
   begin
+    lOldStyle := ACanvas.Brush.Style;
     ACanvas.Brush.Style := bsClear;
 
     lDrawTextFlags := [dtEndEllipsis];
@@ -23442,13 +23470,16 @@ begin
 
     OwnerListview.DoColumnPaintText(AColumn, ACanvas);
     lServices := StyleServices(OwnerListview);
+    lOldColor := ACanvas.Font.Color;
     if lServices.Enabled then
       ACanvas.Font.Color := lServices.GetSystemColor(ACanvas.Font.Color)
     else
       ACanvas.Font.Color := ACanvas.Font.Color;
     DrawTextWEx(ACanvas.Handle, AColumn.Caption, ARectArray.TextRects[0], lDrawTextFlags, OwnerListview.PaintInfoColumn.CaptionLines);
-  end;
 
+    ACanvas.Font.Color := lOldColor;
+    ACanvas.Brush.Style := lOldStyle;
+  end;
 end;
 
 procedure TEasyViewColumn.ReSizeRectArray(
