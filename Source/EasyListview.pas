@@ -4914,7 +4914,7 @@ type
     function UseInternalDragImage(DataObject: IDataObject): Boolean; virtual;
     function ViewSupportsHeader: Boolean;
     procedure AfterPaintRect(ACanvas: TCanvas; ClipRect: TRect); override;
-    procedure CalcThemedNCSize(var ContextRect: TRect); override;
+    procedure CalcThemedNCSize(var AContextRect: TRect); override;
     procedure CancelCut;
     procedure CheckFocus; virtual;
     procedure ClearDraggingFlags;
@@ -14467,10 +14467,10 @@ begin
 //  Sort.BeginUpdate;
 end;
 
-procedure TCustomEasyListview.CalcThemedNCSize(var ContextRect: TRect);
+procedure TCustomEasyListview.CalcThemedNCSize(var AContextRect: TRect);
 begin
-  if Succeeded(GetThemeBackgroundContentRect(Themes.ListviewTheme, Canvas.Handle, LVP_EMPTYTEXT, LIS_NORMAL, ContextRect, @ContextRect)) then
-    InflateRect(ContextRect, -(BorderWidth), -(BorderWidth));
+  if Succeeded(GetThemeBackgroundContentRect(Themes.ListviewTheme, Canvas.Handle, LVP_EMPTYTEXT, LIS_NORMAL, AContextRect, @AContextRect)) then
+    InflateRect(AContextRect, -BorderWidth, -BorderWidth);
 end;
 
 procedure TCustomEasyListview.CancelCut;
