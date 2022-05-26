@@ -14469,8 +14469,11 @@ end;
 
 procedure TCustomEasyListview.CalcThemedNCSize(var AContextRect: TRect);
 begin
-  if Succeeded(GetThemeBackgroundContentRect(Themes.ListviewTheme, Canvas.Handle, LVP_EMPTYTEXT, LIS_NORMAL, AContextRect, @AContextRect)) then
-    InflateRect(AContextRect, -BorderWidth, -BorderWidth);
+  if not StyleServices(Self).Enabled then
+  begin
+    if Succeeded(GetThemeBackgroundContentRect(Themes.ListviewTheme, Canvas.Handle, LVP_EMPTYTEXT, LIS_NORMAL, AContextRect, @AContextRect)) then
+      InflateRect(AContextRect, -BorderWidth, -BorderWidth);
+  end;
 end;
 
 procedure TCustomEasyListview.CancelCut;
