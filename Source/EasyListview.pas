@@ -1229,6 +1229,7 @@ type
     FCheckIndent: Integer;
     FCheckSize: Integer;
     FCheckType: TEasyCheckType;
+    FCurrentPPI: Integer;
     FImageIndent: Integer;
     FShowBorder: Boolean;
     FVAlignment: TCommonVAlignment;
@@ -1245,6 +1246,7 @@ type
     procedure SetShowBorder(const Value: Boolean);
     procedure SetVAlignment(Value: TCommonVAlignment);
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean); virtual;
     procedure Invalidate(ImmediateUpdate: Boolean); virtual;
 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -1340,6 +1342,7 @@ type
     procedure SetSortGlyphIndent(Value: Integer);
     procedure SetStyle(Value: TEasyHeaderButtonStyle);
   protected
+    procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean); override;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property HilightFocused: Boolean read FHilightFocused write SetHilightFocused default False;
     property HilightFocusedColor: TColor read FHilightFocusedColor write SetHilightFocusedColor default $00F7F7F7;
@@ -6121,7 +6124,7 @@ implementation
 
 uses
   {$ifndef DISABLE_ACCESSIBILITY}EasyListviewAccessible,{$endif}
-  System.UITypes, System.Math;
+  System.UITypes, System.Math, Vcl.GraphUtil;
 
 const
   PERSISTENTOBJECTSTATES = [esosSelected, esosEnabled, esosVisible, esosChecked, esosBold]; // States that are stored to a stream for persistance
@@ -8328,7 +8331,7 @@ begin
   FGroupCollapseButton := TBitmap.Create;
   FColumnSortUp := TBitmap.Create;
   FColumnSortDown := TBitmap.Create;
-  FCurrentPPI := Screen.DefaultPixelsPerInch;
+  FCurrentPPI := Screen.PixelsPerInch;
   FDPIChangedMessageId := TMessageManager.DefaultManager.SubscribeToMessage(TChangeScaleMessage, DPIChangedMessageHandler);
 end;
 
@@ -14200,6 +14203,9 @@ begin
   FHeader.ChangeScale(AM, AD, AIsDpiChange);
   FCellSizes.ChangeScale(AM, AD, AIsDpiChange);
   FGroups.ChangeScale(AM, AD, AIsDpiChange);
+  FPaintInfoColumn.ChangeScale(AM, AD, AIsDpiChange);
+  FPaintInfoGroup.ChangeScale(AM, AD, AIsDpiChange);
+  FPaintInfoItem.ChangeScale(AM, AD, AIsDpiChange);
 end;
 
 function TCustomEasyListview.CreateColumnPaintInfo: TEasyPaintInfoBaseColumn;
@@ -22882,12 +22888,17 @@ begin
 end;
 
 procedure TEasyViewColumn.ItemRectArray(AColumn: TEasyColumn; var ARectArray: TEasyRectArrayObject);
+const
+  cInflate = -2;
+  cMargin = 4;
 var
    lCaptionLines: Integer;
    lCount: Integer;
    lDrawTextFlags: TCommonDrawTextWFlags;
    lImageHeight: Integer;
    lImageWidth: Integer;
+   lInflateSize: Integer;
+   lMargin: Integer;
    lPoint: TPoint;
    lRect: TRect;
 begin
@@ -22903,7 +22914,8 @@ begin
     GetImageSize(AColumn, lImageWidth, lImageHeight);
 
     ARectArray.BoundsRect := AColumn.DisplayRect;
-    InflateRect(ARectArray.BoundsRect, -2, -2);
+    lInflateSize := MulDiv(cInflate, OwnerListview.CurrentPPI, Screen.DefaultPixelsPerInch);
+    InflateRect(ARectArray.BoundsRect, lInflateSize, lInflateSize);
 
     // Make the CheckRect 0 width to initialize it
     ARectArray.CheckRect := ARectArray.BoundsRect;
@@ -23024,21 +23036,22 @@ begin
     begin
       ARectArray.TextRect := ARectArray.LabelRect;
 
+      lMargin := MulDiv(cMargin, OwnerListview.CurrentPPI, Screen.DefaultPixelsPerInch);
       case AColumn.Alignment of
         taLeftJustify:
           begin
             ARectArray.TextRect.Left := ARectArray.TextRect.Left + AColumn.CaptionIndent;
-            ARectArray.TextRect.Right := ARectArray.TextRect.Right - 4;
+            ARectArray.TextRect.Right := ARectArray.TextRect.Right - lMargin;
           end;
         taRightJustify:
           begin
             ARectArray.TextRect.Right := ARectArray.TextRect.Right - AColumn.CaptionIndent;
-            ARectArray.TextRect.Left := ARectArray.TextRect.Left + 4;
+            ARectArray.TextRect.Left := ARectArray.TextRect.Left + lMargin;
           end;
       end;
 
       // Leave room for a small border between edge of the selection rect and text
-      InflateRect(ARectArray.TextRect, -2, -2);
+      InflateRect(ARectArray.TextRect, lInflateSize, lInflateSize);
 
       lDrawTextFlags := [dtCalcRect, dtCalcRectAlign];
 
@@ -23093,7 +23106,7 @@ begin
     ARectArray.FocusChangeInvalidRect := ARectArray.BoundsRect;
     ARectArray.EditRect := ARectArray.BoundsRect;
 
-    InflateRect(ARectArray.BoundsRect, 2, 2);
+    InflateRect(ARectArray.BoundsRect, -lInflateSize, -lInflateSize);
   end;
 end;
 
@@ -23484,15 +23497,40 @@ procedure TEasyViewColumn.PaintSortGlyph(AColumn: TEasyColumn; ACanvas: TCanvas;
 const
   cArrows: array[Boolean] of Integer = (HSAS_SORTEDDOWN, HSAS_SORTEDUP);
 var
+  lDirection: TScrollDirection;
   lImage: TBitmap;
+  lLocation: TPoint;
+  lOldColor: TColor;
+  lServices: TCustomStyleServices;
+  lSize: Integer;
 begin
   if AColumn.SortDirection <> esdNone then
   begin
     if UseThemes then
     begin
-      DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle,
-        HP_HEADERSORTARROW, cArrows[AColumn.SortDirection = esdAscending],
-        ARectArray.SortRect, nil);
+      lServices := StyleServices(OwnerListview);
+      if lServices.Enabled then
+      begin
+        lOldColor := ACanvas.Pen.Color;
+        ACanvas.Pen.Color := lServices.GetSystemColor(ACanvas.Font.Color);
+        if AColumn.SortDirection = esdAscending then
+          lDirection := TScrollDirection.sdUp
+        else
+          lDirection := TScrollDirection.sdDown;
+
+        lSize := ARectArray.SortRect.Height div 4;
+        lLocation := ARectArray.SortRect.Location;
+        lLocation.X := lLocation.X + lSize;
+        lLocation.Y := lLocation.Y + lSize;
+        DrawArrow(ACanvas, lDirection, lLocation, lSize);
+        ACanvas.Pen.Color := lOldColor;
+      end
+      else
+      begin
+        DrawThemeBackground(OwnerListview.Themes.HeaderTheme, ACanvas.Handle,
+          HP_HEADERSORTARROW, cArrows[AColumn.SortDirection = esdAscending],
+          ARectArray.SortRect, nil);
+      end;
     end
     else
     begin
@@ -24595,6 +24633,7 @@ begin
   FChecksize := 12;
   FVAlignment := cvaCenter;
   FShowBorder := True;
+  FCurrentPPI := Screen.PixelsPerInch;
 end;
 
 procedure TEasyPaintInfoBasic.Assign(Source: TPersistent);
@@ -24616,6 +24655,11 @@ begin
     FImageIndent := Temp.ImageIndent;
     FVAlignment := Temp.VAlignment;
   end
+end;
+
+procedure TEasyPaintInfoBasic.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  FCurrentPPI := AM;
 end;
 
 procedure TEasyPaintInfoBasic.Invalidate(ImmediateUpdate: Boolean);
@@ -25029,15 +25073,24 @@ end;
 { TEasyPaintInfoBaseColumn }
 
 constructor TEasyPaintInfoBaseColumn.Create(AnOwner: TCustomEasyListview);
+const
+  cDefaultIndent = 2;
 begin
   inherited;
   FColor := clBtnFace;
   FSortGlyphAlign := esgaRight;
-  FSortGlyphIndent := 2;
+  FSortGlyphIndent := cDefaultIndent;
   FHotTrack := True;
   FStyle := ehbsThick;
   FImagePosition := ehpLeft;
   FHilightFocusedColor := $00F7F7F7;
+end;
+
+procedure TEasyPaintInfoBaseColumn.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
+begin
+  inherited ChangeScale(AM, AD, AIsDpiChange);
+  if AIsDpiChange and (AM <> FCurrentPPI) then
+    FSortGlyphIndent := MulDiv(FSortGlyphIndent, AM, AD);
 end;
 
 procedure TEasyPaintInfoBaseColumn.SetColor(Value: TColor);
