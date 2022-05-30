@@ -3439,7 +3439,7 @@ type
     procedure CalculateTextRect(Column: TEasyColumn; Canvas: TControlCanvas; var TextR: TRect); virtual;
     procedure GetImageSize(Column: TEasyColumn; var ImageW, ImageH: Integer);
     function ItemRect(Column: TEasyColumn; RectType: TEasyCellRectType): TRect; virtual;
-    procedure ItemRectArray(Column: TEasyColumn; var RectArray: TEasyRectArrayObject); virtual;
+    procedure ItemRectArray(AColumn: TEasyColumn; var ARectArray: TEasyRectArrayObject); virtual;
     procedure LoadTextFont(Column: TEasyColumn; ACanvas: TCanvas); virtual;
     procedure Paint(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType); virtual;
     procedure PaintAfter(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject); virtual;
@@ -22881,218 +22881,220 @@ begin
   end
 end;
 
-procedure TEasyViewColumn.ItemRectArray(Column: TEasyColumn; var RectArray: TEasyRectArrayObject);
+procedure TEasyViewColumn.ItemRectArray(AColumn: TEasyColumn; var ARectArray: TEasyRectArrayObject);
 var
-   DrawTextFlags: TCommonDrawTextWFlags;
-   i, CaptionLines: integer;
-   R: TRect;
-   ImageW, ImageH: Integer;
-   Pt: TPoint;
+   lCaptionLines: Integer;
+   lCount: Integer;
+   lDrawTextFlags: TCommonDrawTextWFlags;
+   lImageHeight: Integer;
+   lImageWidth: Integer;
+   lPoint: TPoint;
+   lRect: TRect;
 begin
-  Pt.x := 0;
-  Pt.y := 0;
-  if Assigned(Column) then
+  lPoint.X := 0;
+  lPoint.Y := 0;
+  if Assigned(AColumn) then
   begin
-    if not Column.Initialized then
-      Column.Initialized := True;
+    if not AColumn.Initialized then
+      AColumn.Initialized := True;
 
+    FillChar(ARectArray, SizeOf(ARectArray), #0);
 
-    FillChar(RectArray, SizeOf(RectArray), #0);
+    GetImageSize(AColumn, lImageWidth, lImageHeight);
 
-    GetImageSize(Column, ImageW, ImageH);
-
-    RectArray.BoundsRect := Column.DisplayRect;
-    InflateRect(RectArray.BoundsRect, -2, -2);
+    ARectArray.BoundsRect := AColumn.DisplayRect;
+    InflateRect(ARectArray.BoundsRect, -2, -2);
 
     // Make the CheckRect 0 width to initialize it
-    RectArray.CheckRect := RectArray.BoundsRect;
-    RectArray.CheckRect.Right := RectArray.CheckRect.Left;
+    ARectArray.CheckRect := ARectArray.BoundsRect;
+    ARectArray.CheckRect.Right := ARectArray.CheckRect.Left;
 
     // Make the DropDownArrow 0 width to initialize it to the right side
-    RectArray.DropDownArrow := RectArray.BoundsRect;
-    RectArray.DropDownArrow.Left := RectArray.DropDownArrow.Right;
+    ARectArray.DropDownArrow := ARectArray.BoundsRect;
+    ARectArray.DropDownArrow.Left := ARectArray.DropDownArrow.Right;
 
     // First calculate where the CheckRect goes
-    if Column.CheckType <> ectNone then
+    if AColumn.CheckType <> ectNone then
     begin
-      R := Checks.Bound[Column.Checksize];
-      RectArray.CheckRect.Left := RectArray.CheckRect.Left + Column.CheckIndent;
-      RectArray.CheckRect.Top := RectArray.CheckRect.Top + (RectHeight(RectArray.BoundsRect) - RectHeight(R)) div 2;
-      RectArray.CheckRect.Right := RectArray.CheckRect.Left + RectWidth(R);
-      RectArray.CheckRect.Bottom := RectArray.CheckRect.Top + RectHeight(R);
+      lRect := Checks.Bound[AColumn.Checksize];
+      ARectArray.CheckRect.Left := ARectArray.CheckRect.Left + AColumn.CheckIndent;
+      ARectArray.CheckRect.Top := ARectArray.CheckRect.Top + (RectHeight(ARectArray.BoundsRect) - RectHeight(lRect)) div 2;
+      ARectArray.CheckRect.Right := ARectArray.CheckRect.Left + RectWidth(lRect);
+      ARectArray.CheckRect.Bottom := ARectArray.CheckRect.Top + RectHeight(lRect);
     end;
 
     // Initialize IconRect to 0 width
-    RectArray.IconRect := RectArray.BoundsRect;
-    RectArray.IconRect.Left := RectArray.CheckRect.Right;
-    RectArray.IconRect.Right := RectArray.CheckRect.Right;
+    ARectArray.IconRect := ARectArray.BoundsRect;
+    ARectArray.IconRect.Left := ARectArray.CheckRect.Right;
+    ARectArray.IconRect.Right := ARectArray.CheckRect.Right;
 
     // Next comes the State Image if enabled
-    if Column.ImageIndex > -1 then
+    if AColumn.ImageIndex > -1 then
     begin
-      case Column.ImagePosition of
+      case AColumn.ImagePosition of
         ehpLeft:
           begin
-            RectArray.IconRect.Left := RectArray.CheckRect.Right + Column.ImageIndent;
-            RectArray.IconRect.Right := RectArray.IconRect.Left + ImageW;
-            RectArray.IconRect.Top := RectArray.BoundsRect.Top + (RectHeight(RectArray.BoundsRect) - ImageH) div 2;
-            RectArray.IconRect.Bottom := RectArray.IconRect.Top + ImageH;
-            RectArray.LabelRect := RectArray.BoundsRect;
-            RectArray.LabelRect.Left := RectArray.IconRect.Right + Column.CaptionIndent;
+            ARectArray.IconRect.Left := ARectArray.CheckRect.Right + AColumn.ImageIndent;
+            ARectArray.IconRect.Right := ARectArray.IconRect.Left + lImageWidth;
+            ARectArray.IconRect.Top := ARectArray.BoundsRect.Top + (RectHeight(ARectArray.BoundsRect) - lImageHeight) div 2;
+            ARectArray.IconRect.Bottom := ARectArray.IconRect.Top + lImageHeight;
+            ARectArray.LabelRect := ARectArray.BoundsRect;
+            ARectArray.LabelRect.Left := ARectArray.IconRect.Right + AColumn.CaptionIndent;
           end;
         ehpTop:
           begin
-            RectArray.IconRect.Top := RectArray.BoundsRect.Top + Column.ImageIndent;
-            RectArray.IconRect.Bottom := RectArray.IconRect.Top + ImageH;
-            RectArray.IconRect.Left := RectArray.BoundsRect.Left;
-            RectArray.IconRect.Right := RectArray.BoundsRect.Right;
-            RectArray.LabelRect := RectArray.BoundsRect;
-            RectArray.LabelRect.Left := RectArray.CheckRect.Right;
-            RectArray.LabelRect.Top := RectArray.IconRect.Bottom + Column.CaptionIndent;
+            ARectArray.IconRect.Top := ARectArray.BoundsRect.Top + AColumn.ImageIndent;
+            ARectArray.IconRect.Bottom := ARectArray.IconRect.Top + lImageHeight;
+            ARectArray.IconRect.Left := ARectArray.BoundsRect.Left;
+            ARectArray.IconRect.Right := ARectArray.BoundsRect.Right;
+            ARectArray.LabelRect := ARectArray.BoundsRect;
+            ARectArray.LabelRect.Left := ARectArray.CheckRect.Right;
+            ARectArray.LabelRect.Top := ARectArray.IconRect.Bottom + AColumn.CaptionIndent;
           end;
         ehpRight:
           begin
-            RectArray.IconRect.Right := RectArray.BoundsRect.Right - Column.ImageIndent;
-            RectArray.IconRect.Left := RectArray.IconRect.Right - ImageW;
-            RectArray.IconRect.Top := RectArray.BoundsRect.Top + (RectHeight(RectArray.BoundsRect) - ImageH) div 2;
-            RectArray.IconRect.Bottom := RectArray.IconRect.Top + ImageH;
-            RectArray.LabelRect := RectArray.BoundsRect;
-            RectArray.LabelRect.Left := RectArray.CheckRect.Right;
-            RectArray.LabelRect.Right := RectArray.IconRect.Left - Column.CaptionIndent;
+            ARectArray.IconRect.Right := ARectArray.BoundsRect.Right - AColumn.ImageIndent;
+            ARectArray.IconRect.Left := ARectArray.IconRect.Right - lImageWidth;
+            ARectArray.IconRect.Top := ARectArray.BoundsRect.Top + (RectHeight(ARectArray.BoundsRect) - lImageHeight) div 2;
+            ARectArray.IconRect.Bottom := ARectArray.IconRect.Top + lImageHeight;
+            ARectArray.LabelRect := ARectArray.BoundsRect;
+            ARectArray.LabelRect.Left := ARectArray.CheckRect.Right;
+            ARectArray.LabelRect.Right := ARectArray.IconRect.Left - AColumn.CaptionIndent;
           end;
         ehpBottom:
           begin
-            RectArray.IconRect.Bottom := RectArray.BoundsRect.Bottom - Column.ImageIndent;
-            RectArray.IconRect.Top := RectArray.IconRect.Bottom - ImageH;
-            RectArray.IconRect.Left := RectArray.BoundsRect.Left;
-            RectArray.IconRect.Right := RectArray.BoundsRect.Right;
-            RectArray.LabelRect := RectArray.BoundsRect;
-            RectArray.LabelRect.Left := RectArray.CheckRect.Right;
-            RectArray.LabelRect.Bottom := RectArray.IconRect.Top - Column.CaptionIndent;
+            ARectArray.IconRect.Bottom := ARectArray.BoundsRect.Bottom - AColumn.ImageIndent;
+            ARectArray.IconRect.Top := ARectArray.IconRect.Bottom - lImageHeight;
+            ARectArray.IconRect.Left := ARectArray.BoundsRect.Left;
+            ARectArray.IconRect.Right := ARectArray.BoundsRect.Right;
+            ARectArray.LabelRect := ARectArray.BoundsRect;
+            ARectArray.LabelRect.Left := ARectArray.CheckRect.Right;
+            ARectArray.LabelRect.Bottom := ARectArray.IconRect.Top - AColumn.CaptionIndent;
           end;
       end
-    end else
+    end
+    else
     begin
-      RectArray.LabelRect := RectArray.BoundsRect;
-      RectArray.LabelRect.Left := RectArray.IconRect.Right;
+      ARectArray.LabelRect := ARectArray.BoundsRect;
+      ARectArray.LabelRect.Left := ARectArray.IconRect.Right;
     end;
 
-    if Column.SortDirection <> esdNone then
+    if AColumn.SortDirection <> esdNone then
     begin
-      case Column.SortGlyphAlign of
+      case AColumn.SortGlyphAlign of
         esgaLeft:
           begin
-            RectArray.SortRect := RectArray.BoundsRect;
-            RectArray.SortRect.Left := RectArray.LabelRect.Left;
-            RectArray.LabelRect.Left := RectArray.LabelRect.Left + Column.SortGlyphIndent + OwnerListview.GlobalImages.ColumnSortUp.Width;
-            RectArray.SortRect.Right := RectArray.SortRect.Left + OwnerListview.GlobalImages.ColumnSortUp.Width;
-            RectArray.SortRect.Top := RectArray.SortRect.Top + (RectHeight(RectArray.SortRect) - OwnerListview.GlobalImages.ColumnSortUp.Height) div 2;
-            RectArray.SortRect.Bottom := RectArray.SortRect.Top + OwnerListview.GlobalImages.ColumnSortUp.Height
+            ARectArray.SortRect := ARectArray.BoundsRect;
+            ARectArray.SortRect.Left := ARectArray.LabelRect.Left;
+            ARectArray.LabelRect.Left := ARectArray.LabelRect.Left + AColumn.SortGlyphIndent + OwnerListview.GlobalImages.ColumnSortUp.Width;
+            ARectArray.SortRect.Right := ARectArray.SortRect.Left + OwnerListview.GlobalImages.ColumnSortUp.Width;
+            ARectArray.SortRect.Top := ARectArray.SortRect.Top + (RectHeight(ARectArray.SortRect) - OwnerListview.GlobalImages.ColumnSortUp.Height) div 2;
+            ARectArray.SortRect.Bottom := ARectArray.SortRect.Top + OwnerListview.GlobalImages.ColumnSortUp.Height;
           end;
         esgaRight:
           begin
-            RectArray.SortRect := RectArray.BoundsRect;
-            RectArray.SortRect.Right := RectArray.LabelRect.Right;
-            RectArray.LabelRect.Right := RectArray.LabelRect.Right - Column.SortGlyphIndent - OwnerListview.GlobalImages.ColumnSortUp.Width;
-            RectArray.SortRect.Left := RectArray.SortRect.Right - OwnerListview.GlobalImages.ColumnSortUp.Width;
-            RectArray.SortRect.Top := RectArray.SortRect.Top + (RectHeight(RectArray.SortRect) - OwnerListview.GlobalImages.ColumnSortUp.Height) div 2;
-            RectArray.SortRect.Bottom := RectArray.SortRect.Top + OwnerListview.GlobalImages.ColumnSortUp.Height
-          end
+            ARectArray.SortRect := ARectArray.BoundsRect;
+            ARectArray.SortRect.Right := ARectArray.LabelRect.Right;
+            ARectArray.LabelRect.Right := ARectArray.LabelRect.Right - AColumn.SortGlyphIndent - OwnerListview.GlobalImages.ColumnSortUp.Width;
+            ARectArray.SortRect.Left := ARectArray.SortRect.Right - OwnerListview.GlobalImages.ColumnSortUp.Width;
+            ARectArray.SortRect.Top := ARectArray.SortRect.Top + (RectHeight(ARectArray.SortRect) - OwnerListview.GlobalImages.ColumnSortUp.Height) div 2;
+            ARectArray.SortRect.Bottom := ARectArray.SortRect.Top + OwnerListview.GlobalImages.ColumnSortUp.Height;
+          end;
       else
         // no Sort Glyph
-        RectArray.SortRect := RectArray.LabelRect;
-        RectArray.SortRect.Right := RectArray.SortRect.Left;
-      end
+        ARectArray.SortRect := ARectArray.LabelRect;
+        ARectArray.SortRect.Right := ARectArray.SortRect.Left;
+      end;
     end;
 
-    if Column.DropDownButton.Visible then
+    if AColumn.DropDownButton.Visible then
     begin
-      if RectWidth(RectArray.LabelRect) > RectHeight(RectArray.BoundsRect) + 10 then
+      if RectWidth(ARectArray.LabelRect) > RectHeight(ARectArray.BoundsRect) + 10 then
       begin
-        if Column.DropDownButton.AlwaysShow or Column.HotTracking[Pt] then
+        if AColumn.DropDownButton.AlwaysShow or AColumn.HotTracking[lPoint] then
         begin
-          RectArray.LabelRect.Right := RectArray.LabelRect.Right - RectHeight(RectArray.BoundsRect);
-          RectArray.DropDownArrow.Left := RectArray.DropDownArrow.Right - RectHeight(RectArray.BoundsRect)
-        end
-      end
+          ARectArray.LabelRect.Right := ARectArray.LabelRect.Right - RectHeight(ARectArray.BoundsRect);
+          ARectArray.DropDownArrow.Left := ARectArray.DropDownArrow.Right - RectHeight(ARectArray.BoundsRect)
+        end;
+      end;
     end;
 
     // See if there is enough room for the label
-    if IsRectProper(RectArray.LabelRect) then
+    if IsRectProper(ARectArray.LabelRect) then
     begin
+      ARectArray.TextRect := ARectArray.LabelRect;
 
-      RectArray.TextRect := RectArray.LabelRect;
-
-      case Column.Alignment of
+      case AColumn.Alignment of
         taLeftJustify:
           begin
-            RectArray.TextRect.Left := RectArray.TextRect.Left + Column.CaptionIndent;
-            RectArray.TextRect.Right := RectArray.TextRect.Right - 4;
+            ARectArray.TextRect.Left := ARectArray.TextRect.Left + AColumn.CaptionIndent;
+            ARectArray.TextRect.Right := ARectArray.TextRect.Right - 4;
           end;
         taRightJustify:
           begin
-            RectArray.TextRect.Right := RectArray.TextRect.Right - Column.CaptionIndent;
-            RectArray.TextRect.Left := RectArray.TextRect.Left + 4;
+            ARectArray.TextRect.Right := ARectArray.TextRect.Right - AColumn.CaptionIndent;
+            ARectArray.TextRect.Left := ARectArray.TextRect.Left + 4;
           end;
       end;
 
       // Leave room for a small border between edge of the selection rect and text
-      InflateRect(RectArray.TextRect, -2, -2);
+      InflateRect(ARectArray.TextRect, -2, -2);
 
-      DrawTextFlags := [dtCalcRect, dtCalcRectAlign];
+      lDrawTextFlags := [dtCalcRect, dtCalcRectAlign];
 
-      case Column.Alignment of
-        taCenter: DrawTextFlags := DrawTextFlags + [dtCenter];
-        taLeftJustify: DrawTextFlags := DrawTextFlags + [dtLeft];
-        taRightJustify: DrawTextFlags := DrawTextFlags + [dtRight];
+      case AColumn.Alignment of
+        taCenter: lDrawTextFlags := lDrawTextFlags + [dtCenter];
+        taLeftJustify: lDrawTextFlags := lDrawTextFlags + [dtLeft];
+        taRightJustify: lDrawTextFlags := lDrawTextFlags + [dtRight];
       end;
 
       // Vertical Alignment has no meaning in mulitiple line output need to calculate
       // the entire text block then vert align it
-      DrawTextFlags := DrawTextFlags + [dtTop];
+      lDrawTextFlags := lDrawTextFlags + [dtTop];
 
-      CaptionLines := OwnerListview.PaintInfoColumn.CaptionLines;
+      lCaptionLines := OwnerListview.PaintInfoColumn.CaptionLines;
 
       // Make enough room for the Details and the Caption Rect
-      SetLength(RectArray.TextRects, CaptionLines + 1);
+      SetLength(ARectArray.TextRects, lCaptionLines + 1);
 
       // Get the Caption Rect
-      RectArray.TextRects[0] := RectArray.TextRect;
-      LoadTextFont(Column, OwnerListview.ScratchCanvas);
-      DrawTextWEx(OwnerListview.ScratchCanvas.Handle, Column.Caption, RectArray.TextRects[0], DrawTextFlags, CaptionLines);
+      ARectArray.TextRects[0] := ARectArray.TextRect;
+      LoadTextFont(AColumn, OwnerListview.ScratchCanvas);
+      DrawTextWEx(OwnerListview.ScratchCanvas.Handle, AColumn.Caption, ARectArray.TextRects[0], lDrawTextFlags, lCaptionLines);
 
-      RectArray.TextRect := Rect(0, 0, 0, 0);
-      for i := 0 to Length(RectArray.TextRects) - 1 do
-        UnionRect(RectArray.TextRect, RectArray.TextRect, RectArray.TextRects[i]);
+      ARectArray.TextRect := Rect(0, 0, 0, 0);
+      for lCount := 0 to Length(ARectArray.TextRects) - 1 do
+        UnionRect(ARectArray.TextRect, ARectArray.TextRect, ARectArray.TextRects[lCount]);
 
-      case Column.VAlignment of
-        cvaCenter: OffsetRect(RectArray.TextRect, 0, (RectHeight(RectArray.LabelRect) - RectHeight(RectArray.TextRect)) div 2);
-        cvaBottom: OffsetRect(RectArray.TextRect, 0, (RectHeight(RectArray.LabelRect) - RectHeight(RectArray.TextRect)));
+      case AColumn.VAlignment of
+        cvaCenter: OffsetRect(ARectArray.TextRect, 0, (RectHeight(ARectArray.LabelRect) - RectHeight(ARectArray.TextRect)) div 2);
+        cvaBottom: OffsetRect(ARectArray.TextRect, 0, (RectHeight(ARectArray.LabelRect) - RectHeight(ARectArray.TextRect)));
       end;
 
-      for i := 0 to Length(RectArray.TextRects) - 1 do
+      for lCount := 0 to Length(ARectArray.TextRects) - 1 do
       begin
-        case Column.VAlignment of
-          cvaCenter: OffsetRect(RectArray.TextRects[i], 0, ((RectHeight(RectArray.LabelRect) - 4) - RectHeight(RectArray.TextRect)) div 2);
-          cvaBottom: OffsetRect(RectArray.TextRects[i], 0, ((RectHeight(RectArray.LabelRect) - 4) - RectHeight(RectArray.TextRect)));
+        case AColumn.VAlignment of
+          cvaCenter: OffsetRect(ARectArray.TextRects[lCount], 0, ((RectHeight(ARectArray.LabelRect) - 4) - RectHeight(ARectArray.TextRect)) div 2);
+          cvaBottom: OffsetRect(ARectArray.TextRects[lCount], 0, ((RectHeight(ARectArray.LabelRect) - 4) - RectHeight(ARectArray.TextRect)));
         end;
       end;
-    end else
-      RectArray.TextRect := Rect(0, 0, 0, 0);
+    end
+    else
+      ARectArray.TextRect := Rect(0, 0, 0, 0);
 
     // Put the Sort Arrow right next to the Text
-    OffsetRect(RectArray.SortRect, RectArray.TextRect.Right - RectArray.SortRect.Left, 0);
+    OffsetRect(ARectArray.SortRect, ARectArray.TextRect.Right - ARectArray.SortRect.Left, 0);
 
-    RectArray.ClickselectBoundsRect := RectArray.BoundsRect;
-    RectArray.DragSelectBoundsRect := RectArray.BoundsRect;
-    RectArray.SelectionRect := RectArray.BoundsRect;
-    RectArray.FullTextRect := RectArray.BoundsRect;
-    RectArray.FullTextRect := RectArray.BoundsRect;
-    RectArray.FocusChangeInvalidRect := RectArray.BoundsRect;
-    RectArray.EditRect := RectArray.BoundsRect;
+    ARectArray.ClickselectBoundsRect := ARectArray.BoundsRect;
+    ARectArray.DragSelectBoundsRect := ARectArray.BoundsRect;
+    ARectArray.SelectionRect := ARectArray.BoundsRect;
+    ARectArray.FullTextRect := ARectArray.BoundsRect;
+    ARectArray.FullTextRect := ARectArray.BoundsRect;
+    ARectArray.FocusChangeInvalidRect := ARectArray.BoundsRect;
+    ARectArray.EditRect := ARectArray.BoundsRect;
 
-    InflateRect(RectArray.BoundsRect, 2, 2);
-  end
+    InflateRect(ARectArray.BoundsRect, 2, 2);
+  end;
 end;
 
 procedure TEasyViewColumn.LoadTextFont(Column: TEasyColumn; ACanvas: TCanvas);
