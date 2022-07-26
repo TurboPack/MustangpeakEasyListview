@@ -14068,7 +14068,13 @@ begin
   SkinManager.RemoveSkinNotification(Self);
   {$ENDIF SpTBX}
   inherited Destroy;
-  DropTarget := nil;
+  if Assigned(DropTarget) then
+  begin
+    //Do it the hard way
+    DropTarget._AddRef;
+    while DropTarget._Release > 1 do;
+    DropTarget := nil;
+  end;
   // Don't destroy these objects until the Window is destroyed
   GroupExpandButton.Canvas.Unlock;
   GroupCollapseButton.Canvas.Unlock;
