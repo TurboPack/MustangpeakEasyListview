@@ -30751,6 +30751,10 @@ initialization
 finalization
   FreeAndNil(AlphaBlender);
   OleUnInitialize();
-  TCustomStyleEngine.UnRegisterStyleHook(TCustomEasyListview, TScrollingStyleHook);
+  //This is an ugly workaround for a Vcl bug.
+  try
+    TCustomStyleEngine.UnRegisterStyleHook(TCustomEasyListview, TScrollingStyleHook);
+  except
+  end;
 
 end.
