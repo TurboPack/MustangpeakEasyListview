@@ -23520,9 +23520,7 @@ begin
     lServices := StyleServices(OwnerListview);
     lOldColor := ACanvas.Font.Color;
     if lServices.Enabled then
-      ACanvas.Font.Color := lServices.GetSystemColor(ACanvas.Font.Color)
-    else
-      ACanvas.Font.Color := ACanvas.Font.Color;
+      ACanvas.Font.Color := lServices.GetSystemColor(ACanvas.Font.Color);
     DrawTextWEx(ACanvas.Handle, AColumn.Caption, ARectArray.TextRects[0], lDrawTextFlags, OwnerListview.PaintInfoColumn.CaptionLines);
 
     ACanvas.Font.Color := lOldColor;
