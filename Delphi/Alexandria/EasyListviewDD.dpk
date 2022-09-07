@@ -27,7 +27,7 @@ package EasyListviewDD;
 {$DEFINE RELEASE}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'MustangPeak EasyListview Designtime Package'}
-{$LIBSUFFIX '280'}
+{$LIBSUFFIX AUTO}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
