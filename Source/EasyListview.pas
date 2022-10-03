@@ -2177,6 +2177,11 @@ type
     function SelectionHitPt(Item: TEasyItem; ViewportPoint: TPoint; SelectType: TEasySelectHitType): Boolean; override;
   end;
 
+  TEasyViewReportItemWholeLine = class(TEasyViewReportItem)
+  public
+    function SelectionHitPt(AItem: TEasyItem; AViewportPoint: TPoint; ASelectType: TEasySelectHitType): Boolean; override;
+  end;
+
     // **************************************************************************
   // TEasyViewReportThumbItem
   //    Basis for the UI (drawing, and mouse interaction) for a TEasyItem
@@ -25180,6 +25185,29 @@ begin
     ItemRectArray(Item, OwnerListview.Header.FirstColumn, OwnerListview.ScratchCanvas, '', RectArray);
     Result := Windows.PtInRect(ExpandTextR(Item, RectArray, SelectType), ViewportPoint) or
               Windows.PtInRect(ExpandIconR(Item, RectArray, SelectType), ViewportPoint)
+  end
+end;
+
+{ TEasyViewReportItemWholeLine }
+
+function TEasyViewReportItemWholeLine.SelectionHitPt(AItem: TEasyItem; AViewportPoint: TPoint; ASelectType: TEasySelectHitType): Boolean;
+var
+  lColumn: Integer;
+  lRectArray: TEasyRectArrayObject;
+begin
+  Result := False;
+  if AItem.Enabled then
+  begin
+    // Here the selection is based on every column
+    for lColumn := 0 to OwnerListview.Header.Columns.Count - 1 do
+    begin
+      ItemRectArray(AItem, OwnerListview.Header.Columns[lColumn], OwnerListview.ScratchCanvas, '', lRectArray);
+      Result := Windows.PtInRect(ExpandTextR(AItem, lRectArray, ASelectType), AViewportPoint)
+        or Windows.PtInRect(ExpandIconR(AItem, lRectArray, ASelectType), AViewportPoint);
+
+      if Result then
+        Break;
+    end;
   end
 end;
 
