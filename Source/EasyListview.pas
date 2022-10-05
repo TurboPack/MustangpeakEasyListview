@@ -25202,8 +25202,7 @@ begin
     for lColumn := 0 to OwnerListview.Header.Columns.Count - 1 do
     begin
       ItemRectArray(AItem, OwnerListview.Header.Columns[lColumn], OwnerListview.ScratchCanvas, '', lRectArray);
-      Result := Windows.PtInRect(ExpandTextR(AItem, lRectArray, ASelectType), AViewportPoint)
-        or Windows.PtInRect(ExpandIconR(AItem, lRectArray, ASelectType), AViewportPoint);
+      Result := Windows.PtInRect(lRectArray.BoundsRect, AViewportPoint);
 
       if Result then
         Break;
