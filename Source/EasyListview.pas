@@ -1830,7 +1830,7 @@ type
     constructor Create(ACollection: TEasyCollection); override;
     destructor Destroy; override;
     function EditAreaHitPt(ViewportPoint: TPoint): Boolean; override;
-    function HitTestAt(ViewportPoint: TPoint; var HitInfo: TEasyItemHitTestInfoSet): Boolean;
+    function HitTestAt(AViewportPoint: TPoint; var AHitInfo: TEasyItemHitTestInfoSet): Boolean;
     function SelectionHit(SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; override;
     function SelectionHitPt(ViewportPoint: TPoint; SelectType: TEasySelectHitType): Boolean; override;
     procedure Edit(Column: TEasyColumn = nil);
@@ -26595,37 +26595,44 @@ begin
     Result := GetDefaultViewClass;
 end;
 
-function TEasyItem.HitTestAt(ViewportPoint: TPoint; var HitInfo: TEasyItemHitTestInfoSet): Boolean;
+function TEasyItem.HitTestAt(AViewportPoint: TPoint; var AHitInfo: TEasyItemHitTestInfoSet): Boolean;
 var
-  RectArray: TEasyRectArrayObject;
-  R: TRect;
+  lCount: Integer;
+  lRect: TRect;
+  lRectArray: TEasyRectArrayObject;
 begin
-  HitInfo := [];
-  ItemRectArray(OwnerListview.Header.FirstColumn, OwnerListview.ScratchCanvas, RectArray);
-  R := RectArray.IconRect;
-  // Make the blank area between the image and text part of the image
-  if OwnerListview.IsVertView then
-     R.Bottom := R.Bottom + OwnerListview.PaintInfoItem.CaptionIndent
-  else
-    R.Right := R.Right + OwnerListview.PaintInfoItem.CaptionIndent;
+  AHitInfo := [];
+  for lCount := 0 to OwnerListview.Header.Columns.Count - 1 do
+  begin
+    ItemRectArray(OwnerListview.Header.Columns[lCount], OwnerListview.ScratchCanvas, lRectArray);
+    lRect := lRectArray.BoundsRect;
+    // Make the blank area between the image and text part of the image
+    if OwnerListview.IsVertView then
+      lRect.Bottom := lRect.Bottom + OwnerListview.PaintInfoItem.CaptionIndent
+    else
+      lRect.Right := lRect.Right + OwnerListview.PaintInfoItem.CaptionIndent;
 
-  if PtInRect(R, ViewportPoint) then
-    Include(HitInfo, ehtOnIcon);
-  if PtInRect(RectArray.CheckRect, ViewportPoint) then
-    Include(HitInfo, ehtOnCheck);
-  if PtInRect(RectArray.FullFocusSelRect, ViewportPoint) then
-    Include(HitInfo, ehtOnText);
-  if PtInRect(RectArray.LabelRect, ViewportPoint) then
-    Include(HitInfo, ehtOnLabel);
-  if PtInRect(RectArray.ClickselectBoundsRect, ViewportPoint) then
-    Include(HitInfo, ehtOnClickselectBounds);
-  if PtInRect(RectArray.DragSelectBoundsRect, ViewportPoint) then
-    Include(HitInfo, ehtOnDragSelectBounds);
-  if PtInRect(RectArray.DragSelectBoundsRect, ViewportPoint) then
-    Include(HitInfo, ehtOnDragSelectBounds);
-  if PtInRect(RectArray.StateRect, ViewportPoint) then
-    Include(HitInfo, ehtStateIcon);
-  Result := HitInfo <> [];
+    if PtInRect(lRect, AViewportPoint) then
+      Include(AHitInfo, ehtOnIcon);
+    if PtInRect(lRectArray.CheckRect, AViewportPoint) then
+      Include(AHitInfo, ehtOnCheck);
+    if PtInRect(lRectArray.FullFocusSelRect, AViewportPoint) then
+      Include(AHitInfo, ehtOnText);
+    if PtInRect(lRectArray.LabelRect, AViewportPoint) then
+      Include(AHitInfo, ehtOnLabel);
+    if PtInRect(lRectArray.ClickselectBoundsRect, AViewportPoint) then
+      Include(AHitInfo, ehtOnClickselectBounds);
+    if PtInRect(lRectArray.DragSelectBoundsRect, AViewportPoint) then
+      Include(AHitInfo, ehtOnDragSelectBounds);
+    if PtInRect(lRectArray.DragSelectBoundsRect, AViewportPoint) then
+      Include(AHitInfo, ehtOnDragSelectBounds);
+    if PtInRect(lRectArray.StateRect, AViewportPoint) then
+      Include(AHitInfo, ehtStateIcon);
+    Result := AHitInfo <> [];
+    if Result then
+      Exit;
+  end;
+  Result := False;
 end;
 
 function TEasyItem.LocalPaintInfo: TEasyPaintInfoBasic;
