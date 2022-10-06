@@ -20742,7 +20742,8 @@ begin
       begin
         // Paint the Selection Rectangle
         // *************************
-        if not(OwnerListview.EditManager.Editing and (OwnerListview.EditManager.EditItem = Item)) then
+        //With this line, the row is not painted correctly during editing
+//        if not(OwnerListview.EditManager.Editing and (OwnerListview.EditManager.EditItem = Item)) then
           PaintSelectionRect(Item, Column, Caption, RectArray, ACanvas, ViewportClipRect, ForceSelectionRectDraw);
 
         // Next Paint the Icon or Bitmap Image
@@ -20754,7 +20755,8 @@ begin
         // If focused then show as many lines as necessary
         // Decendents should override PaintText to change the number of lines
         // as necessary
-        if not(OwnerListview.EditManager.Editing and (OwnerListview.EditManager.EditItem = Item)) or ((OwnerListview.View in [elsReport, elsReportThumb]) and (Column <> OwnerListview.EditManager.EditColumn)) then
+        //With this line, the row is not painted correctly during editing
+//        if not(OwnerListview.EditManager.Editing and (OwnerListview.EditManager.EditItem = Item)) or ((OwnerListview.View in [elsReport, elsReportThumb]) and (Column <> OwnerListview.EditManager.EditColumn)) then
         begin
           PaintText(Item, Column, Caption, RectArray, ACanvas, PaintTextLineCount(Item, Column));
 
