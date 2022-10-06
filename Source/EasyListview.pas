@@ -2179,6 +2179,7 @@ type
 
   TEasyViewReportItemWholeLine = class(TEasyViewReportItem)
   public
+    function EditAreaHitPt(AItem: TEasyItem; AViewportPoint: TPoint): Boolean; override;
     function SelectionHitPt(AItem: TEasyItem; AViewportPoint: TPoint; ASelectType: TEasySelectHitType): Boolean; override;
   end;
 
@@ -25189,6 +25190,18 @@ begin
 end;
 
 { TEasyViewReportItemWholeLine }
+
+function TEasyViewReportItemWholeLine.EditAreaHitPt(AItem: TEasyItem; AViewportPoint: TPoint): Boolean;
+var
+  lRectArray: TEasyRectArrayObject;
+begin
+  Result := False;
+  if AItem.Enabled then
+  begin
+    ItemRectArray(AItem, OwnerListview.Header.FirstColumn, AItem.OwnerListview.ScratchCanvas, '', lRectArray);
+    Result := Windows.PtInRect(lRectArray.BoundsRect, AViewportPoint);
+  end
+end;
 
 function TEasyViewReportItemWholeLine.SelectionHitPt(AItem: TEasyItem; AViewportPoint: TPoint; ASelectType: TEasySelectHitType): Boolean;
 var
