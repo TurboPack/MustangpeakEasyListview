@@ -2109,7 +2109,7 @@ type
     procedure PaintImage(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize; ACanvas: TCanvas); virtual;
     function PaintImageSize: TEasyImageSize; virtual;
     procedure PaintSelectionRect(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean); virtual;
-    procedure PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer); virtual;
+    procedure PaintText(AItem: TEasyItem; AColumn: TEasyColumn; const ACaption: string; ARectArray: TEasyRectArrayObject; ACanvas: TCanvas; ALinesToDraw: Integer); virtual;
     function PaintTextAlignment(Item: TEasyItem; Column: TEasyColumn): TAlignment; virtual;
     function PaintTextLineCount(Item: TEasyItem; Column: TEasyColumn): Integer; virtual;
     function PaintTextVAlignment(Item: TEasyItem; Column: TEasyColumn): TCommonVAlignment; virtual;
@@ -21348,42 +21348,44 @@ begin
   end
 end;
 
-procedure TEasyViewItem.PaintText(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas; LinesToDraw: Integer);
+procedure TEasyViewItem.PaintText(AItem: TEasyItem; AColumn: TEasyColumn; const ACaption: string; ARectArray: TEasyRectArrayObject; ACanvas: TCanvas; ALinesToDraw: Integer);
 var
-  DrawTextFlags: TCommonDrawTextWFlags;
-  AbsIndex: Integer;
-  Hilightable: Boolean;
+  lAbsIndex: Integer;
+  lColor: TColor;
+  lDrawTextFlags: TCommonDrawTextWFlags;
+  lHilightable: Boolean;
 begin
-  if not IsRectEmpty(RectArray.TextRect) then
+  if not IsRectEmpty(ARectArray.TextRect) then
   begin
-    AbsIndex := ValidateColumnIndex(Column);
+    lAbsIndex := ValidateColumnIndex(AColumn);
 
-    Hilightable := (Item.Selected or Item.Hilighted) and ((AbsIndex = 0) or (FullRowSelect or OwnerListview.Selection.GroupSelections));
-    LoadTextFont(Item, AbsIndex, ACanvas, Hilightable);
+    lHilightable := (AItem.Selected or AItem.Hilighted) and ((lAbsIndex = 0) or (FullRowSelect or OwnerListview.Selection.GroupSelections));
+    LoadTextFont(AItem, lAbsIndex, ACanvas, lHilightable);
 
-    DrawTextFlags := [dtEndEllipsis];
+    lDrawTextFlags := [dtEndEllipsis];
 
-    if LinesToDraw = 1 then
-      Include(DrawTextFlags, dtSingleLine);
+    if ALinesToDraw = 1 then
+      Include(lDrawTextFlags, dtSingleLine);
 
-    case PaintTextAlignment(Item, Column) of
-      taLeftJustify: Include(DrawTextFlags, dtLeft);
-      taRightJustify: Include(DrawTextFlags, dtRight);
-      taCenter:  Include(DrawTextFlags, dtCenter);
+    case PaintTextAlignment(AItem, AColumn) of
+      taLeftJustify: Include(lDrawTextFlags, dtLeft);
+      taRightJustify: Include(lDrawTextFlags, dtRight);
+      taCenter:  Include(lDrawTextFlags, dtCenter);
     end;
 
-    case PaintTextVAlignment(Item, Column) of
-      cvaTop: Include(DrawTextFlags, dtTop);
-      cvaCenter: Include(DrawTextFlags, dtVCenter);
-      cvaBottom:  Include(DrawTextFlags, dtBottom);
+    case PaintTextVAlignment(AItem, AColumn) of
+      cvaTop: Include(lDrawTextFlags, dtTop);
+      cvaCenter: Include(lDrawTextFlags, dtVCenter);
+      cvaBottom:  Include(lDrawTextFlags, dtBottom);
     end;
 
     OwnerListview.ClipHeader(ACanvas, False);
 
-    if Item.Focused and (OwnerListview.Focused or Item.OwnerListview.Selection.PopupMode) then
-      DrawTextWEx(ACanvas.Handle, Caption, RectArray.TextRect, DrawTextFlags, LinesToDraw)
+    SetTextColor(ACanvas.Handle, ColorToRGB(ACanvas.Font.Color));
+    if AItem.Focused and (OwnerListview.Focused or AItem.OwnerListview.Selection.PopupMode) then
+      DrawTextWEx(ACanvas.Handle, ACaption, ARectArray.TextRect, lDrawTextFlags, ALinesToDraw)
     else
-      DrawTextWEx(ACanvas.Handle, Caption, RectArray.TextRect, DrawTextFlags, LinesToDraw)
+      DrawTextWEx(ACanvas.Handle, ACaption, ARectArray.TextRect, lDrawTextFlags, ALinesToDraw);
   end
 end;
 
@@ -23497,8 +23499,8 @@ end;
 
 procedure TEasyViewColumn.PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: Integer);
 var
+  lColor: TColor;
   lDrawTextFlags: TCommonDrawTextWFlags;
-  lOldColor: TColor;
   lOldStyle: TBrushStyle;
   lServices: TCustomStyleServices;
 begin
@@ -23526,12 +23528,12 @@ begin
 
     OwnerListview.DoColumnPaintText(AColumn, ACanvas);
     lServices := StyleServices(OwnerListview);
-    lOldColor := ACanvas.Font.Color;
+    lColor := ACanvas.Font.Color;
     if lServices.Enabled then
-      ACanvas.Font.Color := lServices.GetSystemColor(ACanvas.Font.Color);
+      lColor := lServices.GetSystemColor(lColor);
+    SetTextColor(ACanvas.Handle, ColorToRGB(lColor));
     DrawTextWEx(ACanvas.Handle, AColumn.Caption, ARectArray.TextRects[0], lDrawTextFlags, OwnerListview.PaintInfoColumn.CaptionLines);
-
-    ACanvas.Font.Color := lOldColor;
+    SetTextColor(ACanvas.Handle, ColorToRGB(ACanvas.Font.Color));
     ACanvas.Brush.Style := lOldStyle;
   end;
 end;
