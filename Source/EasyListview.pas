@@ -21351,7 +21351,6 @@ end;
 procedure TEasyViewItem.PaintText(AItem: TEasyItem; AColumn: TEasyColumn; const ACaption: string; ARectArray: TEasyRectArrayObject; ACanvas: TCanvas; ALinesToDraw: Integer);
 var
   lAbsIndex: Integer;
-  lColor: TColor;
   lDrawTextFlags: TCommonDrawTextWFlags;
   lHilightable: Boolean;
 begin
