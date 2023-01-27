@@ -953,6 +953,7 @@ type
   TOLEDropTargetDragOverEvent = procedure(Sender: TCustomEasyListview; KeyState: TCommonKeyStates; WindowPt: TPoint; AvailableEffects: TCommonDropEffects; var DesiredDropEffect: TCommonDropEffect) of object;
   TOLEDropTargetDragLeaveEvent = procedure(Sender: TCustomEasyListview) of object;
   TOLEDropTargetDragDropEvent = procedure(Sender: TCustomEasyListview; DataObject: IDataObject; KeyState: TCommonKeyStates; WindowPt: TPoint; AvailableEffects: TCommonDropEffects; var DesiredDropEffect: TCommonDropEffect; var Handled: Boolean) of object;
+  TOLEAfterDropTargetDragDropEvent = procedure(Sender: TCustomEasyListview; DataObject: IDataObject; KeyState: TCommonKeyStates; WindowPt: TPoint; AvailableEffects: TCommonDropEffects; DesiredDropEffect: TCommonDropEffect; Handled: Boolean) of object;
   TOLEGetCustomFormatsEvent = procedure(Sender: TCustomEasyListview; dwDirection: Integer; var Formats: TFormatEtcArray) of object;
   TOLEGetDataEvent = procedure(Sender: TCustomEasyListview; const FormatEtcIn: TFormatEtc; var Medium: TStgMedium; var Handled: Boolean) of object;
   FOLEGetDataObjectEvent = procedure(Sender: TCustomEasyListview; var DataObject: IDataObject) of object;
@@ -4845,6 +4846,7 @@ type
     FOnItemVisibilityChanging: TItemVisibilityChangingEvent;
     FOnKeyAction: TEasyKeyActionEvent;
     FOnOLEDragDrop: TOLEDropTargetDragDropEvent;
+    FOnOLEAfterDragDrop: TOLEAfterDropTargetDragDropEvent;
     FOnOLEDragEnd: TOLEDropSourceDragEndEvent;
     FOnOLEDragEnter: TOLEDropTargetDragEnterEvent;
     FOnOLEDragLeave: TOLEDropTargetDragLeaveEvent;
@@ -5094,6 +5096,7 @@ type
     procedure DoOLEDropTargetDragOver(KeyState: TCommonKeyStates; WindowPt: TPoint; AvailableEffects: TCommonDropEffects; var DesiredEffect: TCommonDropEffect); virtual;
     procedure DoOLEDropTargetDragLeave; virtual;
     procedure DoOLEDropTargetDragDrop(DataObject: IDataObject; KeyState: TCommonKeyStates; WindowPt: TPoint; AvailableEffects: TCommonDropEffects; var DesiredEffect: TCommonDropEffect; var Handled: Boolean); virtual;
+    procedure DoOLEAfterDropTargetDragDrop(ADataObject: IDataObject; AKeyState: TCommonKeyStates; AWindowPt: TPoint; AAvailableEffects: TCommonDropEffects; ADesiredEffect: TCommonDropEffect; AHandled: Boolean); virtual;
     procedure DoOLEGetCustomFormats(dwDirection: Integer; var Formats: TFormatEtcArray); virtual;
     procedure DoOLEGetData(const FormatEtcIn: TFormatEtc; var Medium: TStgMedium; var Handled: Boolean); virtual;
     procedure DoOLEGetDataObject(var DataObject: IDataObject); virtual;
@@ -5345,6 +5348,7 @@ type
     property OnOLEDragOver: TOLEDropTargetDragOverEvent read FOnOLEDragOver write FOnOLEDragOver;
     property OnOLEDragLeave: TOLEDropTargetDragLeaveEvent read FOnOLEDragLeave write FOnOLEDragLeave;
     property OnOLEDragDrop: TOLEDropTargetDragDropEvent read FOnOLEDragDrop write FOnOLEDragDrop;
+    property OnOLEAfterDragDrop: TOLEAfterDropTargetDragDropEvent read FOnOLEAfterDragDrop write FOnOLEAfterDragDrop;
     property OnOLEGetCustomFormats: TOLEGetCustomFormatsEvent read FOnOLEGetCustomFormats write FOnOLEGetCustomFormats;
     property OnOLEGetData: TOLEGetDataEvent read FOnOLEGetData write FOnOLEGetData;
     property OnOLEGetDataObject: FOLEGetDataObjectEvent read FOnOLEGetDataObject write FOnOLEGetDataObject;
@@ -5706,6 +5710,7 @@ type
     property OnOLEDragOver;
     property OnOLEDragLeave;
     property OnOLEDragDrop;
+    property OnOLEAfterDragDrop;
     property OnOLEGetCustomFormats;
     property OnOLEGetData;
     property OnOLEGetDataObject;
@@ -13365,6 +13370,8 @@ begin
   if Assigned(DragManager) then
     DragManager.DragDrop(Owner.ScreenToClient(pt), KeyState, Effect, Handled);
 
+  Owner.DoOLEAfterDropTargetDragDrop(dataObj, KeyState, pt, DropEffectToDropEffectStates(dwEffect), Effect, Handled);
+
   dwEffect := DropEffectStateToDropEffect(Effect);
   Result := S_OK
 end;
@@ -15791,6 +15798,14 @@ procedure TCustomEasyListview.DoOLEDropTargetDragDrop(DataObject: IDataObject;
 begin
   if Assigned(OnOLEDragDrop) then
     OnOLEDragDrop(Self, DataObject, KeyState, WindowPt, AvailableEffects, DesiredEffect, Handled)
+end;
+
+procedure TCustomEasyListview.DoOLEAfterDropTargetDragDrop(ADataObject: IDataObject; AKeyState: TCommonKeyStates; AWindowPt: TPoint; AAvailableEffects: TCommonDropEffects; ADesiredEffect: TCommonDropEffect; AHandled: Boolean);
+// After the control is the OLE Drag target this is called when the data object is
+// dropped on the control
+begin
+  if Assigned(OnOLEAfterDragDrop) then
+    OnOLEAfterDragDrop(Self, ADataObject, AKeyState, AWindowPt, AAvailableEffects, ADesiredEffect, AHandled)
 end;
 
 procedure TCustomEasyListview.DoOLEDropTargetDragEnter(DataObject: IDataObject;
