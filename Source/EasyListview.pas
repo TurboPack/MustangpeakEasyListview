@@ -16171,8 +16171,12 @@ begin
             while Assigned(Group) do
             begin
               R := Column.DisplayRect;
-              ACanvas.MoveTo(R.Right, Group.BoundsRectBkGnd.Top);
-              ACanvas.LineTo(R.Right, Group.BoundsRectBkGnd.Bottom);
+              ACanvas.MoveTo(R.Right - 1, Group.BoundsRectBkGnd.Top - 2);
+              if PaintInfoItem.VertGridLine then
+                ACanvas.LineTo(R.Right - 1, Self.Height) // Use Full veritcal lines
+              else
+                ACanvas.LineTo(R.Right - 1, Group.BoundsRectBkGnd.Bottom); // Use veritcal lines based on Group.BoundsRectBkGnd.Bottom
+
               Group := Groups.NextVisibleGroup(Group)
             end;
             Column := Header.NextColumnInRect(Column, ViewClipRect);
