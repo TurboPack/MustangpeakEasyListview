@@ -12686,7 +12686,7 @@ begin
   begin
     FVertEnabled := Value;
     ReCalculateScrollbars(True, False);
-    //OwnerListview.SafeInvalidateRect(nil, False)
+    OwnerListview.SafeInvalidateRect(nil, False)
   end
 end;
 
