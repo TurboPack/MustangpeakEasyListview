@@ -1277,15 +1277,21 @@ type
   private
     FGridLineColor: TColor;
     FGridLines: Boolean;
+    FHorzGridLine: Boolean;
+    FVertGridLine: Boolean;
     FHideCaption: Boolean;
     FTileDetailCount: Integer;
     procedure SetGridLineColor(const Value: TColor);
     procedure SetGridLines(const Value: Boolean);
+    procedure SetHorzGridLine(const Value: Boolean);
+    procedure SetVertGridLine(const Value: Boolean);
     procedure SetHideCaption(const Value: Boolean);
     procedure SetTileDetailCount(Value: Integer);
   protected
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor default clBtnFace;
     property GridLines: Boolean read FGridLines write SetGridLines default False;
+    property HorzGridLine: Boolean read FHorzGridLine write SetHorzGridLine default False;
+    property VertGridLine: Boolean read FVertGridLine write SetVertGridLine default False;
     property HideCaption: Boolean read FHideCaption write SetHideCaption default False;
     property TileDetailCount: Integer read FTileDetailCount write SetTileDetailCount default 1;
   public
@@ -1304,6 +1310,8 @@ type
     property CheckType;
     property GridLineColor;
     property GridLines;
+    property HorzGridLine;
+    property VertGridLine;
     property HideCaption;
     property ImageIndent;
     property ShowBorder;
@@ -16147,32 +16155,43 @@ begin
     if not SelectedOnly and (View in [elsReport, elsReportThumb, elsGrid]) then
     begin
       // Paint the Grid Lines
-      if PaintInfoItem.GridLines then
+      if (PaintInfoItem.GridLines) or (PaintInfoItem.HorzGridLine) or (PaintInfoItem.VertGridLine) then
       begin
         ClipHeader(ACanvas, True);
         FirstVisibleGroup := Groups.FirstVisibleGroup;
         ACanvas.Pen.Color := PaintInfoItem.GridLineColor;
-        Column := Header.FirstColumnInRect(ViewClipRect);
-        while Assigned(Column) do
+
+        if (PaintInfoItem.GridLines) or (PaintInfoItem.VertGridLine) then
         begin
-          Group := FirstVisibleGroup;
-          while Assigned(Group) do
+          // Paint the veritcal Grid Lines
+          Column := Header.FirstColumnInRect(ViewClipRect);
+          while Assigned(Column) do
           begin
-            R := Column.DisplayRect;
-            ACanvas.MoveTo(R.Right, Group.BoundsRectBkGnd.Top);
-            ACanvas.LineTo(R.Right, Group.BoundsRectBkGnd.Bottom);
-            Group := Groups.NextVisibleGroup(Group)
+            Group := FirstVisibleGroup;
+            while Assigned(Group) do
+            begin
+              R := Column.DisplayRect;
+              ACanvas.MoveTo(R.Right, Group.BoundsRectBkGnd.Top);
+              ACanvas.LineTo(R.Right, Group.BoundsRectBkGnd.Bottom);
+              Group := Groups.NextVisibleGroup(Group)
+            end;
+            Column := Header.NextColumnInRect(Column, ViewClipRect);
           end;
-          Column := Header.NextColumnInRect(Column, ViewClipRect);
         end;
-        Item := Groups.FirstItemInRect(ViewClipRect);
-        while Assigned(Item) do
+
+        if (PaintInfoItem.GridLines) or (PaintInfoItem.HorzGridLine) then
         begin
-          R := Item.DisplayRect;
-          ACanvas.MoveTo(Scrollbars.OffsetX, R.Bottom-1);
-          ACanvas.LineTo(Scrollbars.OffsetX + ClientWidth, R.Bottom-1);
-          Item := Groups.NextItemInRect(Item, ViewClipRect)
+          // Paint the horizontal Grid Lines
+          Item := Groups.FirstItemInRect(ViewClipRect);
+          while Assigned(Item) do
+          begin
+            R := Item.DisplayRect;
+            ACanvas.MoveTo(Scrollbars.OffsetX, R.Bottom-1);
+            ACanvas.LineTo(Scrollbars.OffsetX + ClientWidth, R.Bottom-1);
+            Item := Groups.NextItemInRect(Item, ViewClipRect)
+          end;
         end;
+
         Dec(FocusRect.Bottom);
         DrawFocusRect(ACanvas.Handle, FocusRect)
       end
@@ -28185,6 +28204,24 @@ begin
   if FGridLines <> Value then
   begin
     FGridLines := Value;
+    OwnerListview.SafeInvalidateRect(nil, False)
+  end
+end;
+
+procedure TEasyPaintInfoBaseItem.SetHorzGridLine(const Value: Boolean);
+begin
+  if FHorzGridLine <> Value then
+  begin
+    FHorzGridLine := Value;
+    OwnerListview.SafeInvalidateRect(nil, False)
+  end
+end;
+
+procedure TEasyPaintInfoBaseItem.SetVertGridLine(const Value: Boolean);
+begin
+  if FVertGridLine <> Value then
+  begin
+    FVertGridLine := Value;
     OwnerListview.SafeInvalidateRect(nil, False)
   end
 end;
