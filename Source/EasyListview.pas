@@ -12686,7 +12686,7 @@ begin
   begin
     FVertEnabled := Value;
     ReCalculateScrollbars(True, False);
-    OwnerListview.SafeInvalidateRect(nil, False)
+    //OwnerListview.SafeInvalidateRect(nil, False)
   end
 end;
 
@@ -16173,7 +16173,7 @@ begin
               R := Column.DisplayRect;
               ACanvas.MoveTo(R.Right - 1, Group.BoundsRectBkGnd.Top - 2);
               if PaintInfoItem.VertGridLine then
-                ACanvas.LineTo(R.Right - 1, Self.Height) // Use Full veritcal lines
+                ACanvas.LineTo(R.Right - 1, ViewClipRect.Bottom) // Use Full veritcal lines
               else
                 ACanvas.LineTo(R.Right - 1, Group.BoundsRectBkGnd.Bottom); // Use veritcal lines based on Group.BoundsRectBkGnd.Bottom
 
