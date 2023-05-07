@@ -94,6 +94,7 @@ begin
   // Columns can also be virtual and query their caption (etc) on the fly. It
   // works in the same way as with items. Here, the columns are static for
   // simplicity.
+  LV.Header.Columns.Clear;   //Clear the first column if it exists
   for i := 0 to Count - 1 do
   begin
     Column := LV.Header.Columns.Add;
