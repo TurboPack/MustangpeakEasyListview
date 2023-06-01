@@ -20713,7 +20713,7 @@ procedure TEasyViewItem.LoadTextFont(AItem: TEasyItem; APosition: Integer; ACanv
 var
   lServices: TCustomStyleServices;
 begin
-  if (ACanvas = nil) or (ACanvas.Font = nil) then
+  if (ACanvas = nil) or (ACanvas.Font = nil) or (OwnerListview.Font = nil) then
     Exit;
 
   ACanvas.Font.Assign(OwnerListview.Font);
