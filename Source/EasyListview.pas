@@ -21536,9 +21536,14 @@ begin
 end;
 
 function TEasyHeader.GetViewWidth: Integer;
+var
+  lColumn: TEasyColumn;
 begin
   if Positions.Count > 0 then
-    Result := Positions[Positions.Count - 1].DisplayRect.Right
+  begin
+    lColumn := Positions[Positions.Count - 1];
+    Result := lColumn.DisplayRect.Right;
+  end
   else
     Result := 0
 end;
