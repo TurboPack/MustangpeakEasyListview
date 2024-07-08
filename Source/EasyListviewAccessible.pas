@@ -705,10 +705,13 @@ begin
       pvarState := pvarState or STATE_SYSTEM_FOCUSED;
     if not Item.Visible or not Item.OwnerGroup.Expanded then
       pvarState := pvarState or STATE_SYSTEM_INVISIBLE;
-    if Item = TEasyListviewHack( Item.OwnerListview).DragManager.DragItem then
+    if Assigned(Item.OwnerListview) and
+      Assigned(TEasyListviewHack(Item.OwnerListview).DragManager) and
+      (Item = TEasyListviewHack(Item.OwnerListview).DragManager.DragItem) then
       pvarState := pvarState or STATE_SYSTEM_HOTTRACKED;
-  end else
-    Result := DISP_E_MEMBERNOTFOUND
+  end
+  else
+    Result := DISP_E_MEMBERNOTFOUND;
 end;
 
 function TEasyAccessibleManager.FillGroupState(out pvarState: OleVariant; Group: TEasyGroup): HRESULT;
