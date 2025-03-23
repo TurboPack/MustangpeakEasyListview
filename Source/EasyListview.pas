@@ -3508,10 +3508,10 @@ type
 
   TColumnPos = class(TList)
   private
-    function Get(Index: Integer): TEasyColumn;
-    procedure Put(Index: Integer; Item: TEasyColumn);
+    function Get(Index: NativeInt): TEasyColumn;
+    procedure Put(Index: NativeInt; Item: TEasyColumn);
   public
-    property Items[Index: Integer]: TEasyColumn read Get write Put; default;
+    property Items[Index: NativeInt]: TEasyColumn read Get write Put; default;
   end;
   // **************************************************************************
   // TEasyHeader
@@ -28258,12 +28258,12 @@ end;
 
 { TColumnPos }
 
-function TColumnPos.Get(Index: Integer): TEasyColumn;
+function TColumnPos.Get(Index: NativeInt): TEasyColumn;
 begin
   Result := inherited Get(Index)
 end;
 
-procedure TColumnPos.Put(Index: Integer; Item: TEasyColumn);
+procedure TColumnPos.Put(Index: NativeInt; Item: TEasyColumn);
 begin
   inherited Put(Index, Item)
 end;
