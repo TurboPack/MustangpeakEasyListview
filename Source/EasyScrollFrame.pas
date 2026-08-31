@@ -163,7 +163,7 @@ type
 implementation
 
 uses
-  System.Types;
+  System.Types, MPShellFunc;
 
 { TEasyScrollButton }
 constructor TCustomEasyScrollButton.Create(AOwner: TComponent);
@@ -230,7 +230,7 @@ procedure TCustomEasyScrollButton.DoPaintRect(ACanvas: TCanvas; WindowClipRect: 
     end;
 
 var
-  Part, uState: Longword;
+  Part, uState: Int32;
 begin
     if DrawWithThemes then
     begin
@@ -362,9 +362,9 @@ begin
     if not Assigned(TimerStub) then
       TimerStub := TCallbackStub.Create(Self, @TCustomEasyScrollButton.TimerProc, 4);
     if TimerType = ettAutoScrollDelay then
-      TimerID := SetTimer(Handle, TIMER_AUTOSCROLLDELAY, AutoScrollDelay, TimerStub.StubPointer)
+      TimerID := SetTimer(Handle, TIMER_AUTOSCROLLDELAY, ToUInt32(AutoScrollDelay), TimerStub.StubPointer)
     else
-      TimerID := SetTimer(Handle, TIMER_AUTOSCROLL, AutoScrollTime, TimerStub.StubPointer);
+      TimerID := SetTimer(Handle, TIMER_AUTOSCROLL, ToUInt32(AutoScrollTime), TimerStub.StubPointer);
     Include(FState, sbsAutoScrollTimerRunning);
   end
 end;

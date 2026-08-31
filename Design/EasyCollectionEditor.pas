@@ -138,6 +138,9 @@ implementation
 
 {$R *.dfm}
 
+uses
+  MPShellFunc;
+
 type
   TEasyCollectionItemHack = class(TEasyCollectionItem);
 
@@ -228,7 +231,7 @@ end;
 procedure TEditorList.ListviewDestroying(Listview: TCustomEasyListview; DestroyAll: Boolean = False);
 var
   List: TList;
-  i: Integer;
+  i: NativeInt;
   RegRec: PFormRegRec;
 begin
   List := FormList.LockList;
@@ -273,7 +276,7 @@ end;
 procedure TEditorList.UnRegister(Form: TForm; Collection: TEasyCollection);
 var
   List: TList;
-  i: Integer;
+  i: NativeInt;
   RegRec: PFormRegRec;
 begin
   List := FormList.LockList;
@@ -435,7 +438,7 @@ end;
 
 procedure TFormEasyCollectionEditor.Rebuild;
 var
-  i: Integer;
+  i: NativeInt;
   Item: TListItem;
 begin
   Rebuilding := True;
@@ -455,7 +458,7 @@ end;
 
 procedure TFormEasyCollectionEditor.ListView1Resize(Sender: TObject);
 begin
-  Listview1.Columns[0].Width := Listview1.ClientWidth - 2
+  Listview1.Columns[0].Width := TWidth(Listview1.ClientWidth - 2)
 end;
 
 procedure TFormEasyCollectionEditor.ListView1Change(Sender: TObject;
@@ -520,7 +523,7 @@ end;
 
 procedure TFormEasyCollectionEditor.Refresh;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   if Assigned(Collection) then
   begin
@@ -531,7 +534,7 @@ begin
       try
         for i := 0 to Collection.Count - 1 do
         begin
-          Listview1.Items[i].Caption := TEasyCollectionItemHack(Collection.Items[i]).GetDisplayName;
+          Listview1.Items[ToInt32(i)].Caption := TEasyCollectionItemHack(Collection.Items[i]).GetDisplayName;
         end
       finally
         Listview1.Items.EndUpdate;

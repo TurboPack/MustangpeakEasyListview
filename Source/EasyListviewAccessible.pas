@@ -78,7 +78,7 @@ type
   TEasyAccessibleManager = class(TInterfacedObject, IDispatch, IAccessible, IEasyAccessible, IEnumVARIANT)
   private
     FEasyObject: TObject; // Either an TCustomEasyListview, TEasyGroup, TEasyItem, or TEasyColumn
-    FEnumIndex: Integer;
+    FEnumIndex: NativeInt;
     function GetEasyListview: TEasyListviewHack;
   protected
     function FillHeaderState(var pvarState: OleVariant; Header: TEasyHeader): HRESULT;
@@ -90,7 +90,7 @@ type
     function CreateSelectionInterface(TargetListview: TCustomEasyListview; out pvarChildren: OleVariant): HRESULT;
     procedure ValidateParameter; virtual;
     property EasyObject: TObject read FEasyObject write FEasyObject;
-    property EnumIndex: Integer read FEnumIndex write FEnumIndex;
+    property EnumIndex: NativeInt read FEnumIndex write FEnumIndex;
   public
     constructor Create(AnEasyObject: TObject); virtual;
     destructor Destroy; override;
@@ -257,6 +257,9 @@ type
 {$endif}
 
 implementation
+
+uses
+  MPShellFunc;
 
 {$ifndef DISABLE_ACCESSIBILITY}
 
@@ -468,7 +471,7 @@ begin
   Result := S_OK;
   pcountChildren := 0;
   if Assigned(EasyObject) then
-    pcountChildren := EasyListview.Groups.Count + 1 // Add in the Header
+    pcountChildren := ToInt32(EasyListview.Groups.Count + 1) // Add in the Header
 end;
 
 function TEasyAccessibleManager.Get_accDefaultAction(varChild: OleVariant; out pszDefaultAction: WideString): HResult;
@@ -628,7 +631,7 @@ end;
 
 function TEasyAccessibleManager.GroupFromIndex(varChild: OleVariant): TEasyGroup;
 var
-  Index: Cardinal;
+  Index: NativeInt;
   List: TList;
 begin
   Result := nil;
@@ -860,7 +863,7 @@ begin
  Result := S_OK;
  pcountChildren := 0;
  if Assigned(EasyObject) then
-   pcountChildren := EasyGroup.ItemCount
+   pcountChildren := ToInt32(EasyGroup.ItemCount)
 end;
 
 function TEasyGroupAccessibleManager.Get_accFocus(out pvarChild: OleVariant): HResult;
@@ -929,7 +932,7 @@ end;
 function TEasyGroupAccessibleManager.ItemFromIndex(Group: TEasyGroup; varChild: OleVariant): TEasyItem;
 var
   List: TList;
-  Index: Cardinal;
+  Index: NativeInt;
 begin
   if Assigned(Group) then
   begin
@@ -942,7 +945,7 @@ end;
 
 function TEasyGroupAccessibleManager.Next(celt: LongWord; var rgvar: OleVariant; out pceltFetched: LongWord): HResult;
 var
-  i: Integer;
+  i: UInt32;
 begin
   Result := S_FALSE;
   VariantInit(rgvar);
@@ -1391,7 +1394,7 @@ function TEasyHeaderAccessibleManager.ColumnFromIndex(
   varChild: OleVariant): TEasyColumn;
 var
   List: TList;
-  Index: Cardinal;
+  Index: NativeInt;
 begin
   if Assigned(EasyObject) then
   begin
@@ -1427,7 +1430,7 @@ end;
 function TEasyHeaderAccessibleManager.Get_accChildCount(out pcountChildren: Integer): HResult;
 begin
   if Assigned(EasyObject) then
-    pcountChildren := EasyHeader.Columns.Count
+    pcountChildren := ToInt32(EasyHeader.Columns.Count)
   else
     pcountChildren := 0;
 
@@ -1495,7 +1498,7 @@ end;
 
 function TEasyHeaderAccessibleManager.Next(celt: LongWord; var rgvar: OleVariant; out pceltFetched: LongWord): HResult;
 var
-  i: Integer;
+  i: UInt32;
 begin
   Result := S_FALSE;
   if Assigned(EasyObject) then
@@ -1547,7 +1550,7 @@ begin
   i := 0;
   if celt > 0 then
   begin
-    rgvar := VarArrayCreate([0, celt - 1], varVariant);
+    rgvar := VarArrayCreate([0, ToInt32(celt) - 1], varVariant);
     while (i < celt) and (EnumCount < LongWord( Length(Selection))) do
     begin
       TOleVarArray( rgvar)[i] := Selection[EnumCount].Accessible;

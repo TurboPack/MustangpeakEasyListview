@@ -666,45 +666,45 @@ type
   // Implements the read only Caption for the Control
   IEasyCaptions = interface(IUnknown)
   [IID_IEasyCaptions]
-    function GetCaption(Column: Integer): Variant;
+    function GetCaption(Column: NativeInt): Variant;
 
-    property Captions[Column: Integer]: Variant read GetCaption;
+    property Captions[Column: NativeInt]: Variant read GetCaption;
   end;
 
   // Implements the Caption for the Control
   IEasyCaptionsEditable = interface(IEasyCaptions)
   [IID_IEasyCaptionsEditable]
-    function SetCaption(Column: Integer; const Value: Variant): Boolean;
+    function SetCaption(Column: NativeInt; const Value: Variant): Boolean;
   end;
 
   // Implements a custom ImageList on a per item/column basis for the Control
   IEasyImageList = interface(IUnknown)
   [IID_IEasyImageList]
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
-    property ImageList[Column: Integer; IconSize: TEasyImageSize]: TCustomImageList read GetImageList;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
+    property ImageList[Column: NativeInt; IconSize: TEasyImageSize]: TCustomImageList read GetImageList;
   end;
 
   // Implements a custom State ImageList on a per item/column basis for the Control
   IEasyStateImageList = interface(IUnknown)
   [IID_IEasyStateImageList]
-    function GetImageList(Column: Integer): TCustomImageList;
-    property ImageList[Column: Integer]: TCustomImageList read GetImageList;
+    function GetImageList(Column: NativeInt): TCustomImageList;
+    property ImageList[Column: NativeInt]: TCustomImageList read GetImageList;
   end;
 
   // Implements the read only ImageIndex for the Control
   IEasyImages = interface(IUnknown)
   [IID_IEasyImages]
-    function GetImageIndex(Column: Integer; ImageKind: TEasyImageKind): Integer;
+    function GetImageIndex(Column: NativeInt; ImageKind: TEasyImageKind): Integer;
 
-    property ImageIndexes[Column: Integer; ImageKind: TEasyImageKind]: Integer read GetImageIndex;
+    property ImageIndexes[Column: NativeInt; ImageKind: TEasyImageKind]: Integer read GetImageIndex;
   end;
 
   // Implements the ImageIndex for the Control
   IEasyImagesEditable = interface(IEasyImages)
   [IID_IEasyImagesEditable]
-    procedure SetImageIndex(Column: Integer; ImageKind: TEasyImageKind; const Value: Integer);
+    procedure SetImageIndex(Column: NativeInt; ImageKind: TEasyImageKind; const Value: Integer);
 
-    property ImageIndexes[Column: Integer; ImageKind: TEasyImageKind]: Integer read GetImageIndex write SetImageIndex;
+    property ImageIndexes[Column: NativeInt; ImageKind: TEasyImageKind]: Integer read GetImageIndex write SetImageIndex;
   end;
 
   // Implements the Thumbnail (Bitmap) for the Control
@@ -724,20 +724,20 @@ type
   // Points to what Column to get the detail from
   IEasyDetails = interface(IUnknown)
   [IID_IEasyDetails]
-    function GetDetailCount: Integer;
-    function GetDetail(Line: Integer): Integer; // Return the Column to be used as the detail for the given line
+    function GetDetailCount: NativeInt;
+    function GetDetail(Line: NativeInt): Integer; // Return the Column to be used as the detail for the given line
 
-    property Detail[Line: Integer]: Integer read GetDetail;
-    property DetailCount: Integer read GetDetailCount;
+    property Detail[Line: NativeInt]: Integer read GetDetail;
+    property DetailCount: NativeInt read GetDetailCount;
   end;
 
   IEasyDetailsEditable = interface(IEasyDetails)
   [IID_IEasyDetailsEditable]
-    procedure SetDetail(Line: Integer; Value: Integer);
-    procedure SetDetailCount(Value: Integer);
+    procedure SetDetail(Line: NativeInt; Value: Integer);
+    procedure SetDetailCount(Value: NativeInt);
 
-    property Detail[Line: Integer]: Integer read GetDetail write SetDetail;
-    property DetailCount: Integer read GetDetailCount write SetDetailCount;
+    property Detail[Line: NativeInt]: Integer read GetDetail write SetDetail;
+    property DetailCount: NativeInt read GetDetailCount write SetDetailCount;
   end;
 
   // Implements the CheckState for the Control
@@ -750,16 +750,16 @@ type
 
   IEasyGroupKey = interface(IUnknown)
   [IID_IEasyGroupKey]
-    function GetKey(FocusedColumn: Integer): LongWord;
+    function GetKey(FocusedColumn: NativeInt): Int32;
 
-    property Key[FocusedColumn: Integer]: LongWord read GetKey; // Uniquely identifies the item in a particular group
+    property Key[FocusedColumn: NativeInt]: Int32 read GetKey; // Uniquely identifies the item in a particular group
   end;
 
   IEasyGroupKeyEditable = interface(IEasyGroupKey)
   [IID_IEasyGroupKeyEditable]
-    procedure SetKey(FocusedColumn: Integer; Value: LongWord);
+    procedure SetKey(FocusedColumn: NativeInt; Value: Int32);
 
-    property Key[FocusedColumn: Integer]: LongWord read GetKey write SetKey;
+    property Key[FocusedColumn: NativeInt]: Int32 read GetKey write SetKey;
   end;
 
   IEasyNotificationSink = interface(IUnknown)
@@ -806,8 +806,8 @@ type
   TEasyListviewEvent = procedure(Sender: TCustomEasyListview) of object;
 
   TAfterPaintEvent = procedure(Sender: TCustomEasyListview; ACanvas: TCanvas; ClipRect: TRect) of object;
-  TAutoGroupGetKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Key: LongWord) of object;
-  TAutoSortGroupCreateEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Group: TEasyGroup; var DoDefaultAction: Boolean) of object;
+  TAutoGroupGetKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; ColumnIndex: NativeInt; Groups: TEasyGroups; var Key: Int32) of object;
+  TAutoSortGroupCreateEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; ColumnIndex: NativeInt; Groups: TEasyGroups; var Group: TEasyGroup; var DoDefaultAction: Boolean) of object;
   TEasyClipboardEvent = procedure(Sender: TCustomEasyListview; var Handled: Boolean) of object;
   TEasyClipboardCutEvent = procedure(Sender: TCustomEasyListview; var MarkAsCut, Handled: Boolean) of object;
   TColumnCheckChangeEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
@@ -822,14 +822,14 @@ type
   TColumnFocusChangeEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
   TColumnFocusChangingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Allow: Boolean) of object;
   TColumnFreeingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
-  TColumnGetCaptionEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: Integer; var Caption: string) of object;
+  TColumnGetCaptionEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: NativeInt; var Caption: string) of object;
   TColumnGetImageIndexEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger) of object;
   TColumnGetImageListEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var ImageList: TCustomImageList) of object;
-  TColumnGetDetailCountEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Count: Integer) of object;
+  TColumnGetDetailCountEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Count: NativeInt) of object;
   TColumnImageDrawEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender) of object;
   TColumnImageGetSizeEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var ImageWidth, ImageHeight: Integer) of object;
   TColumnImageDrawIsCustomEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var IsCustom: Boolean) of object;
-  TColumnGetDetailEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: Integer; var Detail: Integer) of object;
+  TColumnGetDetailEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: NativeInt; var Detail: Integer) of object;
   TColumnInitializeEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
   TColumnPaintTextEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ACanvas: TCanvas) of object;
   TEasyColumnLoadFromStreamEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; S: TStream; Version: Integer) of object;
@@ -838,7 +838,7 @@ type
   TColumnSelectionChangingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; var Allow: Boolean) of object;
   TColumnSetCaptionEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Caption: string) of object;
   TColumnSetImageIndexEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ImageKind: TEasyImageKind; ImageIndex: Integer) of object;
-  TColumnSetDetailEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: Integer; const Detail: Integer) of object;
+  TColumnSetDetailEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Line: NativeInt; const Detail: Integer) of object;
   TColumnSizeChangingEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; Width, NewWidth: Integer; var Allow: Boolean) of object;
   TColumnSizeChangedEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn) of object;
   TColumnThumbnailDrawEvent = procedure(Sender: TCustomEasyListview; Column: TEasyColumn; ACanvas: TCanvas; ARect: TRect; var DoDefault: Boolean) of object;
@@ -868,11 +868,11 @@ type
   TGroupGetClassEvent = procedure(Sender: TCustomEasyListview; var GroupClass: TEasyCollectionItemClass) of object;
   TGroupGetImageIndexEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger) of object;
   TGroupGetImageListEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var ImageList: TCustomImageList) of object;
-  TGroupGetDetailCountEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var Count: Integer) of object;
+  TGroupGetDetailCountEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var Count: NativeInt) of object;
   TGroupImageDrawEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender) of object;
   TGroupImageGetSizeEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var ImageWidth, ImageHeight: Integer) of object;
   TGroupImageDrawIsCustomEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var IsCustom: Boolean) of object;
-  TGroupGetDetailEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Line: Integer; var Detail: Integer) of object;
+  TGroupGetDetailEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Line: NativeInt; var Detail: Integer) of object;
   TGroupInitializeEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup) of object;
   TGroupHotTrackEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; State: TEasyHotTrackState; MousePos: TPoint) of object;
   TGroupLoadFromStreamEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; S: TStream; Version: Integer) of object;
@@ -880,7 +880,7 @@ type
   TGroupSaveToStreamEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; S: TStream; Version: Integer) of object;
   TGroupSetCaptionEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Caption: string) of object;
   TGroupSetImageIndexEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ImageKind: TEasyImageKind; ImageIndex: Integer) of object;
-  TGroupSetDetailEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Line: Integer; const Detail: Integer) of object;
+  TGroupSetDetailEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; Line: NativeInt; const Detail: Integer) of object;
   TGroupSelectionChangeEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup) of object;
   TGroupSelectionChangingEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var Allow: Boolean) of object;
   TGroupThumbnailDrawEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean) of object;
@@ -906,7 +906,7 @@ type
   TItemSaveToStreamEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; S: TStream; Version: Integer) of object;
   TItemDblClickEvent = procedure(Sender: TCustomEasyListview; Button: TCommonMouseButton; MousePos: TPoint; HitInfo: TEasyHitInfoItem) of object;
   TItemEditAcceptedEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
-  TItemEditBegin = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Column: Integer; var Allow: Boolean) of object;
+  TItemEditBegin = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Column: NativeInt; var Allow: Boolean) of object;
   TItemEditedEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var NewValue: Variant; var Accept: Boolean) of object;
   TItemEditEnd = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemEnableChangeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
@@ -915,31 +915,31 @@ type
   TItemFocusChangeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemFocusChangingEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Allow: Boolean) of object;
   TItemGetStreamingCreateClassEvent = procedure(Sender: TCustomEasyListview; var AClass: TEasyColumnStoredClass) of object;
-  TItemGetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; var Caption: string) of object;
+  TItemGetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: NativeInt; var Caption: string) of object;
   TEasyItemGetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; var Caption: string) of object;
   TItemGetEditMenuEvent = procedure(Sender: TCustomEasyListview; Editor: TEasyBaseEditor; var Menu: TPopupMenu) of object;
   TItemGetClassEvent = procedure(Sender: TCustomEasyListview; var ItemClass: TEasyCollectionItemClass) of object;
-  TItemGetGroupKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; FocusedColumn: Integer; var GroupKey: LongWord) of object;
-  TItemGetImageIndexEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger) of object;
-  TItemGetImageListEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; var ImageList: TCustomImageList) of object;
+  TItemGetGroupKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; FocusedColumn: NativeInt; var GroupKey: Int32) of object;
+  TItemGetImageIndexEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: NativeInt; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger) of object;
+  TItemGetImageListEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: NativeInt; var ImageList: TCustomImageList) of object;
   TEasyGetTaskPanelEvent = procedure(Sender: TCustomEasyListview; Group: TEasyGroup; var TaskPanel: TEasyTaskPanelFormClass) of object;
-  TItemGetTileDetailCountEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Count: Integer) of object;
+  TItemGetTileDetailCountEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Count: NativeInt) of object;
   TItemImageDrawEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender) of object;
   TItemImageGetSizeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; var ImageWidth, ImageHeight: Integer) of object;
   TItemImageDrawIsCustomEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: TEasyColumn; var IsCustom: Boolean) of object;
-  TItemGetTileDetailEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Line: Integer; var Detail: Integer) of object;
+  TItemGetTileDetailEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Line: NativeInt; var Detail: Integer) of object;
   TItemHotTrackEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; State: TEasyHotTrackState; MousePos: TPoint) of object;
   TItemInitializeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemMouseDownEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Button: TCommonMouseButton; var DoDefault: Boolean) of object;
   TItemMouseUpEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Button: TCommonMouseButton; var DoDefault: Boolean) of object;
-  TItemPaintTextEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Position: Integer; ACanvas: TCanvas) of object;
+  TItemPaintTextEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Position: NativeInt; ACanvas: TCanvas) of object;
   TItemSelectionChangeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemSelectionChangingEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Allow: Boolean) of object;
   TEasyItemSelectionsChangedEvent = procedure(Sender: TCustomEasyListview) of object;
-  TItemSetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; Caption: string) of object;
-  TItemSetGroupKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; Key: LongWord) of object;
-  TItemSetImageIndexEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; ImageIndex: Integer) of object;
-  TItemSetTileDetailEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Line: Integer; const Detail: Integer) of object;
+  TItemSetCaptionEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: NativeInt; Caption: string) of object;
+  TItemSetGroupKeyEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: NativeInt; Key: Int32) of object;
+  TItemSetImageIndexEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Column: NativeInt; ImageKind: TEasyImageKind; ImageIndex: Integer) of object;
+  TItemSetTileDetailEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; Line: NativeInt; const Detail: Integer) of object;
   TItemThumbnailDrawEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean) of object;
   TItemVisibilityChangeEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem) of object;
   TItemVisibilityChangingEvent = procedure(Sender: TCustomEasyListview; Item: TEasyItem; var Allow: Boolean) of object;
@@ -1101,23 +1101,23 @@ type
     FDisplayRect: TRect;
     FFirstItem: TEasyItem;
     FList: TList;
-    FRefCount: Integer;
+    FRefCount: NativeInt;
   protected
-    function GetItems(Index: Integer): TEasyItem;
-    procedure SetItems(Index: Integer; Value: TEasyItem);
+    function GetItems(Index: NativeInt): TEasyItem;
+    procedure SetItems(Index: NativeInt; Value: TEasyItem);
     property List: TList read FList write FList;
-    property RefCount: Integer read FRefCount write FRefCount;
+    property RefCount: NativeInt read FRefCount write FRefCount;
   public
     constructor Create;
     destructor Destroy; override;
-    function Count: Integer;
+    function Count: NativeInt;
     procedure Add(Item: TEasyItem);
     procedure Clear;
     procedure DecRef;
     procedure IncRef;
     property DisplayRect: TRect read FDisplayRect write FDisplayRect;
     property FirstItem: TEasyItem read FFirstItem write FFirstItem;
-    property Items[Index: Integer]: TEasyItem  read GetItems write SetItems; default;
+    property Items[Index: NativeInt]: TEasyItem  read GetItems write SetItems; default;
   end;
 
   // **************************************************************************
@@ -1165,14 +1165,14 @@ type
     FPaintInfo: TEasyPaintInfoBaseGroup;
     function GetAlignment: TAlignment;
     function GetCaptionIndent: Integer;
-    function GetCaptionLines: Integer;
+    function GetCaptionLines: NativeInt;
     function GetImageIndent: Integer;
     function GetPaintInfo: TEasyPaintInfoBaseGroup;
     function GetVAlignment: TCommonVAlignment;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaption(Value: string);
     procedure SetCaptionIndent(Value: Integer);
-    procedure SetCaptionLines(Value: Integer);
+    procedure SetCaptionLines(Value: NativeInt);
     procedure SetImageIndent(Value: Integer);
     procedure SetImageIndex(const Value: TCommonImageIndexInteger);
     procedure SetImageOveralyIndex(const Value: TCommonImageIndexInteger);
@@ -1182,7 +1182,7 @@ type
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property Caption: string read FCaption write SetCaption;
     property CaptionIndent: Integer read GetCaptionIndent write SetCaptionIndent default 2;
-    property CaptionLines: Integer read GetCaptionLines write SetCaptionLines default 1;
+    property CaptionLines: NativeInt read GetCaptionLines write SetCaptionLines default 1;
     property ImageIndent: Integer read GetImageIndent write SetImageIndent default 2;
     property ImageIndex: TCommonImageIndexInteger read FImageIndex write SetImageIndex default -1;
     property ImageOverlayIndex: TCommonImageIndexInteger read FImageOverlayIndex write SetImageOveralyIndex default -1;
@@ -1226,7 +1226,7 @@ type
     FBorder: Integer;
     FBorderColor: TColor;
     FCaptionIndent: Integer;
-    FCaptionLines: Integer;
+    FCaptionLines: NativeInt;
     FCheckFlat: Boolean;
     FCheckIndent: Integer;
     FCheckSize: Integer;
@@ -1239,7 +1239,7 @@ type
     procedure SetBorder(Value: Integer);
     procedure SetBorderColor(Value: TColor);
     procedure SetCaptionIndent(Value: Integer);
-    procedure SetCaptionLines(Value: Integer);
+    procedure SetCaptionLines(Value: NativeInt);
     procedure SetCheckFlat(Value: Boolean);
     procedure SetCheckIndent(Value: Integer);
     procedure SetCheckSize(Value: Integer);
@@ -1255,7 +1255,7 @@ type
     property Border: Integer read FBorder write SetBorder default 4;
     property BorderColor: TColor read FBorderColor write SetBorderColor default clHighlight;
     property CaptionIndent: Integer read FCaptionIndent write SetCaptionIndent default 4;
-    property CaptionLines: Integer read FCaptionLines write SetCaptionLines default 1;
+    property CaptionLines: NativeInt read FCaptionLines write SetCaptionLines default 1;
     property CheckFlat: Boolean read FCheckFlat write SetCheckFlat default False;
     property CheckIndent: Integer read FCheckIndent write SetCheckIndent default 2;
     property CheckSize: Integer read FCheckSize write SetCheckSize default 12;
@@ -1281,20 +1281,20 @@ type
     FHorzGridLine: Boolean;
     FVertGridLine: Boolean;
     FHideCaption: Boolean;
-    FTileDetailCount: Integer;
+    FTileDetailCount: NativeInt;
     procedure SetGridLineColor(const Value: TColor);
     procedure SetGridLines(const Value: Boolean);
     procedure SetHorzGridLine(const Value: Boolean);
     procedure SetVertGridLine(const Value: Boolean);
     procedure SetHideCaption(const Value: Boolean);
-    procedure SetTileDetailCount(Value: Integer);
+    procedure SetTileDetailCount(Value: NativeInt);
   protected
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor default clBtnFace;
     property GridLines: Boolean read FGridLines write SetGridLines default False;
     property HorzGridLine: Boolean read FHorzGridLine write SetHorzGridLine default False;
     property VertGridLine: Boolean read FVertGridLine write SetVertGridLine default False;
     property HideCaption: Boolean read FHideCaption write SetHideCaption default False;
-    property TileDetailCount: Integer read FTileDetailCount write SetTileDetailCount default 1;
+    property TileDetailCount: NativeInt read FTileDetailCount write SetTileDetailCount default 1;
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
   end;
@@ -1531,18 +1531,18 @@ type
     FGroupKeyArray: TCommonIntegerDynArray;
     FImageIndexArray: TCommonIntegerDynArray;
     FOverlayIndexArray: TCommonIntegerDynArray;
-    function GetCaptions(Index: Integer): string;
-    function GetDetails(Index: Integer): Integer;
-    function GetImageIndexes(Index: Integer): Integer;
-    function GetImageOverlayIndexes(Index: Integer): Integer;
+    function GetCaptions(Index: NativeInt): string;
+    function GetDetails(Index: NativeInt): Integer;
+    function GetImageIndexes(Index: NativeInt): Integer;
+    function GetImageOverlayIndexes(Index: NativeInt): Integer;
     procedure LoadIntArrayFromStream(S: TStream; var AnArray: TCommonIntegerDynArray);
     procedure LoadWideStrArrayFromStream(S: TStream; var AnArray: TCommonStringDynArray);
     procedure SaveIntArrayToStream(S: TStream; var AnArray: TCommonIntegerDynArray);
     procedure SaveStrArrayToStream(S: TStream; var AnArray: TCommonStringDynArray);
-    procedure SetCaptions(Index: Integer; Value: string);
-    procedure SetDetails(Index: Integer; Value: Integer);
-    procedure SetImageIndexes(Index: Integer; Value: Integer);
-    procedure SetImageOverlayIndexes(Index: Integer; Value: Integer);
+    procedure SetCaptions(Index: NativeInt; Value: string);
+    procedure SetDetails(Index: NativeInt; Value: Integer);
+    procedure SetImageIndexes(Index: NativeInt; Value: Integer);
+    procedure SetImageOverlayIndexes(Index: NativeInt; Value: Integer);
     property CaptionArray: TCommonStringDynArray read FCaptionArray write FCaptionArray;
     property DetailArray: TCommonIntegerDynArray read FDetailArray write FDetailArray;
     property GroupKeyArray: TCommonIntegerDynArray read FGroupKeyArray write FGroupKeyArray;
@@ -1552,26 +1552,26 @@ type
     procedure Clear;
     procedure LoadFromStream(S: TStream; Version: Integer); virtual;
     procedure SaveToStream(S: TStream; Version: Integer); virtual;
-    property Captions[Index: Integer]: string read GetCaptions write SetCaptions;
-    property Details[Index: Integer]: Integer read GetDetails write SetDetails;
-    property ImageIndexes[Index: Integer]: Integer read GetImageIndexes write SetImageIndexes;
-    property ImageOverlayIndexes[Index: Integer]: Integer read GetImageOverlayIndexes write SetImageOverlayIndexes;
+    property Captions[Index: NativeInt]: string read GetCaptions write SetCaptions;
+    property Details[Index: NativeInt]: Integer read GetDetails write SetDetails;
+    property ImageIndexes[Index: NativeInt]: Integer read GetImageIndexes write SetImageIndexes;
+    property ImageOverlayIndexes[Index: NativeInt]: Integer read GetImageOverlayIndexes write SetImageOverlayIndexes;
   end;
 
   TEasyItemDynamicDataHelper = class(TEasyDynamicDataHelper)
   private
     FStateImageArray: TCommonIntegerDynArray;
-    function GetGroupKey(Index: Integer): LongWord;
-    function GetStateImageIndexes(Index: Integer): TCommonImageIndexInteger;
-    procedure SetGroupKey(Index: Integer; Value: LongWord);
-    procedure SetStateImageIndexes(Index: Integer; Value: TCommonImageIndexInteger);
+    function GetGroupKey(Index: NativeInt): Int32;
+    function GetStateImageIndexes(Index: NativeInt): TCommonImageIndexInteger;
+    procedure SetGroupKey(Index: NativeInt; Value: Int32);
+    procedure SetStateImageIndexes(Index: NativeInt; Value: TCommonImageIndexInteger);
   protected
     property StateImageArray: TCommonIntegerDynArray read FStateImageArray write FStateImageArray;
   public
     procedure LoadFromStream(S: TStream; Version: Integer); override;
     procedure SaveToStream(S: TStream; Version: Integer); override;
-    property GroupKey[Index: Integer]: LongWord read GetGroupKey write SetGroupKey;
-    property StateImageIndexes[Index: Integer]: TCommonImageIndexInteger read GetStateImageIndexes write SetStateImageIndexes;
+    property GroupKey[Index: NativeInt]: Int32 read GetGroupKey write SetGroupKey;
+    property StateImageIndexes[Index: NativeInt]: TCommonImageIndexInteger read GetStateImageIndexes write SetStateImageIndexes;
   end;
 
   // **************************************************************************
@@ -1586,13 +1586,13 @@ type
     FData: TObject;
     FDataInf: IUnknown;
     FDisplayRect: TRect;               // The viewport coordinates of the object
-    FIndex: Integer;                   // Absolute Index of the item within a particular collecton
+    FIndex: NativeInt;                   // Absolute Index of the item within a particular collecton
     FOwnsPaintInfo: Boolean;
     FPaintInfo: TEasyPaintInfoBasic;   // Information to draw the item
     FRefCount: Integer;
     FState: TEasyStorageObjectStates;  // State of the item
     FTag: NativeInt;
-    FVisibleIndex: Integer;            // Index of the item across all collections (flat list across collection in group)
+    FVisibleIndex: NativeInt;            // Index of the item across all collections (flat list across collection in group)
                                        // See TEasyItem.VisibleIndexInGroup
     function GetAlignment: TAlignment;
     function GetBold: Boolean;
@@ -1678,16 +1678,16 @@ type
     procedure GainingSelection; virtual; abstract;
     procedure GainingVisibility; virtual; abstract;
     function GetCaption: string; virtual;
-    function GetCaptions(Column: Integer): string; virtual; abstract;
+    function GetCaptions(Column: NativeInt): string; virtual; abstract;
     function GetImageIndex: TCommonImageIndexInteger; virtual;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; virtual; abstract;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; virtual; abstract;
     function GetImageOverlayIndex: TCommonImageIndexInteger; virtual;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; virtual; abstract;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; virtual; abstract;
     function GetOwner: TPersistent; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; virtual; abstract;
-    function GetIndex: Integer; virtual;
-    function GetDetailCount: Integer; virtual; abstract;
-    function GetDetails(Line: Integer): Integer; virtual; abstract;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; virtual; abstract;
+    function GetIndex: NativeInt; virtual;
+    function GetDetailCount: NativeInt; virtual; abstract;
+    function GetDetails(Line: NativeInt): Integer; virtual; abstract;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); virtual; abstract;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW, ImageH: Integer); virtual; abstract;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); virtual; abstract;
@@ -1703,16 +1703,16 @@ type
     procedure LosingHilight; virtual; abstract;
     procedure LosingSelection; virtual; abstract;
     procedure LosingVisibility; virtual; abstract;
-    procedure SetCaptions(Column: Integer; Value: string); virtual; abstract;
+    procedure SetCaptions(Column: NativeInt; Value: string); virtual; abstract;
     procedure SetCaption(Value: string); virtual;
     procedure SetChecked(Value: Boolean); virtual;
     procedure SetDestroyFlags;
-    procedure SetDetailCount(Value: Integer); virtual; abstract;
-    procedure SetDetails(Line: Integer; Value: Integer); virtual; abstract;
+    procedure SetDetailCount(Value: NativeInt); virtual; abstract;
+    procedure SetDetails(Line: NativeInt; Value: Integer); virtual; abstract;
     procedure SetImageIndex(const Value: TCommonImageIndexInteger); virtual;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); virtual; abstract;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); virtual; abstract;
     procedure SetImageOverlayIndex(const Value: TCommonImageIndexInteger); virtual;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); virtual; abstract;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); virtual; abstract;
     procedure UnRegister; // IEasyNotificationSink
     property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property Bold: Boolean read GetBold write SetBold default False;
@@ -1757,22 +1757,22 @@ type
     procedure SaveToStream(S: TStream; AVersion: Integer = EASYLISTVIEW_STREAM_VERSION); virtual;
     {$ifndef DISABLE_ACCESSIBILITY}property Accessible: IAccessible read FAccessible write FAccessible;{$endif}
     property Caption: string read GetCaption write SetCaption;
-    property Captions[Column: Integer]: string read GetCaptions write SetCaptions;
+    property Captions[Column: NativeInt]: string read GetCaptions write SetCaptions;
     property Data: TObject read FData write SetData;
-    property DetailCount: Integer read GetDetailCount write SetDetailCount;
-    property Details[Line: Integer]: Integer read GetDetails write SetDetails;
+    property DetailCount: NativeInt read GetDetailCount write SetDetailCount;
+    property Details[Line: NativeInt]: Integer read GetDetails write SetDetails;
     property HotTracking[MousePos: TPoint]: Boolean read GetHotTracking write SetHotTracking;
     property ImageIndex: TCommonImageIndexInteger read GetImageIndex write SetImageIndex default -1;
-    property ImageIndexes[Column: Integer]: TCommonImageIndexInteger read GetImageIndexes write SetImageIndexes;
-    property ImageList[Column: Integer; IconSize: TEasyImageSize]: TCustomImageList read GetImageList;
+    property ImageIndexes[Column: NativeInt]: TCommonImageIndexInteger read GetImageIndexes write SetImageIndexes;
+    property ImageList[Column: NativeInt; IconSize: TEasyImageSize]: TCustomImageList read GetImageList;
     property ImageOverlayIndex: TCommonImageIndexInteger read GetImageOverlayIndex write SetImageOverlayIndex default -1;
-    property ImageOverlayIndexes[Column: Integer]: TCommonImageIndexInteger read GetImageOverlayIndexes write SetImageOverlayIndexes;
-    property Index: Integer read GetIndex;
+    property ImageOverlayIndexes[Column: NativeInt]: TCommonImageIndexInteger read GetImageOverlayIndexes write SetImageOverlayIndexes;
+    property Index: NativeInt read GetIndex;
     property OwnerListview: TCustomEasyListview read GetOwnerListview;
     property RefCount: Integer read FRefCount;
     property Tag: NativeInt read FTag write FTag default 0;
     property ViewRect: TRect read GetViewRect;
-    property VisibleIndex: Integer read FVisibleIndex;
+    property VisibleIndex: NativeInt read FVisibleIndex;
   end;
 
   // **************************************************************************
@@ -1785,11 +1785,11 @@ type
     FSelectionGroup: TEasySelectionGroupList;  // If grouped selection is on this points to the selection group this item belongs to (nil if none)
     FView: TEasyViewItem;
     FVisibleIndexInGroup: Integer;             // Index of visible item within a group
-    function GetColumnPos: Integer;
+    function GetColumnPos: NativeInt;
     function GetOwnerGroup: TEasyGroup;
     function GetOwnerItems: TEasyItems;
     function GetPaintInfo: TEasyPaintInfoItem;
-    function GetRowPos: Integer;
+    function GetRowPos: NativeInt;
     function GetView: TEasyViewItem;
     function GetViewClass: TEasyViewItemClass;
     procedure SetPaintInfo(const Value: TEasyPaintInfoItem);
@@ -1805,11 +1805,11 @@ type
     function CanChangeVisibility(NewValue: Boolean): Boolean; override;
     function DefaultStateImageList: TCustomImageList;
     function GetDefaultViewClass: TEasyViewItemClass; virtual;
-    function GetGroupKey(FocusedColumn: Integer): LongWord; virtual;
-    function GetIndex: Integer; override;
+    function GetGroupKey(FocusedColumn: NativeInt): Int32; virtual;
+    function GetIndex: NativeInt; override;
     function GetStateImageIndex: TCommonImageIndexInteger; virtual;
-    function GetStateImageIndexes(Column: Integer): TCommonImageIndexInteger; virtual; abstract;
-    function GetStateImageList(Column: Integer): TCustomImageList; virtual; abstract;
+    function GetStateImageIndexes(Column: NativeInt): TCommonImageIndexInteger; virtual; abstract;
+    function GetStateImageList(Column: NativeInt): TCustomImageList; virtual; abstract;
     function LocalPaintInfo: TEasyPaintInfoBasic; override;
     procedure Freeing; override;
     procedure GainingBold; override;
@@ -1833,9 +1833,9 @@ type
     procedure LosingVisibility; override;
     procedure ReleaseSelectionGroup;
     procedure SetStateImageIndex(const Value: TCommonImageIndexInteger); virtual;
-    procedure SetStateImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); virtual; abstract;
+    procedure SetStateImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); virtual; abstract;
     property SelectionGroup: TEasySelectionGroupList read FSelectionGroup write SetSelectionGroup;
-    procedure SetGroupKey(FocusedColumn: Integer; Value: LongWord); virtual;
+    procedure SetGroupKey(FocusedColumn: NativeInt; Value: Int32); virtual;
   public
     constructor Create(ACollection: TEasyCollection); override;
     destructor Destroy; override;
@@ -1864,14 +1864,14 @@ type
     property CheckPending;
     property CheckSize;
     property CheckType;
-    property ColumnPos: Integer read GetColumnPos;
+    property ColumnPos: NativeInt read GetColumnPos;
     property Cut;
     property Destroying;
     property DetailCount;
     property Details;
     property Enabled;
     property Focused;
-    property GroupKey[FocusedColumn: Integer]: LongWord read GetGroupKey write SetGroupKey;
+    property GroupKey[FocusedColumn: NativeInt]: Int32 read GetGroupKey write SetGroupKey;
     property Hilighted;
     property ImageIndent;
     property ImageIndex;
@@ -1884,12 +1884,12 @@ type
     property OwnerItems: TEasyItems read GetOwnerItems;
     property OwnsPaintInfo;
     property PaintInfo: TEasyPaintInfoItem read GetPaintInfo write SetPaintInfo;
-    property RowPos: Integer read GetRowPos;
+    property RowPos: NativeInt read GetRowPos;
     property Selected;
     property State;
     property StateImageIndex: TCommonImageIndexInteger read GetStateImageIndex write SetStateImageIndex default -1;
-    property StateImageIndexes[Column: Integer]: TCommonImageIndexInteger read GetStateImageIndexes write SetStateImageIndexes;
-    property StateImageList[Column: Integer]: TCustomImageList read GetStateImageList;
+    property StateImageIndexes[Column: NativeInt]: TCommonImageIndexInteger read GetStateImageIndexes write SetStateImageIndexes;
+    property StateImageList[Column: NativeInt]: TCustomImageList read GetStateImageList;
     property VAlignment;
     property View: TEasyViewItem read GetView;
     property ViewClass: TEasyViewItemClass read GetViewClass;
@@ -1914,30 +1914,30 @@ type
   // **************************************************************************
   TEasyItemInterfaced = class(TEasyItem)
   private
-    function GetCommonImageIndex(Column: Integer; Kind: TEasyImageKind): TCommonImageIndexInteger;
-    procedure SetCommonImageIndex(Column: Integer; Kind: TEasyImageKind; Value: TCommonImageIndexInteger);
+    function GetCommonImageIndex(Column: NativeInt; Kind: TEasyImageKind): TCommonImageIndexInteger;
+    procedure SetCommonImageIndex(Column: NativeInt; Kind: TEasyImageKind; Value: TCommonImageIndexInteger);
   protected
-    function GetCaptions(Column: Integer): string; override;
+    function GetCaptions(Column: NativeInt): string; override;
     function GetChecked: Boolean; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetGroupKey(FocusedColumn: Integer): LongWord; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetStateImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetStateImageList(Column: Integer): TCustomImageList; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetGroupKey(FocusedColumn: NativeInt): Int32; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetStateImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetStateImageList(Column: NativeInt): TCustomImageList; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW, ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
     procedure SetChecked(Value: Boolean); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetGroupKey(FocusedColumn: Integer; Value: LongWord); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetStateImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetGroupKey(FocusedColumn: NativeInt; Value: Int32); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetStateImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
   public
     function ExtractObject: TObject;
@@ -1950,25 +1950,25 @@ type
   // **************************************************************************
   TEasyItemVirtual = class(TEasyItem)
   protected
-    function GetCaptions(Column: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetGroupKey(FocusedColumn: Integer): LongWord; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetStateImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetStateImageList(Column: Integer): TCustomImageList; override;
+    function GetCaptions(Column: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetGroupKey(FocusedColumn: NativeInt): Int32; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetStateImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetStateImageList(Column: NativeInt): TCustomImageList; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetGroupKey(FocusedColumn: Integer; Value: LongWord); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetStateImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetGroupKey(FocusedColumn: NativeInt; Value: Int32); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetStateImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
   public
   end;
@@ -1981,25 +1981,25 @@ type
   private
     FDataHelper: TEasyItemDynamicDataHelper;
   protected
-    function GetCaptions(Column: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetGroupKey(FocusedColumn: Integer): LongWord; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetStateImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetStateImageList(Column: Integer): TCustomImageList; override;
+    function GetCaptions(Column: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetGroupKey(FocusedColumn: NativeInt): Int32; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetStateImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetStateImageList(Column: NativeInt): TCustomImageList; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Column: Integer; Value: Integer); override;
-    procedure SetGroupKey(FocusedColumn: Integer; Value: LongWord); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetStateImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Column: NativeInt; Value: Integer); override;
+    procedure SetGroupKey(FocusedColumn: NativeInt; Value: Int32); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetStateImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
     property DataHelper: TEasyItemDynamicDataHelper read FDataHelper write FDataHelper;
   public
@@ -2033,19 +2033,19 @@ type
     FReIndexCount: Integer;
     FTag: NativeInt;
     FVisibleList: TList;
-    function GetCount: Integer;
-    function GetItem(Index: Integer): TEasyCollectionItem;
+    function GetCount: NativeInt;
+    function GetItem(Index: NativeInt): TEasyCollectionItem;
     function GetOwnerListview: TCustomEasyListview;
     function GetReIndexDisable: Boolean;
-    function GetVisibleCount: Integer;
-    procedure SetItem(Index: Integer; Value: TEasyCollectionItem);
+    function GetVisibleCount: NativeInt;
+    procedure SetItem(Index: NativeInt; Value: TEasyCollectionItem);
     procedure SetReIndexDisable(const Value: Boolean);
   protected
     FItemClass: TEasyCollectionItemClass;
     function DoStore: Boolean; dynamic;
     function GetOwner: TPersistent; override;
     procedure DefineProperties(Filer: TFiler); override;
-    procedure DoItemAdd(Item: TEasyCollectionItem; Index: Integer); virtual;
+    procedure DoItemAdd(Item: TEasyCollectionItem; Index: NativeInt); virtual;
     procedure DoStructureChange; virtual;
     property List: TList read FList write FList;
     property ReIndexCount: Integer read FReIndexCount write FReIndexCount;
@@ -2061,21 +2061,21 @@ type
     function PrevVisible(Column: TEasyColumn): TEasyColumn; virtual;
     procedure BeginUpdate(ReIndex: Boolean); virtual;
     procedure Clear(FreeItems: Boolean = True); virtual;
-    procedure Delete(Index: Integer); virtual;
+    procedure Delete(Index: NativeInt); virtual;
     procedure EndUpdate(Invalidate: Boolean = True); virtual;
-    function Insert(Index: Integer; Data: TObject = nil): TEasyCollectionItem;
-    procedure Exchange(Index1, Index2: Integer);
+    function Insert(Index: NativeInt; Data: TObject = nil): TEasyCollectionItem;
+    procedure Exchange(Index1, Index2: NativeInt);
     procedure MakeAllVisible; virtual;
     procedure ReadItems(Stream: TStream); virtual;
     procedure ReIndexItems(Force: Boolean = False); virtual;
     procedure WriteItems(Stream: TStream); virtual;
-    property Count: Integer read GetCount;
+    property Count: NativeInt read GetCount;
     property HideFromDFM: Boolean read FHideFromDFM write FHideFromDFM default False;
     property ItemClass: TEasyCollectionItemClass read FItemClass;
-    property Items[Index: Integer]: TEasyCollectionItem read GetItem write SetItem; default;
+    property Items[Index: NativeInt]: TEasyCollectionItem read GetItem write SetItem; default;
     property OwnerListview: TCustomEasyListview read GetOwnerListview;
     property ReIndexDisable: Boolean read GetReIndexDisable write SetReIndexDisable;
-    property VisibleCount: Integer read GetVisibleCount;
+    property VisibleCount: NativeInt read GetVisibleCount;
   published
     property Tag: NativeInt read FTag write FTag default 0;
   end;
@@ -2094,7 +2094,7 @@ type
     procedure PaintAlphaBlendedGradientFill(ACanvas: TCanvas; GradientBottom: TColor; GradientTop: TColor; LocalSelRect: TRect; LocalSelWindowClippedRect: TRect; LocalSelClippedRect: TRect);
     procedure PaintNonAlphaBlendedSelection(ACanvas: TCanvas; LocalSelRect: TRect);
     function PaintStateImage: Boolean; virtual;
-    function ValidateColumnIndex(Column: TEasyColumn): Integer;
+    function ValidateColumnIndex(Column: TEasyColumn): NativeInt;
   public
     procedure AfterFocusRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalFocusRect: TRect); virtual;
     procedure AfterSelRectCalc(Item: TEasyItem; Column: TEasyColumn; const Caption: string; var LocalSelRect: TRect); virtual;
@@ -2109,7 +2109,7 @@ type
     function GetStateImageList(Column: TEasyColumn; Item: TEasyItem): TCustomImageList; virtual;
     function ItemRect(Item: TEasyItem; Column: TEasyColumn; RectType: TEasyCellRectType): TRect; virtual;
     procedure ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject); virtual;
-    procedure LoadTextFont(AItem: TEasyItem; APosition: Integer; ACanvas: TCanvas; AHightable: Boolean); virtual;
+    procedure LoadTextFont(AItem: TEasyItem; APosition: NativeInt; ACanvas: TCanvas; AHightable: Boolean); virtual;
     function OverlappedFocus: Boolean; virtual;
     procedure Paint(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; ViewportClipRect: TRect; ForceSelectionRectDraw: Boolean); virtual;
     procedure PaintAfter(Item: TEasyItem; Column: TEasyColumn; const Caption: string; ACanvas: TCanvas; RectArray: TEasyRectArrayObject); virtual;
@@ -2277,8 +2277,8 @@ type
   TEasyItems = class(TEasyCollection)
   private
     FOwnerGroup: TEasyGroup;
-    function GetItem(Index: Integer): TEasyItem;
-    procedure SetItem(Index: Integer; Value: TEasyItem);
+    function GetItem(Index: NativeInt): TEasyItem;
+    procedure SetItem(Index: NativeInt; Value: TEasyItem);
   protected
     procedure DoStructureChange; override;
   public
@@ -2290,13 +2290,13 @@ type
     function AddVirtual(Data: TObject = nil): TEasyItemVirtual;
     function AddCustom(CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
     procedure Clear(FreeItems: Boolean = True); override;
-    procedure Delete(Index: Integer); reintroduce;
-    procedure Exchange(Index1, Index2: Integer); reintroduce;
-    function Insert(Index: Integer; Data: TObject = nil): TEasyItem;
-    function InsertCustom(Index: Integer; CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
-    function InsertInterfaced(Index: Integer; const DataInf: IUnknown; Data: TObject = nil): TEasyItemInterfaced;
-    function InsertVirtual(Index: Integer; Data: TObject = nil): TEasyItemVirtual;
-    property Items[Index: Integer]: TEasyItem read GetItem write SetItem; default;
+    procedure Delete(Index: NativeInt); reintroduce;
+    procedure Exchange(Index1, Index2: NativeInt); reintroduce;
+    function Insert(Index: NativeInt; Data: TObject = nil): TEasyItem;
+    function InsertCustom(Index: NativeInt; CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
+    function InsertInterfaced(Index: NativeInt; const DataInf: IUnknown; Data: TObject = nil): TEasyItemInterfaced;
+    function InsertVirtual(Index: NativeInt; Data: TObject = nil): TEasyItemVirtual;
+    property Items[Index: NativeInt]: TEasyItem read GetItem write SetItem; default;
     property OwnerGroup: TEasyGroup read FOwnerGroup;
   end;
 
@@ -2307,13 +2307,13 @@ type
   TEasyGlobalItems = class
   private
     FOwner: TCustomEasyListview;
-    function GetCount: Integer;
-    function GetItem(Index: Integer): TEasyItem;
-    function GetItemInternal(Index: Integer): TEasyItem;
+    function GetCount: NativeInt;
+    function GetItem(Index: NativeInt): TEasyItem;
+    function GetItemInternal(Index: NativeInt): TEasyItem;
     function GetLastGroup: TEasyGroup;
     procedure EnsureFirstGroup;
-    procedure IndexError(Index: Integer);
-    procedure SetItem(Index: Integer; const Value: TEasyItem);
+    procedure IndexError(Index: NativeInt);
+    procedure SetItem(Index: NativeInt; const Value: TEasyItem);
     procedure SetReIndexDisable(const Value: Boolean);
   public
     constructor Create(AnOwner: TCustomEasyListview);
@@ -2323,16 +2323,16 @@ type
     function AddInterfaced(const DataInf: IUnknown; Data: TObject = nil): TEasyItemInterfaced;
     function AddVirtual(Data: TObject = nil): TEasyItemVirtual;
     function FindByCaption(const Caption: string; Column: Integer = 0): TEasyItem;
-    function IndexOf(Item: TEasyItem): Integer;
-    function Insert(Index: Integer; Data: TObject = nil): TEasyItem;
+    function IndexOf(Item: TEasyItem): NativeInt;
+    function Insert(Index: NativeInt; Data: TObject = nil): TEasyItem;
     function InsertCustom(Index: Integer; CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
     function InsertInterfaced(Index: Integer; const DataInf: IUnknown; Data: TObject = nil): TEasyItemInterfaced;
     function InsertVirtual(Index: Integer; Data: TObject = nil): TEasyItemVirtual;
     procedure Clear;
-    procedure Delete(Index: Integer; ReIndex: Boolean = True);
-    procedure Exchange(Index1, Index2: Integer);
-    property Count: Integer read GetCount;
-    property Items[Index: Integer]: TEasyItem read GetItem write SetItem; default;
+    procedure Delete(Index: NativeInt; ReIndex: Boolean = True);
+    procedure Exchange(Index1, Index2: NativeInt);
+    property Count: NativeInt read GetCount;
+    property Items[Index: NativeInt]: TEasyItem read GetItem write SetItem; default;
     property OwnerListview: TCustomEasyListview read FOwner;
     property ReIndexDisable: Boolean write SetReIndexDisable;
   end;
@@ -2349,7 +2349,7 @@ type
     FGroupCollapseButton: TBitmap;
     FColumnSortUp: TBitmap;
     FColumnSortDown: TBitmap;
-    FDPIChangedMessageId: Integer;
+    FDPIChangedMessageId: Int64;
     procedure DPIChangedMessageHandler(const ASender: TObject; const AMsg: System.Messaging.TMessage);
     function GetColumnSortDown: TBitmap;
     function GetColumnSortUp: TBitmap;
@@ -2379,20 +2379,20 @@ type
   // **************************************************************************
   TEasyGridGroup = class(TEasyOwnedPersistent)
   private
-    FColumnCount: Integer;        // Number of Columns in the grid
+    FColumnCount: NativeInt;        // Number of Columns in the grid
     FLayout: TEasyGridLayout;
     FOwnerGroup: TEasyGroup;      // The group that the grid is attached to
-    FRowCount: Integer;           // The number of Rows in the group
+    FRowCount: NativeInt;           // The number of Rows in the group
     function GetOwnerGroups: TEasyGroups;
 
   protected
     function AdjacentItem(Item: TEasyItem; Direction: TEasyAdjacentCellDir): TEasyItem; virtual;
     function GetCellSize: TEasyCellSize; virtual; abstract;
     function GetMaxColumns(Group: TEasyGroup; WindowWidth: Integer): Integer; virtual;
-    function LastItemInNColumn(Group: TEasyGroup; N: Integer): TEasyItem;
+    function LastItemInNColumn(Group: TEasyGroup; N: NativeInt): TEasyItem;
     function NextVisibleGroupWithNItems(StartGroup: TEasyGroup; N: Integer): TEasyGroup;
     function PrevVisibleGroupWithNItems(StartGroup: TEasyGroup; N: Integer): TEasyGroup;
-    function SearchForHitRight(ColumnPos: Integer; Pt: TPoint): TEasyItem;
+    function SearchForHitRight(ColumnPos: NativeInt; Pt: TPoint): TEasyItem;
     function StaticTopItemMargin: Integer; virtual;
     function StaticTopMargin: Integer; virtual;
     procedure AutoSizeCells; virtual;
@@ -2401,15 +2401,15 @@ type
   public
     constructor Create(AnOwner: TCustomEasyListview; AnOwnerGroup: TEasyGroup); reintroduce; virtual;
     destructor Destroy; override;
-    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer); virtual;
-    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer); virtual;
+    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt); virtual;
+    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt); virtual;
 
     property CellSize: TEasyCellSize read GetCellSize write SetCellSize;
-    property ColumnCount: Integer read FColumnCount;
+    property ColumnCount: NativeInt read FColumnCount;
     property Layout: TEasyGridLayout read FLayout;
     property OwnerGroup: TEasyGroup read FOwnerGroup;
     property OwnerGroups: TEasyGroups read GetOwnerGroups;
-    property RowCount: Integer read FRowCount;
+    property RowCount: NativeInt read FRowCount;
   end;
 
   // **************************************************************************
@@ -2446,8 +2446,8 @@ type
     procedure SetCellSize(Value: TEasyCellSize); override;
   public
     constructor Create(AnOwner: TCustomEasyListview; AnOwnerGroup: TEasyGroup); override;
-    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer); override;
-    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer); override;
+    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt); override;
+    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt); override;
   end;
 
   // **************************************************************************
@@ -2461,8 +2461,8 @@ type
     procedure SetCellSize(Value: TEasyCellSize); override;
   public
     constructor Create(AnOwner: TCustomEasyListview; AnOwnerGroup: TEasyGroup); override;
-    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer); override;
-    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer); override;
+    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt); override;
+    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt); override;
   end;
 
   // **************************************************************************
@@ -2496,7 +2496,7 @@ type
     function GetCellSize: TEasyCellSize; override;
     procedure SetCellSize(Value: TEasyCellSize); override;
   public
-    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer); override;
+    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt); override;
   end;
 
   // **************************************************************************
@@ -2520,7 +2520,7 @@ type
     procedure SetCellSize(Value: TEasyCellSize); override;
   public
     constructor Create(AnOwner: TCustomEasyListview; AnOwnerGroup: TEasyGroup); override;
-    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer); override;
+    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt); override;
   end;
 
   TEasyGridSingleColumn = class(TEasyGridGroup)
@@ -2530,7 +2530,7 @@ type
     procedure AutoSizeCells; override;
     procedure SetCellSize(Value: TEasyCellSize); override;
   public
-    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer); override;
+    procedure FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt); override;
   end;
 
   // **************************************************************************
@@ -2564,7 +2564,7 @@ type
   public
     constructor Create(AnOwner: TCustomEasyListview; AnOwnerGroup: TEasyGroup); override;
     destructor Destroy; override;
-    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer); override;
+    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt); override;
   published
   end;
 
@@ -2577,7 +2577,7 @@ type
     FExpanded: Boolean;           // Is the group expanded/collapsed
     FGrid: TEasyGridGroup;        // The UI grid that defines the item positions
     FItems: TEasyItems;           // The List of Items (TEasyItems) in the group
-    FKey: LongWord;
+    FKey: Int32;
     FView: TEasyViewGroup;
     FVisibleItems: TList;
     function GetBandBlended: Boolean;
@@ -2595,8 +2595,8 @@ type
     function GetExpandImageIndent: Integer;
     function GetGrid: TEasyGridGroup;
     function GetGridClass: TEasyGridGroupClass;
-    function GetItem(Index: Integer): TEasyItem;
-    function GetItemCount: Integer;
+    function GetItem(Index: NativeInt): TEasyItem;
+    function GetItemCount: NativeInt;
     function GetMarginBottom: TEasyFooterMargin;
     function GetMarginLeft: TEasyMargin;
     function GetMarginRight: TEasyMargin;
@@ -2606,8 +2606,8 @@ type
     function GetPaintInfo: TEasyPaintInfoBaseGroup;
     function GetView: TEasyViewGroup;
     function GetViewClass: TEasyViewGroupClass;
-    function GetVisibleCount: Integer;
-    function GetVisibleItem(Index: Integer): TEasyItem;
+    function GetVisibleCount: NativeInt;
+    function GetVisibleItem(Index: NativeInt): TEasyItem;
     procedure SetBandBlended(Value: Boolean);
     procedure SetBandColor(Value: TColor);
     procedure SetBandColorFade(Value: TColor);
@@ -2621,7 +2621,7 @@ type
     procedure SetExpandable(Value: Boolean);
     procedure SetExpanded(Value: Boolean); virtual;
     procedure SetExpandImageIndent(Value: Integer);
-    procedure SetItem(Index: Integer; Value: TEasyItem);
+    procedure SetItem(Index: NativeInt; Value: TEasyItem);
     procedure SetMarginBottom(Value: TEasyFooterMargin);
     procedure SetMarginLeft(Value: TEasyMargin);
     procedure SetMarginRight(Value: TEasyMargin);
@@ -2678,7 +2678,7 @@ type
     property Expandable: Boolean read GetExpandable write SetExpandable default True;
     property ExpandImageIndent: Integer read GetExpandImageIndent write SetExpandImageIndent default 4;
     property ImageIndent;
-    property Key: LongWord read FKey write FKey;
+    property Key: Int32 read FKey write FKey;
     property MarginBottom: TEasyFooterMargin read GetMarginBottom write SetMarginBottom;
     property MarginLeft: TEasyMargin read GetMarginLeft write SetMarginLeft;
     property MarginRight: TEasyMargin read GetMarginRight write SetMarginRight;
@@ -2686,7 +2686,7 @@ type
     property OwnsPaintInfo;
     property PaintInfo: TEasyPaintInfoBaseGroup read GetPaintInfo write SetPaintInfo;
     property VAlignment default cvaCenter;
-    property VisibleItem[Index: Integer]: TEasyItem read GetVisibleItem;
+    property VisibleItem[Index: NativeInt]: TEasyItem read GetVisibleItem;
     property VisibleItems: TList read FVisibleItems write FVisibleItems;
   public
     constructor Create(ACollection: TEasyCollection); override;
@@ -2702,7 +2702,7 @@ type
     function ItemByPoint(ViewportPoint: TPoint): TEasyItem;
     procedure LoadFromStream(S: TStream; var AVersion: Integer); override;
     procedure Paint(MarginEdge: TEasyGroupMarginEdge; ObjRect: TRect; ACanvas: TCanvas);
-    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer);
+    procedure Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt);
     function SelectionHit(SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; override;
     function SelectionHitPt(ViewportPoint: TPoint; SelectType: TEasySelectHitType): Boolean; override;
     procedure SaveToStream(S: TStream; AVersion: Integer = EASYLISTVIEW_STREAM_VERSION); override;
@@ -2718,33 +2718,33 @@ type
     property GridClass: TEasyGridGroupClass read GetGridClass;
     property ImageIndex;
     property ImageOverlayIndex;
-    property Item[Index: Integer]: TEasyItem read GetItem write SetItem; default;
-    property ItemCount: Integer read GetItemCount;
+    property Item[Index: NativeInt]: TEasyItem read GetItem write SetItem; default;
+    property ItemCount: NativeInt read GetItemCount;
     property Items: TEasyItems read FItems write FItems;
     property OwnerListview: TCustomEasyListview read GetOwnerListview;
     property OwnerGroups: TEasyGroups read GetOwnerGroups;
     property View: TEasyViewGroup read GetView;
     property ViewClass: TEasyViewGroupClass read GetViewClass;
     property Visible;
-    property VisibleCount: Integer read GetVisibleCount;
+    property VisibleCount: NativeInt read GetVisibleCount;
   end;
 
   TEasyGroupInterfaced = class(TEasyGroup)
   protected
-    function GetCaptions(Line: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
+    function GetCaptions(Line: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
   public
     property DataInf;
@@ -2754,20 +2754,20 @@ type
   private
     FDataHelper: TEasyDynamicDataHelper;
   protected
-    function GetCaptions(Line: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger ; override;
+    function GetCaptions(Line: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger ; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
     property DataHelper: TEasyDynamicDataHelper read FDataHelper write FDataHelper;
   public
@@ -2828,20 +2828,20 @@ type
 
   TEasyGroupVirtual = class(TEasyGroup)
   protected
-    function GetCaptions(Line: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
+    function GetCaptions(Line: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
   end;
 
@@ -2915,14 +2915,14 @@ type
     FStreamGroups: Boolean;
     function GetCellHeight: Integer;
     function GetCellWidth: Integer;
-    function GetGroup(Index: Integer): TEasyGroup;
-    function GetItemCount: Integer;
+    function GetGroup(Index: NativeInt): TEasyGroup;
+    function GetItemCount: NativeInt;
     function GetViewRect: TRect;
-    function GetVisibleGroup(Index: Integer): TEasyGroup;
-    function GetVisibleItemCount: Integer;
+    function GetVisibleGroup(Index: NativeInt): TEasyGroup;
+    function GetVisibleItemCount: NativeInt;
     procedure SetCellHeight(Value: Integer);
     procedure SetCellWidth(Value: Integer);
-    procedure SetGroup(Index: Integer; Value: TEasyGroup);
+    procedure SetGroup(Index: NativeInt; Value: TEasyGroup);
   protected
     procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
     function FirstGroupInternal(VisibleOnly: Boolean): TEasyGroup;
@@ -2936,7 +2936,7 @@ type
     function NavigateItemInternal(Item: TEasyItem; NextItemType: TEasyNextItemType; Direction: TEasySearchDirection): TEasyItem;
     procedure DoStructureChange; override;
     property GroupsState: TEasyGroupsStates read FGroupsState write FGroupsState;
-    property VisibleGroup[Index: Integer]: TEasyGroup read GetVisibleGroup;
+    property VisibleGroup[Index: NativeInt]: TEasyGroup read GetVisibleGroup;
   public
     constructor Create(AnOwner: TCustomEasyListview); reintroduce; virtual;
     destructor Destroy; override;
@@ -3012,21 +3012,21 @@ type
     procedure UnInitializeAll;
     property CellHeight: Integer read GetCellHeight write SetCellHeight;
     property CellWidth: Integer read GetCellWidth write SetCellWidth;
-    property Groups[Index: Integer]: TEasyGroup read GetGroup write SetGroup; default;
-    property ItemCount: Integer read GetItemCount;
+    property Groups[Index: NativeInt]: TEasyGroup read GetGroup write SetGroup; default;
+    property ItemCount: NativeInt read GetItemCount;
     property StreamGroups: Boolean read FStreamGroups write FStreamGroups default True;
     property ViewRect: TRect read GetViewRect;
-    property VisibleItemCount: Integer read GetVisibleItemCount;
+    property VisibleItemCount: NativeInt read GetVisibleItemCount;
   end;
 
   // Specical Groups container and Groups for the TEasyTaskPanel component
   TEasyGroupsTaskPanel = class(TEasyGroups)
   private
-    function GetGroup(Index: Integer): TEasyGroupTaskPanel;
-    procedure SetGroup(Index: Integer; Value: TEasyGroupTaskPanel);
+    function GetGroup(Index: NativeInt): TEasyGroupTaskPanel;
+    procedure SetGroup(Index: NativeInt; Value: TEasyGroupTaskPanel);
   public
     constructor Create(AnOwner: TCustomEasyListview); override;
-    property Groups[Index: Integer]: TEasyGroupTaskPanel read GetGroup write SetGroup; default;
+    property Groups[Index: NativeInt]: TEasyGroupTaskPanel read GetGroup write SetGroup; default;
   end;
 
   // **************************************************************************
@@ -3245,7 +3245,7 @@ type
     FBkGndColor: TColor;
     FClickable: Boolean;
     FDropDownButton: TEasyColumnDropDownButton;
-    FPosition: Integer;
+    FPosition: NativeInt;
     FSortDirection: TEasySortDirection;
     FSpringRest: Single;
     FStyle: TEasyHeaderButtonStyle;
@@ -3270,7 +3270,7 @@ type
     procedure SetHotTrack(Value: Boolean);
     procedure SetImagePosition(Value: TEasyHeaderImagePosition);
     procedure SetPaintInfo(Value: TEasyPaintInfoColumn);
-    procedure SetPosition(Value: Integer);
+    procedure SetPosition(Value: NativeInt);
     procedure SetSortDirection(Value: TEasySortDirection);
     procedure SetSortGlpyhAlign(Value: TEasySortGlyphAlign);
     procedure SetSortGlyphIndent(Value: Integer);
@@ -3349,7 +3349,7 @@ type
     property OwnerHeader: TEasyHeader read GetOwnerHeader;
     property OwnsPaintInfo;
     property PaintInfo: TEasyPaintInfoColumn read GetPaintInfo write SetPaintInfo;
-    property Position: Integer read FPosition write SetPosition;
+    property Position: NativeInt read FPosition write SetPosition;
     property Selected;
     property SortDirection: TEasySortDirection read FSortDirection write SetSortDirection default esdNone;
     property Tag;
@@ -3361,20 +3361,20 @@ type
 
   TEasyColumnInterfaced = class(TEasyColumn)
   protected
-    function GetCaptions(Line: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
+    function GetCaptions(Line: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
   public
     property DataInf;
@@ -3384,20 +3384,20 @@ type
   private
     FDataHelper: TEasyDynamicDataHelper;
   protected
-    function GetCaptions(Line: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
+    function GetCaptions(Line: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
     property DataHelper: TEasyDynamicDataHelper read FDataHelper write FDataHelper;
   public
@@ -3430,20 +3430,20 @@ type
 
   TEasyColumnVirtual = class(TEasyColumn)
   protected
-    function GetCaptions(Line: Integer): string; override;
-    function GetDetailCount: Integer; override;
-    function GetDetails(Line: Integer): Integer; override;
-    function GetImageIndexes(Column: Integer): TCommonImageIndexInteger; override;
-    function GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList; override;
-    function GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger; override;
+    function GetCaptions(Line: NativeInt): string; override;
+    function GetDetailCount: NativeInt; override;
+    function GetDetails(Line: NativeInt): Integer; override;
+    function GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
+    function GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList; override;
+    function GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger; override;
     procedure ImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); override;
     procedure ImageDrawGetSize(Column: TEasyColumn; var ImageW: Integer; var ImageH: Integer); override;
     procedure ImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); override;
-    procedure SetCaptions(Column: Integer; Value: string); override;
-    procedure SetDetailCount(Value: Integer); override;
-    procedure SetDetails(Line: Integer; Value: Integer); override;
-    procedure SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
-    procedure SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger); override;
+    procedure SetCaptions(Column: NativeInt; Value: string); override;
+    procedure SetDetailCount(Value: NativeInt); override;
+    procedure SetDetails(Line: NativeInt; Value: Integer); override;
+    procedure SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
+    procedure SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger); override;
     procedure ThumbnailDraw(ACanvas: TCanvas; ARect: TRect;AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); override;
   end;
 
@@ -3471,7 +3471,7 @@ type
     procedure PaintImage(Column: TEasyColumn; ACanvas: TCanvas; HeaderType: TEasyHeaderType; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize); virtual;
     function PaintImageSize(Column: TEasyColumn; HeaderType: TEasyHeaderType): TEasyImageSize; virtual;
     procedure PaintSortGlyph(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject); virtual;
-    procedure PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: Integer); virtual;
+    procedure PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: NativeInt); virtual;
     procedure ReSizeRectArray(var RectArray: TEasyRectArrayObjectArray); virtual;
     function SelectionHit(Column: TEasyColumn; SelectViewportRect: TRect; SelectType: TEasySelectHitType): Boolean; virtual;
     function SelectionHitPt(Column: TEasyColumn; ViewportPoint: TPoint; SelectType: TEasySelectHitType): Boolean; virtual;
@@ -3483,12 +3483,12 @@ type
   // **************************************************************************
   TEasyColumns = class(TEasyCollection)
   private
-    function GetColumns(Index: Integer): TEasyColumn;
+    function GetColumns(Index: NativeInt): TEasyColumn;
     function GetOwnerHeader: TEasyHeader;
-    procedure SetColumns(Index: Integer; Value: TEasyColumn);
+    procedure SetColumns(Index: NativeInt; Value: TEasyColumn);
   protected
     procedure ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
-    procedure DoItemAdd(Item: TEasyCollectionItem; Index: Integer); override;
+    procedure DoItemAdd(Item: TEasyCollectionItem; Index: NativeInt); override;
     procedure DoStructureChange; override;
   public
     constructor Create(AnOwner: TCustomEasyListview); reintroduce; virtual;
@@ -3503,7 +3503,7 @@ type
     function InsertInterfaced(Index: Integer; const DataInf: IUnknown; Data: TObject = nil): TEasyColumnInterfaced;
     function InsertVirtual(Index: Integer; Data: TObject = nil): TEasyColumnVirtual;
     procedure Clear(FreeItems: Boolean = True); override;
-    property Columns[Index: Integer]: TEasyColumn read GetColumns write SetColumns; default;
+    property Columns[Index: NativeInt]: TEasyColumn read GetColumns write SetColumns; default;
     property OwnerHeader: TEasyHeader read GetOwnerHeader;
   end;
 
@@ -4439,18 +4439,18 @@ type
     FOwner: TEasySortManager;
   public
     constructor Create(AnOwner: TEasySortManager); virtual;
-    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: Integer; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); virtual; abstract;
+    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: NativeInt; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); virtual; abstract;
     property Owner: TEasySortManager read FOwner write FOwner;
   end;
 
   TEasyQuickSort = class(TEasySorter)
   public
-    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: Integer; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); override;
+    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: NativeInt; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); override;
   end;
 
   TEasyBubbleSort = class(TEasySorter)
   public
-    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: Integer; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); override;
+    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: NativeInt; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); override;
   end;
 
   TEasyMergeSort = class(TEasySorter)
@@ -4469,12 +4469,12 @@ type
     property ItemCompareFunc: TEasyDoItemCompare read FItemCompareFunc write FItemCompareFunc;
     property OwnerGroup: TEasyGroup read FOwnerGroup write FOwnerGroup;
   public
-    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: Integer; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); override;
+    procedure Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: NativeInt; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean); override;
   end;
 
   TGroupSortInfoRec = record
     Item: TEasyItem;
-    Key: LongWord;
+    Key: Int32;
   end;
   TGroupSortInfoArray = array of TGroupSortInfoRec;
   // **************************************************************************
@@ -4501,7 +4501,7 @@ type
     procedure SetAutoSort(Value: Boolean);
   protected
     function CollectionSupportsInterfaceSorting(Collection: TEasyCollection): Boolean;
-    procedure GroupItem(Item: TEasyItem; ColumnIndex: Integer; Key: LongWord);
+    procedure GroupItem(Item: TEasyItem; ColumnIndex: NativeInt; Key: Int32);
     property Sorter: TEasySorter read FSorter write FSorter;
     property SortList: TGroupSortInfoArray read FSortList write FSortList;
     property UpdateCount: Integer read FUpdateCount write FUpdateCount;
@@ -4952,8 +4952,8 @@ type
     procedure CutToClipboard(UserData: Integer = 0); virtual;
     {$ifndef DISABLE_ACCESSIBILITY}procedure DisconnectAccessibility;{$endif}
     procedure DoAfterPaint(ACanvas: TCanvas; ClipRect: TRect); virtual;
-    procedure DoAutoGroupGetKey(Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Key: LongWord); virtual;
-    procedure DoAutoSortGroupCreate(Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Group: TEasyGroup; var DoDefaultAction: Boolean); virtual;
+    procedure DoAutoGroupGetKey(Item: TEasyItem; ColumnIndex: NativeInt; Groups: TEasyGroups; var Key: Int32); virtual;
+    procedure DoAutoSortGroupCreate(Item: TEasyItem; ColumnIndex: NativeInt; Groups: TEasyGroups; var Group: TEasyGroup; var DoDefaultAction: Boolean); virtual;
     procedure DoClipboardCopy(var Handled: Boolean); virtual;
     procedure DoClipboardCut(var MarkAsCut, Handled: Boolean); virtual;
     procedure DoClipboardPaste(var Handled: Boolean); virtual;
@@ -4969,11 +4969,11 @@ type
     procedure DoColumnFocusChanged(Column: TEasyColumn); virtual;
     procedure DoColumnFocusChanging(Column: TEasyColumn; var Allow: Boolean); virtual;
     procedure DoColumnFreeing(Column: TEasyColumn); virtual;
-    procedure DoColumnGetCaption(Column: TEasyColumn; Line: Integer; var Caption: string); virtual;
+    procedure DoColumnGetCaption(Column: TEasyColumn; Line: NativeInt; var Caption: string); virtual;
     procedure DoColumnGetImageIndex(Column: TEasyColumn; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger); virtual;
     procedure DoColumnGetImageList(Column: TEasyColumn; var ImageList: TCustomImageList); virtual;
-    procedure DoColumnGetDetail(Column: TEasyColumn; Line: Integer; var Detail: Integer); virtual;
-    procedure DoColumnGetDetailCount(Column: TEasyColumn; var Count: Integer); virtual;
+    procedure DoColumnGetDetail(Column: TEasyColumn; Line: NativeInt; var Detail: Integer); virtual;
+    procedure DoColumnGetDetailCount(Column: TEasyColumn; var Count: NativeInt); virtual;
     procedure DoColumnImageDraw(Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); virtual;
     procedure DoColumnImageGetSize(Column: TEasyColumn; var ImageWidth, ImageHeight: Integer); virtual;
     procedure DoColumnImageDrawIsCustom(Column: TEasyColumn; var IsCustom: Boolean); virtual;
@@ -4985,8 +4985,8 @@ type
     procedure DoColumnSelectionChanging(Column: TEasyColumn; var Allow: Boolean); virtual;
     procedure DoColumnSetCaption(Column: TEasyColumn; const Caption: string); virtual;
     procedure DoColumnSetImageIndex(Column: TEasyColumn; ImageKind: TEasyImageKind; ImageIndex: Integer); virtual;
-    procedure DoColumnSetDetail(Column: TEasyColumn; Line: Integer; Detail: Integer); virtual;
-    procedure DoColumnSetDetailCount(Column: TEasyColumn; DetailCount: Integer); virtual;
+    procedure DoColumnSetDetail(Column: TEasyColumn; Line: NativeInt; Detail: Integer); virtual;
+    procedure DoColumnSetDetailCount(Column: TEasyColumn; DetailCount: NativeInt); virtual;
     procedure DoColumnStructureChange;
     procedure DoColumnThumbnailDraw(Column: TEasyColumn; ACanvas: TCanvas; ARect: TRect; var DoDefault: Boolean); virtual;
     procedure DoColumnSizeChanged(Column: TEasyColumn); virtual;
@@ -5012,8 +5012,8 @@ type
     procedure DoGroupGetCaption(Group: TEasyGroup; var Caption: string); virtual;
     procedure DoGroupGetImageIndex(Group: TEasyGroup; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger); virtual;
     procedure DoGroupGetImageList(Group: TEasyGroup; var ImageList: TCustomImageList); virtual;
-    procedure DoGroupGetDetail(Group: TEasyGroup; Line: Integer; var Detail: Integer); virtual;
-    procedure DoGroupGetDetailCount(Group: TEasyGroup; var Count: Integer); virtual;
+    procedure DoGroupGetDetail(Group: TEasyGroup; Line: NativeInt; var Detail: Integer); virtual;
+    procedure DoGroupGetDetailCount(Group: TEasyGroup; var Count: NativeInt); virtual;
     procedure DoGroupImageDraw(Group: TEasyGroup; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); virtual;
     procedure DoGroupImageGetSize(Group: TEasyGroup; var ImageWidth, ImageHeight: Integer); virtual;
     procedure DoGroupImageDrawIsCustom(Group: TEasyGroup; var IsCustom: Boolean); virtual;
@@ -5026,8 +5026,8 @@ type
     procedure DoGroupSelectionChanging(Group: TEasyGroup; var Allow: Boolean); virtual;
     procedure DoGroupSetCaption(Group: TEasyGroup; const Caption: string); virtual;
     procedure DoGroupSetImageIndex(Group: TEasyGroup; ImageKind: TEasyImageKind; ImageIndex: Integer); virtual;
-    procedure DoGroupSetDetail(Group: TEasyGroup; Line: Integer; Detail: Integer); virtual;
-    procedure DoGroupSetDetailCount(Group: TEasyGroup; DetailCount: Integer); virtual;
+    procedure DoGroupSetDetail(Group: TEasyGroup; Line: NativeInt; Detail: Integer); virtual;
+    procedure DoGroupSetDetailCount(Group: TEasyGroup; DetailCount: NativeInt); virtual;
     procedure DoGroupStructureChange; virtual;
     procedure DoGroupThumbnailDraw(Group: TEasyGroup; ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); virtual;
     procedure DoGroupVisibilityChanged(Group: TEasyGroup); virtual;
@@ -5048,7 +5048,7 @@ type
     procedure DoItemCustomView(Item: TEasyItem; ViewStyle: TEasyListStyle; var View: TEasyViewItemClass); virtual;
     procedure DoItemDblClick(Button: TCommonMouseButton; MousePos: TPoint; HitInfo: TEasyHitInfoItem); virtual;
     procedure DoItemEditAccepted(Item: TEasyItem); virtual;
-    procedure DoItemEditBegin(Item: TEasyItem; var Column: Integer; var Allow: Boolean); virtual;
+    procedure DoItemEditBegin(Item: TEasyItem; var Column: NativeInt; var Allow: Boolean); virtual;
     procedure DoItemEdited(Item: TEasyItem; var NewValue: Variant; var Accept: Boolean); virtual;
     procedure DoItemEditEnd(Item: TEasyItem); virtual;
     procedure DoItemGetEditMenu(Editor: TEasyBaseEditor; var Menu: TPopupMenu); virtual;
@@ -5057,14 +5057,14 @@ type
     procedure DoItemFreeing(Item: TEasyItem); virtual;
     procedure DoItemFocusChanged(Item: TEasyItem); virtual;
     procedure DoItemFocusChanging(Item: TEasyItem; var Allow: Boolean); virtual;
-    procedure DoItemGetCaption(Item: TEasyItem; Column: Integer; var ACaption: string); virtual;
+    procedure DoItemGetCaption(Item: TEasyItem; Column: NativeInt; var ACaption: string); virtual;
     procedure DoItemGetEditCaption(Item: TEasyItem; Column: TEasyColumn; var Caption: string); virtual;
-    procedure DoItemGetGroupKey(Item: TEasyItem; FocusedColumn: Integer; var Key: LongWord); virtual;
-    procedure DoItemGetImageIndex(Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger); virtual;
-    procedure DoItemGetImageList(Item: TEasyItem; Column: Integer; var ImageList: TCustomImageList); virtual;
-    procedure DoItemGetStateImageList(Item: TEasyItem; Column: Integer; var ImageList: TCustomImageList); virtual;
-    procedure DoItemGetTileDetail(Item: TEasyItem; Line: Integer; var Detail: Integer); virtual;
-    procedure DoItemGetTileDetailCount(Item: TEasyItem; var Count: Integer); virtual;
+    procedure DoItemGetGroupKey(Item: TEasyItem; FocusedColumn: NativeInt; var Key: Int32); virtual;
+    procedure DoItemGetImageIndex(Item: TEasyItem; Column: NativeInt; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger); virtual;
+    procedure DoItemGetImageList(Item: TEasyItem; Column: NativeInt; var ImageList: TCustomImageList); virtual;
+    procedure DoItemGetStateImageList(Item: TEasyItem; Column: NativeInt; var ImageList: TCustomImageList); virtual;
+    procedure DoItemGetTileDetail(Item: TEasyItem; Line: NativeInt; var Detail: Integer); virtual;
+    procedure DoItemGetTileDetailCount(Item: TEasyItem; var Count: NativeInt); virtual;
     procedure DoItemHotTrack(Item: TEasyItem; State: TEasyHotTrackState; MousePos: TPoint); virtual;
     procedure DoItemImageDraw(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const RectArray: TEasyRectArrayObject; AlphaBlender: TEasyAlphaBlender); virtual;
     procedure DoItemImageGetSize(Item: TEasyItem; Column: TEasyColumn; var ImageWidth, ImageHeight: Integer); virtual;
@@ -5073,16 +5073,16 @@ type
     procedure DoItemLoadFromStream(Item: TEasyItem; S: TStream; Version: Integer); virtual;
     procedure DoItemMouseDown(Item: TEasyItem; Button: TCommonMouseButton; var DoDefault: Boolean); virtual;
     procedure DoItemMouseUp(Item: TEasyItem; Button: TCommonMouseButton; var DoDefault: Boolean); virtual;
-    procedure DoItemPaintText(Item: TEasyItem; Position: Integer; ACanvas: TCanvas); virtual;
+    procedure DoItemPaintText(Item: TEasyItem; Position: NativeInt; ACanvas: TCanvas); virtual;
     procedure DoItemSaveToStream(Item: TEasyItem; S: TStream; Version: Integer); virtual;
     procedure DoItemSelectionChanged(Item: TEasyItem); virtual;
     procedure DoItemSelectionChanging(Item: TEasyItem; var Allow: Boolean); virtual;
     procedure DoItemSelectionsChanged; virtual;
-    procedure DoItemSetCaption(Item: TEasyItem; Column: Integer; const Caption: string); virtual;
-    procedure DoItemSetGroupKey(Item: TEasyItem; FocusedColumn: Integer; Key: LongWord); virtual;
-    procedure DoItemSetImageIndex(Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; ImageIndex: Integer); virtual;
-    procedure DoItemSetTileDetail(Item: TEasyItem; Line: Integer; Detail: Integer); virtual;
-    procedure DoItemSetTileDetailCount(Item: TEasyItem; Detail: Integer); virtual;
+    procedure DoItemSetCaption(Item: TEasyItem; Column: NativeInt; const Caption: string); virtual;
+    procedure DoItemSetGroupKey(Item: TEasyItem; FocusedColumn: NativeInt; Key: Int32); virtual;
+    procedure DoItemSetImageIndex(Item: TEasyItem; Column: NativeInt; ImageKind: TEasyImageKind; ImageIndex: Integer); virtual;
+    procedure DoItemSetTileDetail(Item: TEasyItem; Line: NativeInt; Detail: Integer); virtual;
+    procedure DoItemSetTileDetailCount(Item: TEasyItem; Detail: NativeInt); virtual;
     procedure DoItemStructureChange; virtual;
     procedure DoItemThumbnailDraw(Item: TEasyItem; ACanvas: TCanvas; ARect: TRect; AlphaBlender: TEasyAlphaBlender; var DoDefault: Boolean); virtual;
     procedure DoItemVisibilityChanged(Item: TEasyItem); virtual;
@@ -6079,7 +6079,8 @@ implementation
 
 uses
   {$ifndef DISABLE_ACCESSIBILITY}EasyListviewAccessible,{$endif}
-  System.UITypes, System.Math, System.Generics.Defaults, Vcl.GraphUtil;
+  System.UITypes, System.Math, System.Generics.Defaults, Vcl.GraphUtil,
+  MPShellFunc;
 
 const
   PERSISTENTOBJECTSTATES = [esosSelected, esosEnabled, esosVisible, esosChecked, esosBold]; // States that are stored to a stream for persistance
@@ -6087,7 +6088,7 @@ const
   V_STRINGEDITORMARGIN = 2;  // Margin for String Editors in the Vert direction
 
 var
-  HeaderClipboardFormat: TClipFormat;
+  HeaderClipboardFormat: UInt32;
   ComCtl32Version: Cardinal = 0;
 
 type
@@ -6147,7 +6148,7 @@ begin
           NextRGBArrayB := TargetRow[x+1];
           PrevRowRGBArrayB := PrevRow[x];
           NextRowRGBArrayB := NextRow[x];
-          RGBArrayB.rgbBlue := (
+          RGBArrayB.rgbBlue := ToUInt8((
                                 PrevRow[x-1].rgbBlue +
                                 PrevRow[x+1].rgbBlue +
                                 NextRow[x-1].rgbBlue +
@@ -6156,8 +6157,8 @@ begin
                                 NextRowRGBArrayB.rgbBlue +
                                 TargetRow[x].rgbBlue div 2+
                                 PrevRGBArrayB.rgbBlue +
-                                NextRGBArrayB.rgbBlue) div 9;
-          RGBArrayB.rgbGreen := (PrevRow[x-1].rgbGreen +
+                                NextRGBArrayB.rgbBlue) div 9);
+          RGBArrayB.rgbGreen := ToUInt8((PrevRow[x-1].rgbGreen +
                                 PrevRow[x+1].rgbGreen +
                                 NextRow[x-1].rgbGreen +
                                 NextRow[x+1].rgbGreen +
@@ -6165,8 +6166,8 @@ begin
                                 NextRowRGBArrayB.rgbGreen +
                                 TargetRow[x].rgbGreen div 2 +
                                 PrevRGBArrayB.rgbGreen +
-                                NextRGBArrayB.rgbGreen) div 9;
-          RGBArrayB.rgbRed := ( PrevRow[x-1].rgbRed +
+                                NextRGBArrayB.rgbGreen) div 9);
+          RGBArrayB.rgbRed := ToUInt8((PrevRow[x-1].rgbRed +
                                 PrevRow[x+1].rgbRed +
                                 NextRow[x-1].rgbRed +
                                 NextRow[x+1].rgbRed +
@@ -6174,7 +6175,7 @@ begin
                                 NextRowRGBArrayB.rgbRed +
                                 TargetRow[x].rgbRed div 2 +
                                 PrevRGBArrayB.rgbRed +
-                                NextRGBArrayB.rgbRed) div 9;
+                                NextRGBArrayB.rgbRed) div 9);
         end;
 
         { Weight the Pixels}
@@ -6192,7 +6193,7 @@ end;
 
 function HeaderClipFormat: TFormatEtc;
 begin
-  Result.cfFormat := HeaderClipboardFormat;
+  Result.cfFormat := ToUInt16(HeaderClipboardFormat);
   Result.ptd := nil;
   Result.lindex := -1;
   Result.dwAspect := -1;
@@ -6202,7 +6203,7 @@ end;
 
 function DefaultSort(Column: TEasyColumn; Item1, Item2: TEasyCollectionItem): Integer;
 var
-  Index: Integer;
+  Index: NativeInt;
 begin
   if not Assigned(Column) then
     Index := 0
@@ -6481,7 +6482,7 @@ begin
   FItemClass := TEasyItemStored;
 end;
 
-function TEasyItems.InsertCustom(Index: Integer; CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
+function TEasyItems.InsertCustom(Index: NativeInt; CustomItem: TEasyItemClass; Data: TObject = nil): TEasyItem;
 begin
   Result := CustomItem.Create(Self);
   FList.Insert(Index, Result);
@@ -6491,7 +6492,7 @@ begin
   DoStructureChange
 end;
 
-function TEasyItems.InsertInterfaced(Index: Integer; const DataInf: IUnknown; Data: TObject = nil): TEasyItemInterfaced;
+function TEasyItems.InsertInterfaced(Index: NativeInt; const DataInf: IUnknown; Data: TObject = nil): TEasyItemInterfaced;
 begin
   Result := nil;
   if Assigned(DataInf) then
@@ -6506,7 +6507,7 @@ begin
   end
 end;
 
-function TEasyItems.InsertVirtual(Index: Integer; Data: TObject = nil): TEasyItemVirtual;
+function TEasyItems.InsertVirtual(Index: NativeInt; Data: TObject = nil): TEasyItemVirtual;
 begin
   Result := TEasyItemVirtual.Create(Self);
   FList.Insert(Index, Result);
@@ -6525,7 +6526,7 @@ begin
   OwnerListview.Selection.DecMultiChangeCount;
 end;
 
-procedure TEasyItems.Delete(Index: Integer);
+procedure TEasyItems.Delete(Index: NativeInt);
 var
   Temp: TEasyItem;
 begin
@@ -6563,23 +6564,23 @@ begin
     Include(OwnerListview.FStates, ebcsItemStructureUpdatePending)
 end;
 
-procedure TEasyItems.Exchange(Index1, Index2: Integer);
+procedure TEasyItems.Exchange(Index1, Index2: NativeInt);
 begin
   inherited;
 end;
 
-function TEasyItems.GetItem(Index: Integer): TEasyItem;
+function TEasyItems.GetItem(Index: NativeInt): TEasyItem;
 begin
   // This is a bottle neck for large data sets.  Do this direct instead of inherited
   Result := ( FList.List[Index])
 end;
 
-function TEasyItems.Insert(Index: Integer; Data: TObject = nil): TEasyItem;
+function TEasyItems.Insert(Index: NativeInt; Data: TObject = nil): TEasyItem;
 begin
   Result := TEasyItem( inherited Insert(Index));
 end;
 
-procedure TEasyItems.SetItem(Index: Integer; Value: TEasyItem);
+procedure TEasyItems.SetItem(Index: NativeInt; Value: TEasyItem);
 begin
   inherited Items[Index] := Value
 end;
@@ -6621,7 +6622,7 @@ begin
   FOwner := AnOwner;
 end;
 
-procedure TEasyGlobalItems.Delete(Index: Integer; ReIndex: Boolean = True);
+procedure TEasyGlobalItems.Delete(Index: NativeInt; ReIndex: Boolean = True);
 var
   Item: TEasyItem;
 begin
@@ -6637,7 +6638,7 @@ begin
     FOwner.Groups.Add.Caption := DEFAULT_GROUP_NAME;
 end;
 
-procedure TEasyGlobalItems.Exchange(Index1, Index2: Integer);
+procedure TEasyGlobalItems.Exchange(Index1, Index2: NativeInt);
 var
   Item1, Item2: TEasyItem;
 begin
@@ -6651,7 +6652,7 @@ end;
 
 function TEasyGlobalItems.FindByCaption(const Caption: string; Column: Integer = 0): TEasyItem;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to Count-1 do
     if WideStrIComp( PWideChar(Caption), PWideChar( Items[i].Captions[Column])) = 0 then
@@ -6662,26 +6663,26 @@ begin
   Result:=nil;
 end;
 
-function TEasyGlobalItems.GetCount: Integer;
+function TEasyGlobalItems.GetCount: NativeInt;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := 0;
   for i := FOwner.Groups.Count - 1 downto 0 do
     Inc(Result, FOwner.Groups[i].Items.Count);
 end;
 
-function TEasyGlobalItems.GetItem(Index: Integer): TEasyItem;
+function TEasyGlobalItems.GetItem(Index: NativeInt): TEasyItem;
 begin
   Result := GetItemInternal(Index);
   if Result = nil then // index too big
     IndexError(Index);
 end;
 
-function TEasyGlobalItems.GetItemInternal(Index: Integer): TEasyItem;
+function TEasyGlobalItems.GetItemInternal(Index: NativeInt): TEasyItem;
 var
-  i: Integer;
-  ItemCount: Integer;
+  i: NativeInt;
+  ItemCount: NativeInt;
 begin
   // GetItemInternal translates an absolute index into an item. It simply
   // returns nil if the index is too big but raises an exception for negative
@@ -6710,21 +6711,21 @@ begin
     Result := nil;
 end;
 
-procedure TEasyGlobalItems.IndexError(Index: Integer);
+procedure TEasyGlobalItems.IndexError(Index: NativeInt);
 begin
   TList.Error(SListIndexError, Index);
 end;
 
-function TEasyGlobalItems.IndexOf(Item: TEasyItem): Integer;
+function TEasyGlobalItems.IndexOf(Item: TEasyItem): NativeInt;
 var
-  GroupIndex: Integer;
+  GroupIndex: NativeInt;
 begin
   Result := Item.Index;
   for GroupIndex := Item.OwnerGroup.Index - 1 downto 0 do
     Inc(Result, OwnerListview.Groups[GroupIndex].Items.Count);
 end;
 
-function TEasyGlobalItems.Insert(Index: Integer; Data: TObject = nil): TEasyItem;
+function TEasyGlobalItems.Insert(Index: NativeInt; Data: TObject = nil): TEasyItem;
 var
   Item: TEasyItem;
 begin
@@ -6768,7 +6769,7 @@ begin
     Result := Item.OwnerItems.InsertVirtual(Item.Index, Data);
 end;
 
-procedure TEasyGlobalItems.SetItem(Index: Integer; const Value: TEasyItem);
+procedure TEasyGlobalItems.SetItem(Index: NativeInt; const Value: TEasyItem);
 var
   Item: TEasyItem;
 begin
@@ -7084,15 +7085,15 @@ begin
     Result := 0
 end;
 
-function TEasyGroups.GetGroup(Index: Integer): TEasyGroup;
+function TEasyGroups.GetGroup(Index: NativeInt): TEasyGroup;
 begin
   // Bottleneck, no inherited call
   Result :=  TEasyGroup( FList.List[Index])
 end;
 
-function TEasyGroups.GetItemCount: Integer;
+function TEasyGroups.GetItemCount: NativeInt;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := 0;
   for i := 0 to FList.Count - 1 do
@@ -7106,16 +7107,16 @@ begin
     Result.BottomRight := LastVisibleGroup.DisplayRect.BottomRight;
 end;
 
-function TEasyGroups.GetVisibleGroup(Index: Integer): TEasyGroup;
+function TEasyGroups.GetVisibleGroup(Index: NativeInt): TEasyGroup;
 begin
   Result := nil;
   if (Index > -1) and (Index < VisibleCount) then
     Result := TEasyGroup( VisibleList[Index])
 end;
 
-function TEasyGroups.GetVisibleItemCount: Integer;
+function TEasyGroups.GetVisibleItemCount: NativeInt;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := 0;
   for i := 0 to FList.Count - 1 do
@@ -7198,7 +7199,7 @@ end;
 
 function TEasyGroups.LastGroupInternal(VisibleOnly: Boolean): TEasyGroup;
 var
-  GroupIndex: Integer;
+  GroupIndex: NativeInt;
 begin
   Result := nil;
   if Count > 0 then
@@ -7225,7 +7226,7 @@ end;
 
 function TEasyGroups.LastInGroupInternal(Group: TEasyGroup; VisibleOnly: Boolean): TEasyItem;
 var
-  ItemIndex: Integer;
+  ItemIndex: NativeInt;
 begin
   Result := nil;
   if Assigned(Group) then
@@ -7296,7 +7297,7 @@ end;
 
 function TEasyGroups.LastItemInternal(NextItemType: TEasyNextItemType): TEasyItem;
 var
-  ItemIndex, GroupIndex: Integer;
+  ItemIndex, GroupIndex: NativeInt;
 begin
   Result := nil;
   if Count > 0 then
@@ -7421,7 +7422,7 @@ function TEasyGroups.NextGroupInRect(Group: TEasyGroup; ViewportRect: TRect): TE
 // Visible Groups
 //
 var
-  i: Integer;
+  i: NativeInt;
   ScratchR: TRect;
   Done: Boolean;
 begin
@@ -7447,7 +7448,7 @@ end;
 function TEasyGroups.NavigateGroupInternal(Group: TEasyGroup;
   VisibleOnly: Boolean; Direction: TEasySearchDirection): TEasyGroup;
 var
-  GroupIndex: Integer;
+  GroupIndex: NativeInt;
 begin
   Result := nil;
   GroupIndex := Group.Index;
@@ -7508,9 +7509,9 @@ end;
 function TEasyGroups.NavigateInGroupInternal(Group: TEasyGroup; Item: TEasyItem;
   VisibleOnly: Boolean; Direction: TEasySearchDirection): TEasyItem;
 var
-  ItemIndex: Integer;
+  ItemIndex: NativeInt;
   TempItem: TEasyItem;
-  Count: Integer;
+  Count: NativeInt;
 begin
   Result := nil;
   if Assigned(Group) and Assigned(Item) then
@@ -7557,7 +7558,7 @@ function TEasyGroups.NextItemInRect(Item: TEasyItem; ViewportRect: TRect): TEasy
 //
 var
   Group: TEasyGroup;
-  i: Integer;
+  i: NativeInt;
   R, FullDisplayRect: TRect;
   Done: Boolean;
 begin
@@ -7618,7 +7619,8 @@ end;
 
 function TEasyGroups.NavigateItemInternal(Item: TEasyItem; NextItemType: TEasyNextItemType; Direction: TEasySearchDirection): TEasyItem;
 var
-  GroupIndex, ItemIndex, Column: Integer;
+  GroupIndex, ItemIndex: NativeInt;
+  Column: NativeInt;
   Allow: Boolean;
 begin
   Result := nil;
@@ -7790,7 +7792,7 @@ end;
 
 procedure TEasyGroups.CollapseAll;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -7843,7 +7845,7 @@ procedure TEasyGroups.DeleteItems(ItemArray: TEasyItemArray);
 // Optimized method of deleting multiple items, the items can be in any group
 //
 var
-  i: Integer;
+  i: NativeInt;
   Temp: TEasyItem;
 begin
   OwnerListview.Selection.IncMultiChangeCount;
@@ -7876,7 +7878,7 @@ end;
 
 procedure TEasyGroups.DeleteItems(ItemList: TList);
 var
-  i: Integer;
+  i: NativeInt;
   Temp: TEasyItem;
 begin
   OwnerListview.Selection.IncMultiChangeCount;
@@ -7919,7 +7921,7 @@ end;
 
 procedure TEasyGroups.ExpandAll;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -7932,7 +7934,7 @@ end;
 
 procedure TEasyGroups.InitializeAll;
 var
-  i, j: Integer;
+  i, j: NativeInt;
 begin
   for i := 0 to Count - 1 do
   begin
@@ -7959,7 +7961,7 @@ end;
 
 procedure TEasyGroups.MakeAllVisible;
 var
-  i, j: Integer;
+  i, j: NativeInt;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -8006,7 +8008,7 @@ end;
 
 procedure TEasyGroups.Rebuild(Force: Boolean = False);
 var
-  i, VisibleGroupIndex, VisibleItemIndex: Integer;
+  i, VisibleGroupIndex, VisibleItemIndex: NativeInt;
   ViewRect: TRect;
 begin
   if not (egsRebuilding in GroupsState) then
@@ -8063,7 +8065,7 @@ end;
 
 procedure TEasyGroups.SetCellHeight(Value: Integer);
 var
-  i: Integer;
+  i: NativeInt;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -8076,7 +8078,7 @@ end;
 
 procedure TEasyGroups.SetCellWidth(Value: Integer);
 var
-  i: Integer;
+  i: NativeInt;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -8087,14 +8089,14 @@ begin
   end
 end;
 
-procedure TEasyGroups.SetGroup(Index: Integer; Value: TEasyGroup);
+procedure TEasyGroups.SetGroup(Index: NativeInt; Value: TEasyGroup);
 begin
   inherited Items[Index] := Value
 end;
 
 procedure TEasyGroups.UnInitializeAll;
 var
-  i, j: Integer;
+  i, j: NativeInt;
 begin
   for i := 0 to Count - 1 do
   begin
@@ -8183,7 +8185,7 @@ begin
   end
 end;
 
-function TEasyColumns.GetColumns(Index: Integer): TEasyColumn;
+function TEasyColumns.GetColumns(Index: NativeInt): TEasyColumn;
 begin
   Result := TEasyColumn( FList.List[Index])
 end;
@@ -8239,7 +8241,7 @@ end;
 
 procedure TEasyColumns.ChangeScale(AM, AD: Integer; AIsDpiChange: Boolean);
 var
-  lCount: Integer;
+  lCount: NativeInt;
 begin
   for lCount := 0 to Count - 1 do
     Columns[lCount].ChangeScale(AM, AD, AIsDpiChange);
@@ -8255,7 +8257,7 @@ begin
   end
 end;
 
-procedure TEasyColumns.DoItemAdd(Item: TEasyCollectionItem; Index: Integer);
+procedure TEasyColumns.DoItemAdd(Item: TEasyCollectionItem; Index: NativeInt);
 begin
   inherited DoItemAdd(Item, Index);
 end;
@@ -8272,7 +8274,7 @@ begin
     Include(OwnerListview.FStates, ebcsColumnStructureUpdatePending)
 end;
 
-procedure TEasyColumns.SetColumns(Index: Integer; Value: TEasyColumn);
+procedure TEasyColumns.SetColumns(Index: NativeInt; Value: TEasyColumn);
 begin
   inherited Items[Index] := Value
 end;
@@ -8661,12 +8663,12 @@ begin
     Result := GetDefaultGridClass
 end;
 
-function TEasyGroup.GetItem(Index: Integer): TEasyItem;
+function TEasyGroup.GetItem(Index: NativeInt): TEasyItem;
 begin
   Result := Items[Index]
 end;
 
-function TEasyGroup.GetItemCount: Integer;
+function TEasyGroup.GetItemCount: NativeInt;
 begin
   Result := Items.Count
 end;
@@ -8727,12 +8729,12 @@ begin
     Result := GetDefaultViewClass
 end;
 
-function TEasyGroup.GetVisibleCount: Integer;
+function TEasyGroup.GetVisibleCount: NativeInt;
 begin
   Result := FVisibleItems.Count
 end;
 
-function TEasyGroup.GetVisibleItem(Index: Integer): TEasyItem;
+function TEasyGroup.GetVisibleItem(Index: NativeInt): TEasyItem;
 begin
   Result := nil;
   if (Index > -1) and (Index < VisibleItems.Count) then
@@ -8844,7 +8846,7 @@ end;
 
 procedure TEasyGroup.GainingCheck;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to Items.Count - 1 do
     if Items[i].Visible then
@@ -8856,7 +8858,7 @@ end;
 
 procedure TEasyGroup.GainingEnable;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to Items.Count - 1 do
     Items[i].Enabled := True;
@@ -8892,7 +8894,7 @@ end;
 
 procedure TEasyGroup.GainingVisibility;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   OwnerListview.DoGroupVisibilityChanged(Self);
   for i := 0 to Items.Count - 1 do
@@ -8928,7 +8930,7 @@ end;
 
 procedure TEasyGroup.LosingCheck;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to Items.Count - 1 do
     Items[i].Checked := False;
@@ -8938,7 +8940,7 @@ end;
 
 procedure TEasyGroup.LosingEnable;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to Items.Count - 1 do
     Items[i].Enabled := False;
@@ -8974,7 +8976,7 @@ end;
 
 procedure TEasyGroup.LosingVisibility;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to Items.Count - 1 do
     Items[i].Visible := False;
@@ -8986,7 +8988,7 @@ begin
   View.Paint(Self, MarginEdge, ObjRect, ACanvas)
 end;
 
-procedure TEasyGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer);
+procedure TEasyGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt);
 begin
   if Assigned(Grid) then
     Grid.Rebuild(PrevGroup, NextVisibleItemIndex)
@@ -9133,7 +9135,7 @@ begin
   end
 end;
 
-procedure TEasyGroup.SetItem(Index: Integer; Value: TEasyItem);
+procedure TEasyGroup.SetItem(Index: NativeInt; Value: TEasyItem);
 begin
   if (Index > -1) and (Index < Items.Count) then
     Items[Index] := Value
@@ -9283,7 +9285,7 @@ begin
 
   GetImageSize(Group, ImageW, ImageH);
   GetExpandImageSize(Group, ExpandImageW, ExpandImageH);
-  ExpandImageW := Round( ExpandImageW + GetDeviceCaps(OwnerListview.Canvas.Handle, LOGPIXELSX)/96);
+  ExpandImageW := ToInt32(Round( ExpandImageW + GetDeviceCaps(OwnerListview.Canvas.Handle, LOGPIXELSX)/96));
 
   if MarginEdge in [egmeTop, egmeBottom] then
   begin
@@ -9483,7 +9485,8 @@ var
   i: Integer;
   Red1, Red2, Green1, Green2, Blue1, Blue2, RC, GC, BC, BandTop: Integer;
   RStep, GStep, BStep : Double;
-  RGBVal, BlendStop: Longword;
+  RGBVal: UInt32;
+  BlendStop: Int32;
   {$IFDEF SpTBX}
   Op: TSpTBXSkinOptionCategory;
   {$ENDIF}
@@ -9518,12 +9521,12 @@ begin
         if (Group.BandLength > 0) then
         begin
           // Calulate the stepping to create the blended banding
-          RGBVal := ColorToRGB(BandColor);
+          RGBVal := ToUInt32(ColorToRGB(BandColor));
           Red1 := GetRValue(RGBVal);
           Green1 := GetGValue(RGBVal);
           Blue1 := GetBValue(RGBVal);
 
-          RGBVal := ColorToRGB(BandColorFade);
+          RGBVal := ToUInt32(ColorToRGB(BandColorFade));
           Red2 := GetRValue(RGBVal);
           Green2 := GetGValue(RGBVal);
           Blue2 := GetBValue(RGBVal);
@@ -9552,10 +9555,10 @@ begin
               ACanvas.MoveTo(RectArray.BandRect.Left + i, BandTop);
               ACanvas.LineTo(RectArray.BandRect.Left + i, BandTop + Group.BandThickness);
             end;
-            RC:=Round(Red1 + i*RStep);
-            GC:=Round(Green1 +i*GStep);
-            BC:=Round(Blue1 + i*BStep);
-            ACanvas.Pen.Color := RGB(RC, GC, BC);
+            RC:= ToInt32(Round(Red1 + i*RStep));
+            GC:= ToInt32(Round(Green1 +i*GStep));
+            BC:= ToInt32(Round(Blue1 + i*BStep));
+            ACanvas.Pen.Color := TColor.FromUInt32(RGB(ToUInt8(RC), ToUInt8(GC), ToUInt8(BC)));
           end
         end
       end else
@@ -9609,7 +9612,7 @@ begin
           AngleArc(ACanvas.Handle,
                    RectArray.BandRect.Left + Group.BandRadius,
                    RectArray.BandRect.Top + Group.BandRadius,
-                   Group.BandRadius - i,
+                   ToUInt32(Group.BandRadius - i),
                    90,
                    90);
 
@@ -9617,7 +9620,7 @@ begin
           AngleArc(ACanvas.Handle,
                    RectArray.BandRect.Left + Group.BandRadius,
                    RectArray.BandRect.Bottom - Group.BandRadius,
-                   Group.BandRadius - i,
+                   ToUInt32(Group.BandRadius - i),
                    180,
                    90);
         end
@@ -9645,7 +9648,7 @@ begin
           AngleArc(ACanvas.Handle,
                    RectArray.BandRect.Right - Group.BandRadius,
                    RectArray.BandRect.Top + Group.BandRadius,
-                   Group.BandRadius - i,
+                   ToUInt32(Group.BandRadius - i),
                    0,
                    90);
 
@@ -9653,7 +9656,7 @@ begin
           AngleArc(ACanvas.Handle,
                    RectArray.BandRect.Right - Group.BandRadius,
                    RectArray.BandRect.Bottom - Group.BandRadius,
-                   Group.BandRadius - i,
+                   ToUInt32(Group.BandRadius - i),
                    270,
                    90);
         end
@@ -9692,7 +9695,7 @@ procedure TEasyViewGroup.PaintExpandButton(Group: TEasyGroup; ACanvas: TCanvas;
 //
 var
   Image, ExpandImage, CollapseImage: TBitmap;
-  Part, uState: Longword;
+  Part, uState: Int32;
   R: TRect;
 begin
   if MarginEdge in [egmeTop] then
@@ -9818,7 +9821,7 @@ begin
           0,
           CLR_NONE,
           CLR_NONE,
-          fStyle);
+          ToUInt32(fStyle));
       end
     end
   end
@@ -10093,8 +10096,9 @@ end;
 
 procedure TEasyColumn.AutoSizeToFit;
 var
-  iIndex: Integer;
-  W, i, j: Integer;
+  iIndex: NativeInt;
+  W: Integer;
+  i, j: NativeInt;
   Group: TEasyGroup;
   Canvas: TCanvas;
   Item: TEasyItem;
@@ -10422,9 +10426,9 @@ begin
   inherited PaintInfo := Value
 end;
 
-procedure TEasyColumn.SetPosition(Value: Integer);
+procedure TEasyColumn.SetPosition(Value: NativeInt);
 var
-  OldPos, i: Integer;
+  OldPos, i: NativeInt;
 begin
   if Value > OwnerColumns.Count - 1 then
     Value := OwnerColumns.Count - 1
@@ -10534,9 +10538,9 @@ var
   Msg: TMSG;
   Pt: TPoint;
   Allow, Dispatch, EditDone: Boolean;
-  NCHit: Longword;
+  NCHit: LRESULT;
   OldFocus: TWinControl;
-  iColumn: Integer;
+  iColumn: NativeInt;
 
     procedure FinishEdit;
     begin
@@ -10818,7 +10822,7 @@ begin
   begin
     Timer := TTimer.Create(nil);
     Timer.OnTimer := TimerEvent;
-    Timer.Interval := AutoEditDelayTime;
+    Timer.Interval := ToUInt32(AutoEditDelayTime);
     Timer.Enabled := True;
     FTimerRunning := True
   end
@@ -11102,7 +11106,7 @@ begin
 
         InsertMarkPos := Item.View.DropMarkerDir;
         if InsertMarkPos = dmdVert then
-          InsertMarkDropRange := RectWidth(Item.DisplayRect) div 4
+          InsertMarkDropRange := ToUInt8(RectWidth(Item.DisplayRect) div 4)
         else
           InsertMarkDropRange := 2;
 
@@ -11215,7 +11219,7 @@ var
   Group: TEasyGroup;
   TargetCollection: TEasyCollectionItem;
   List: TList;
-  i: Integer;
+  i: NativeInt;
 begin
   if InsertMark.AutoMove then
   begin
@@ -11410,7 +11414,7 @@ end;
 procedure TEasySelectionManager.ActOnAll(SelectType: TEasySelectionType;
   ExceptItem: TEasyItem);
 var
-  i, j: Integer;
+  i, j: NativeInt;
 begin
   if Enabled then
   begin
@@ -11475,7 +11479,7 @@ procedure TEasySelectionManager.BuildSelectionGroupings(Force: Boolean);
 // for every selection change.  This could get slow with thousands of items.
 //
 var
-  i: Integer;
+  i: NativeInt;
   GroupList: TEasySelectionGroupList;
   Group: TEasyGroup;
   Item, NextItem: TEasyItem;
@@ -11592,7 +11596,7 @@ end;
 
 procedure TEasySelectionManager.DeleteSelected(SelectPrevItem: Boolean = False);
 var
-  NextToSelect: Integer;
+  NextToSelect: NativeInt;
   AItem: TEasyItem;
 begin
   if Count <> 0 then
@@ -11880,7 +11884,7 @@ end;
 
 procedure TEasySelectionManager.SelectGroupItems(Group: TEasyGroup; ClearOtherItems: Boolean);
 var
-  i, j: Integer;
+  i, j: NativeInt;
 begin
   if Enabled and MultiSelect and Assigned(Group) then
   begin
@@ -12285,7 +12289,7 @@ procedure TEasyCheckManager.CheckAll;
 // Checks all the Visible items in the EasyControl
 //
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to OwnerListview.Groups.Count - 1 do
     OwnerListview.Groups.Groups[i].Checked := True
@@ -12376,7 +12380,7 @@ end;
 procedure TEasyCheckManager.DeleteChecked;
 var
   Items: TEasyItemArray;
-  i: Integer;
+  i: NativeInt;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -12415,7 +12419,7 @@ procedure TEasyCheckManager.UnCheckAll;
 // Unchecks all Visible items in the control
 //
 var
-  i: Integer;
+  i: NativeInt;
 begin
   OwnerListview.BeginUpdate;
   try
@@ -12613,7 +12617,7 @@ begin
         if OwnerListview.ClientHeight < 0 then
           Info.nPage := 0
         else
-          Info.nPage := OwnerListview.ClientHeight;
+          Info.nPage := ToUInt32(OwnerListview.ClientHeight);
       end else
       begin
         Info.nMax := 0;
@@ -12634,7 +12638,7 @@ begin
         if OwnerListview.ClientWidth < 0 then
           Info.nPage := 0
         else
-          Info.nPage := OwnerListview.ClientWidth;
+          Info.nPage := ToUInt32(OwnerListview.ClientWidth);
       end else
       begin
         Info.nMax := 0;
@@ -13639,7 +13643,7 @@ begin
   DataObject := ADataObject;
   Timer.Enabled := False;
   Timer.OnTimer := HandleTimer;
-  Timer.Interval := AutoScrollDelay;
+  Timer.Interval := ToUInt32(AutoScrollDelay);
   FAutoScrollDelayMet := False;
   DoDragEnter(ADataObject, Canvas, WindowPoint, KeyState, Effects)
 end;
@@ -13667,7 +13671,7 @@ begin
     AutoScrollWindow
   else begin
     FAutoScrollDelayMet := True;
-    Timer.Interval := AutoScrollTime;
+    Timer.Interval := ToUInt32(AutoScrollTime);
   end
 end;
 
@@ -14441,7 +14445,7 @@ end;
 
 procedure TCustomEasyListview.AutoFitAllCellCaptions(VisibleOnly: Boolean);
 var
-  i: Integer;
+  i: NativeInt;
 begin
   case View of
     elsReport, elsReportThumb:
@@ -14829,8 +14833,8 @@ end;
 {$ifndef DISABLE_ACCESSIBILITY}
 procedure TCustomEasyListview.DisconnectAccessibility;
 var
-  i: Integer;
-  j: Integer;
+  i: NativeInt;
+  j: NativeInt;
   EasyAccessible: IEasyAccessible;
 begin
   if Assigned(Accessible) then
@@ -14868,13 +14872,13 @@ begin
     OnAfterPaint(Self, ACanvas, ClipRect)
 end;
 
-procedure TCustomEasyListview.DoAutoGroupGetKey(Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Key: LongWord);
+procedure TCustomEasyListview.DoAutoGroupGetKey(Item: TEasyItem; ColumnIndex: NativeInt; Groups: TEasyGroups; var Key: Int32);
 begin
   if Assigned(OnAutoGroupGetKey) then
     OnAutoGroupGetKey(Self, Item, ColumnIndex, Groups, Key)
 end;
 
-procedure TCustomEasyListview.DoAutoSortGroupCreate(Item: TEasyItem; ColumnIndex: Integer; Groups: TEasyGroups; var Group: TEasyGroup; var DoDefaultAction: Boolean);
+procedure TCustomEasyListview.DoAutoSortGroupCreate(Item: TEasyItem; ColumnIndex: NativeInt; Groups: TEasyGroups; var Group: TEasyGroup; var DoDefaultAction: Boolean);
 begin
   if Assigned(OnAutoSortGroupCreate) then
     OnAutoSortGroupCreate(Self, Item, ColumnIndex, Groups, Group, DoDefaultAction);
@@ -14967,19 +14971,19 @@ begin
     OnColumnFreeing(Self, Column)
 end;
 
-procedure TCustomEasyListview.DoColumnGetCaption(Column: TEasyColumn; Line: Integer; var Caption: string);
+procedure TCustomEasyListview.DoColumnGetCaption(Column: TEasyColumn; Line: NativeInt; var Caption: string);
 begin
   if Assigned(OnColumnGetCaption) then
    OnColumnGetCaption(Self, Column, Line, Caption)
 end;
 
-procedure TCustomEasyListview.DoColumnGetDetail(Column: TEasyColumn; Line: Integer; var Detail: Integer);
+procedure TCustomEasyListview.DoColumnGetDetail(Column: TEasyColumn; Line: NativeInt; var Detail: Integer);
 begin
   if Assigned(OnColumnGetDetail) then
     OnColumnGetDetail(Self, Column, Line, Detail)
 end;
 
-procedure TCustomEasyListview.DoColumnGetDetailCount(Column: TEasyColumn; var Count: Integer);
+procedure TCustomEasyListview.DoColumnGetDetailCount(Column: TEasyColumn; var Count: NativeInt);
 begin
   if Assigned(OnColumnGetDetailCount) then
     OnColumnGetDetailCount(Self, Column, Count)
@@ -15059,13 +15063,13 @@ begin
     OnColumnSetCaption(Self, Column, Caption)
 end;
 
-procedure TCustomEasyListview.DoColumnSetDetail(Column: TEasyColumn; Line: Integer; Detail: Integer);
+procedure TCustomEasyListview.DoColumnSetDetail(Column: TEasyColumn; Line: NativeInt; Detail: Integer);
 begin
   if Assigned(OnColumnSetDetail) then
     OnColumnSetDetail(Self, Column, Line, Detail)
 end;
 
-procedure TCustomEasyListview.DoColumnSetDetailCount(Column: TEasyColumn; DetailCount: Integer);
+procedure TCustomEasyListview.DoColumnSetDetailCount(Column: TEasyColumn; DetailCount: NativeInt);
 begin
   ///
 end;
@@ -15245,13 +15249,13 @@ begin
    OnGroupGetCaption(Self, Group, Caption)
 end;
 
-procedure TCustomEasyListview.DoGroupGetDetail(Group: TEasyGroup; Line: Integer; var Detail: Integer);
+procedure TCustomEasyListview.DoGroupGetDetail(Group: TEasyGroup; Line: NativeInt; var Detail: Integer);
 begin
   if Assigned(OnGroupGetDetail) then
    OnGroupGetDetail(Self, Group, Line, Detail)
 end;
 
-procedure TCustomEasyListview.DoGroupGetDetailCount(Group: TEasyGroup; var Count: Integer);
+procedure TCustomEasyListview.DoGroupGetDetailCount(Group: TEasyGroup; var Count: NativeInt);
 begin
   if Assigned(OnGroupGetDetailCount) then
    OnGroupGetDetailCount(Self, Group, Count)
@@ -15331,7 +15335,7 @@ begin
     OnGroupSetCaption(Self, Group, Caption)
 end;
 
-procedure TCustomEasyListview.DoGroupSetDetailCount(Group: TEasyGroup; DetailCount: Integer);
+procedure TCustomEasyListview.DoGroupSetDetailCount(Group: TEasyGroup; DetailCount: NativeInt);
 begin
   ///
 end;
@@ -15342,7 +15346,7 @@ begin
     OnGroupSetImageIndex(Self, Group, ImageKind, ImageIndex)
 end;
 
-procedure TCustomEasyListview.DoGroupSetDetail(Group: TEasyGroup; Line: Integer; Detail: Integer);
+procedure TCustomEasyListview.DoGroupSetDetail(Group: TEasyGroup; Line: NativeInt; Detail: Integer);
 begin
   if Assigned(OnGroupSetDetail) then
     OnGroupSetDetail(Self, Group, Line, Detail)
@@ -15485,7 +15489,7 @@ begin
     OnItemEditAccepted(Self, Item);
 end;
 
-procedure TCustomEasyListview.DoItemEditBegin(Item: TEasyItem; var Column: Integer; var Allow: Boolean);
+procedure TCustomEasyListview.DoItemEditBegin(Item: TEasyItem; var Column: NativeInt; var Allow: Boolean);
 begin
   if Assigned(OnItemEditBegin) then
     OnItemEditBegin(Self, Item, Column, Allow)
@@ -15538,7 +15542,7 @@ begin
     OnItemFreeing(Self, Item)
 end;
 
-procedure TCustomEasyListview.DoItemGetCaption(Item: TEasyItem; Column: Integer; var ACaption: string);
+procedure TCustomEasyListview.DoItemGetCaption(Item: TEasyItem; Column: NativeInt; var ACaption: string);
 begin
   if Assigned(OnItemGetCaption) then
     OnItemGetCaption(Self, Item, Column, ACaption)
@@ -15557,37 +15561,37 @@ begin
 end;
 
 procedure TCustomEasyListview.DoItemGetGroupKey(Item: TEasyItem;
-  FocusedColumn: Integer; var Key: LongWord);
+  FocusedColumn: NativeInt; var Key: Int32);
 begin
   if Assigned(OnItemGetGroupKey) then
     OnItemGetGroupKey(Self, Item, FocusedColumn, Key)
 end;
 
-procedure TCustomEasyListview.DoItemGetImageIndex(Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger);
+procedure TCustomEasyListview.DoItemGetImageIndex(Item: TEasyItem; Column: NativeInt; ImageKind: TEasyImageKind; var ImageIndex: TCommonImageIndexInteger);
 begin
   if Assigned(OnItemGetImageIndex) then
     OnItemGetImageIndex(Self, Item, Column, ImageKind, ImageIndex)
 end;
 
-procedure TCustomEasyListview.DoItemGetImageList(Item: TEasyItem; Column: Integer; var ImageList: TCustomImageList);
+procedure TCustomEasyListview.DoItemGetImageList(Item: TEasyItem; Column: NativeInt; var ImageList: TCustomImageList);
 begin
   if Assigned(OnItemGetImageList) then
     OnItemGetImageList(Self, Item, Column, ImageList)
 end;
 
-procedure TCustomEasyListview.DoItemGetStateImageList(Item: TEasyItem; Column: Integer; var ImageList: TCustomImageList);
+procedure TCustomEasyListview.DoItemGetStateImageList(Item: TEasyItem; Column: NativeInt; var ImageList: TCustomImageList);
 begin
   if Assigned(OnItemGetStateImageList) then
     OnItemGetStateImageList(Self, Item, Column, ImageList)
 end;
 
-procedure TCustomEasyListview.DoItemGetTileDetail(Item: TEasyItem; Line: Integer; var Detail: Integer);
+procedure TCustomEasyListview.DoItemGetTileDetail(Item: TEasyItem; Line: NativeInt; var Detail: Integer);
 begin
   if Assigned(OnItemGetTileDetail) then
     OnItemGetTileDetail(Self, Item, Line, Detail)
 end;
 
-procedure TCustomEasyListview.DoItemGetTileDetailCount(Item: TEasyItem; var Count: Integer);
+procedure TCustomEasyListview.DoItemGetTileDetailCount(Item: TEasyItem; var Count: NativeInt);
 begin
   if Assigned(OnItemGetTileDetailCount) then
     OnItemGetTileDetailCount(Self, Item, Count)
@@ -15643,7 +15647,7 @@ begin
     OnItemMouseUp(Self, Item, Button, DoDefault)
 end;
 
-procedure TCustomEasyListview.DoItemPaintText(Item: TEasyItem; Position: Integer; ACanvas: TCanvas);
+procedure TCustomEasyListview.DoItemPaintText(Item: TEasyItem; Position: NativeInt; ACanvas: TCanvas);
 begin
   if Assigned(OnItemPaintText) then
     OnItemPaintText(Self, Item, Position, ACanvas)
@@ -15676,7 +15680,7 @@ begin
     OnItemSelectionsChanged(Self)
 end;
 
-procedure TCustomEasyListview.DoItemSetCaption(Item: TEasyItem; Column: Integer; const Caption: string);
+procedure TCustomEasyListview.DoItemSetCaption(Item: TEasyItem; Column: NativeInt; const Caption: string);
 begin
   if HandleAllocated then
     NotifyWinEvent(EVENT_OBJECT_NAMECHANGE, Handle, OBJID_CLIENT, CHILDID_SELF);
@@ -15685,25 +15689,25 @@ begin
 end;
 
 procedure TCustomEasyListview.DoItemSetGroupKey(Item: TEasyItem;
-  FocusedColumn: Integer; Key: LongWord);
+  FocusedColumn: NativeInt; Key: Int32);
 begin
   if Assigned(OnItemSetGroupKey) then
     OnItemSetGroupKey(Self, Item, FocusedColumn, Key)
 end;
 
-procedure TCustomEasyListview.DoItemSetImageIndex(Item: TEasyItem; Column: Integer; ImageKind: TEasyImageKind; ImageIndex: Integer);
+procedure TCustomEasyListview.DoItemSetImageIndex(Item: TEasyItem; Column: NativeInt; ImageKind: TEasyImageKind; ImageIndex: Integer);
 begin
   if Assigned(OnItemSetImageIndex) then
     OnItemSetImageIndex(Self, Item, Column, ImageKind, ImageIndex)
 end;
 
-procedure TCustomEasyListview.DoItemSetTileDetail(Item: TEasyItem; Line: Integer; Detail: Integer);
+procedure TCustomEasyListview.DoItemSetTileDetail(Item: TEasyItem; Line: NativeInt; Detail: Integer);
 begin
   if Assigned(OnItemSetTileDetail) then
     OnItemSetTileDetail(Self, Item, Line, Detail)
 end;
 
-procedure TCustomEasyListview.DoItemSetTileDetailCount(Item: TEasyItem; Detail: Integer);
+procedure TCustomEasyListview.DoItemSetTileDetailCount(Item: TEasyItem; Detail: NativeInt);
 begin
   //
 end;
@@ -16341,7 +16345,7 @@ begin
     Header.WMLButtonDblClk(Msg)
   else begin
     Handled := False;
-    DoDblClick(Button, SmallPointToPoint(Msg.Pos), KeysToShiftState(Msg.Keys), Handled);
+    DoDblClick(Button, SmallPointToPoint(Msg.Pos), KeysToShiftState(ToUInt16(Msg.Keys)), Handled);
     if not Handled then
     begin
       Item := Groups.ItembyPoint(ViewPt);
@@ -17471,7 +17475,7 @@ end;
 {$ifndef DISABLE_ACCESSIBILITY}
 procedure TCustomEasyListview.WMGetObject(var Msg: TMessage);
 var
-  i, j: Integer;
+  i, j: NativeInt;
 begin
   inherited;
   if not Assigned(Accessible) then
@@ -17653,7 +17657,7 @@ procedure TCustomEasyListview.WMMouseActivate(var Msg: TWMMouseActivate);
     end
   end;
 
-  function MouseActivateToEasyMouseActivate(Flag: LongInt): TEasyMouseActivate;
+  function MouseActivateToEasyMouseActivate(Flag: Int32): TEasyMouseActivate;
   begin
     case Flag of
       MA_ACTIVATE: Result := emaActivate;                 // Activates the window, and does not discard the mouse message.
@@ -17687,8 +17691,8 @@ var
 begin
   inherited;
   DoDefault := True;
-  HitTest := NonClientHitTestToEasyNonClientHitTest(Msg.HitTestCode);
-  Activate := MouseActivateToEasyMouseActivate(Msg.Result);
+  HitTest := NonClientHitTestToEasyNonClientHitTest(ToInt8(Msg.HitTestCode));
+  Activate := MouseActivateToEasyMouseActivate(ToInt32(Msg.Result));
   DoMouseActivate(Msg.TopLevel, HitTest, Msg.MouseMsg, Activate, DoDefault);
   Msg.Result := EasyMouseActivateToMouseActivate(Activate);
   if DoDefault then
@@ -18290,9 +18294,9 @@ begin
   Result := GetImageOverlayIndexes(0)
 end;
 
-function TEasyCollectionItem.GetIndex: Integer;
+function TEasyCollectionItem.GetIndex: NativeInt;
 begin
-  Result := Collection.FList.IndexOf(Self)
+  Result := Collection.FList.IndexOf(Self);
 end;
 
 function TEasyCollectionItem.GetInitialized: Boolean;
@@ -18940,12 +18944,12 @@ begin
     Result := nil
 end;
 
-function TEasyCollection.GetCount: Integer;
+function TEasyCollection.GetCount: NativeInt;
 begin
   Result := FList.Count
 end;
 
-function TEasyCollection.GetItem(Index: Integer): TEasyCollectionItem;
+function TEasyCollection.GetItem(Index: NativeInt): TEasyCollectionItem;
 begin
   Result := TEasyCollectionItem(FList.List[Index])
 end;
@@ -18966,12 +18970,12 @@ begin
   Result := FReIndexCount > 0
 end;
 
-function TEasyCollection.GetVisibleCount: Integer;
+function TEasyCollection.GetVisibleCount: NativeInt;
 begin
   Result := FVisibleList.Count
 end;
 
-function TEasyCollection.Insert(Index: Integer; Data: TObject = nil): TEasyCollectionItem;
+function TEasyCollection.Insert(Index: NativeInt; Data: TObject = nil): TEasyCollectionItem;
 begin
   Result := ItemClass.Create(Self);
   if Assigned(Result) then
@@ -18994,7 +18998,7 @@ end;
 
 function TEasyCollection.NextVisible(Column: TEasyColumn): TEasyColumn;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := nil;
   if Assigned(Column) then
@@ -19011,7 +19015,7 @@ end;
 
 function TEasyCollection.PrevVisible(Column: TEasyColumn): TEasyColumn;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := nil;
   if Assigned(Column) then
@@ -19028,7 +19032,7 @@ end;
 
 procedure TEasyCollection.Clear(FreeItems: Boolean = True);
 var
-  i: Integer;
+  i: NativeInt;
 begin
   if FList.Count > 0 then
   begin
@@ -19066,7 +19070,7 @@ begin
   Filer.DefineBinaryProperty('Items', ReadItems, WriteItems, DoStore);
 end;
 
-procedure TEasyCollection.Delete(Index: Integer);
+procedure TEasyCollection.Delete(Index: NativeInt);
 var
   Item: TEasyCollectionItem;
 begin
@@ -19080,7 +19084,7 @@ begin
   DoStructureChange
 end;
 
-procedure TEasyCollection.DoItemAdd(Item: TEasyCollectionItem; Index: Integer);
+procedure TEasyCollection.DoItemAdd(Item: TEasyCollectionItem; Index: NativeInt);
 begin
 
 end;
@@ -19102,7 +19106,7 @@ begin
   OwnerListview.BeginUpdate;
 end;
 
-procedure TEasyCollection.Exchange(Index1, Index2: Integer);
+procedure TEasyCollection.Exchange(Index1, Index2: NativeInt);
 var
   Temp: TEasyCollectionItem;
 begin
@@ -19115,7 +19119,7 @@ end;
 
 procedure TEasyCollection.MakeAllVisible;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   for i := 0 to Count - 1 do
     Items[i].Visible := True
@@ -19156,7 +19160,7 @@ end;
 
 procedure TEasyCollection.ReIndexItems(Force: Boolean = False);
 var
-  i: Integer;
+  i: NativeInt;
 begin
   if (not OwnerListview.Groups.ReIndexDisable) or Force then
   begin
@@ -19165,7 +19169,7 @@ begin
   end
 end;
 
-procedure TEasyCollection.SetItem(Index: Integer; Value: TEasyCollectionItem);
+procedure TEasyCollection.SetItem(Index: NativeInt; Value: TEasyCollectionItem);
 begin
   FList[Index]  := Value
 end;
@@ -19188,12 +19192,16 @@ end;
 
 procedure TEasyCollection.WriteItems(Stream: TStream);
 var
-  i: Integer;
+  i: NativeInt;
 begin
   // Write the Current Stream Version to the stream
   StreamHelper.WriteInteger(Stream, EASYLISTVIEW_STREAM_VERSION);
   // Store the number of items we are storing
+{$IFDEF CPUX86}
   StreamHelper.WriteInteger(Stream, FList.Count);
+{$ELSE}
+  StreamHelper.WriteInt64(Stream, FList.Count);
+{$ENDIF}
   for i := 0 to FList.Count - 1 do
   begin
     StreamHelper.WriteAnsiString(Stream, AnsiString(TEasyCollectionItem( Items[i]).ClassName));
@@ -19431,7 +19439,7 @@ end;
 
 function TEasyHeader.InPressZone(ViewportPt: TPoint; var Column: TEasyColumn): Boolean;
 var
-  i: Integer;
+  i: NativeInt;
   R: TRect;
 begin
   Result := False;
@@ -19452,7 +19460,7 @@ end;
 
 function TEasyHeader.InResizeZone(ViewportPt: TPoint; var Column: TEasyColumn): Boolean;
 var
-  i: Integer;
+  i: NativeInt;
   R, ClientR: TRect;
 begin
   Result := False;
@@ -19503,7 +19511,7 @@ end;
 
 function TEasyHeader.LastVisibleColumn: TEasyColumn;
 var
-  i: Integer;
+  i: NativeInt;
   Column: TEasyColumn;
 begin
   Result := nil;
@@ -19542,7 +19550,7 @@ function TEasyHeader.NextColumnInRect(Column: TEasyColumn; ViewportRect: TRect):
 // Always assumes by Position as this is a UI function
 //
 var
-  i: Integer;
+  i: NativeInt;
   ScratchR: TRect;
   Done: Boolean;
 begin
@@ -19568,7 +19576,7 @@ end;
 
 function TEasyHeader.NextVisibleColumn(Column: TEasyColumn): TEasyColumn;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := nil;
   Column := NextColumn(Column);
@@ -19603,7 +19611,7 @@ end;
 
 function TEasyHeader.PrevVisibleColumn(Column: TEasyColumn): TEasyColumn;
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := nil;
   Column := PrevColumn(Column);
@@ -19881,7 +19889,7 @@ end;
 
 procedure TEasyHeader.SetFixedSingleColumn(const Value: Boolean);
 var
-  i: Integer;
+  i: NativeInt;
 begin
 //  Columns.Clear;
   if Value <> FFixedSingleColumn then
@@ -19944,7 +19952,7 @@ procedure TEasyHeader.SpringColumns(NewWidth: Integer);
 //
 // Credit goes to VirtualTreeview by Mike Lischke
 var
-  I: Integer;
+  I: NativeInt;
   SpringCount: Integer;
   Sign: Integer;
   ChangeBy: Single;
@@ -19978,7 +19986,7 @@ begin
           NewAccumulator := Columns[I].FSpringRest + Difference;
           // Set new width if at least one pixel size difference is reached.
           if NewAccumulator >= 1 then
-            FColumns[I].SetWidth(FColumns[I].FWidth + (Trunc(NewAccumulator) * Sign));
+            FColumns[I].SetWidth(FColumns[I].FWidth + ToInt32(Trunc(NewAccumulator) * Sign));
           FColumns[I].FSpringRest := Frac(NewAccumulator);
 
           // Keep track of the size count.
@@ -20036,7 +20044,7 @@ end;
 
 procedure TEasyHeader.Rebuild(Force: Boolean);
 var
-  i: Integer;
+  i: NativeInt;
 begin
   if Force or ((OwnerListview.UpdateCount = 0) and not(csLoading in OwnerListview.ComponentState) and (OwnerListview.HandleAllocated)) then
   begin
@@ -20156,9 +20164,9 @@ begin
       Column.AutoSizeToFit
   end;
   Column := Columns.ColumnByPoint(ViewPt);
-  OwnerListview.DoHeaderDblClick(Button, SmallPointToPoint(Msg.Pos), KeysToShiftState(Msg.Keys));
+  OwnerListview.DoHeaderDblClick(Button, SmallPointToPoint(Msg.Pos), KeysToShiftState(ToUInt16(Msg.Keys)));
   if Assigned(Column) then
-    OwnerListview.DoColumnDblClick(Button, KeysToShiftState(Msg.Keys), SmallPointToPoint(Msg.Pos), Column);
+    OwnerListview.DoColumnDblClick(Button, KeysToShiftState(ToUInt16(Msg.Keys)), SmallPointToPoint(Msg.Pos), Column);
 end;
 
 procedure TEasyHeader.WMLButtonDown(var Msg: TWMLButtonDown);
@@ -20206,7 +20214,7 @@ begin
     if Draggable then
       Include(FState, ehsDragPending);
     PressColumn.Invalidate(True);
-    DoMouseDown(Msg, cmbLeft, KeysToShiftState(Msg.Keys), Columns.ColumnByPoint(ViewPt));
+    DoMouseDown(Msg, cmbLeft, KeysToShiftState(ToUInt16(Msg.Keys)), Columns.ColumnByPoint(ViewPt));
   end
 end;
 
@@ -20242,7 +20250,7 @@ begin
     if cdbsDown in DropDownHoverColumn.DropDownButton.State then
     begin
       DoDefault := True;
-      OwnerListview.DoColumnDropDownButtonClick(DropDownHoverColumn, cmbLeft, KeysToShiftState(Msg.Keys), SmallPointToPoint(Msg.Pos), DoDefault);
+      OwnerListview.DoColumnDropDownButtonClick(DropDownHoverColumn, cmbLeft, KeysToShiftState(ToUInt16(Msg.Keys)), SmallPointToPoint(Msg.Pos), DoDefault);
       if DoDefault then
       begin
         if Assigned(DropDownHoverColumn.DropDownButton.Menu) then
@@ -20264,12 +20272,12 @@ begin
     if esosClicking in PressColumn.State then
     begin
       ClickColumn(PressColumn);
-      OwnerListview.DoColumnClick(cmbLeft, KeysToShiftState(Msg.Keys), PressColumn);
+      OwnerListview.DoColumnClick(cmbLeft, KeysToShiftState(ToUInt16(Msg.Keys)), PressColumn);
     end else
       PressColumn.Invalidate(True);
   end;
   if [ehsResizing, ehsDragging] * FState = [] then
-    DoMouseUp(Msg, cmbLeft, KeysToShiftState(Msg.Keys), Columns.ColumnByPoint(ViewPt));
+    DoMouseUp(Msg, cmbLeft, KeysToShiftState(ToUInt16(Msg.Keys)), Columns.ColumnByPoint(ViewPt));
 
   Exclude(FState, ehsLButtonDown);
   Exclude(FState, ehsResizing);
@@ -20401,7 +20409,7 @@ begin
   end else
   begin
     OwnerListview.Cursor := crDefault;
-    DoMouseMove(Msg, KeysToShiftState(Msg.Keys));
+    DoMouseMove(Msg, KeysToShiftState(ToUInt16(Msg.Keys)));
   end;
 
   if (ehsCheckboxClickPending in State) then
@@ -20439,7 +20447,7 @@ begin
     Inc(ViewPt.X, OwnerListview.Scrollbars.OffsetX);
 
   Include(FState, ehsRButtonDown);
-  DoMouseDown(Msg, cmbRight, KeysToShiftState(Msg.Keys), Columns.ColumnByPoint(ViewPt));
+  DoMouseDown(Msg, cmbRight, KeysToShiftState(ToUInt16(Msg.Keys)), Columns.ColumnByPoint(ViewPt));
 end;
 
 procedure TEasyHeader.WMRButtonUp(var Msg: TWMRButtonUp);
@@ -20454,7 +20462,7 @@ begin
   Exclude(FState, ehsClickPending);
   Exclude(FState, ehsDragging);
   Exclude(FState, ehsDragPending);
-  DoMouseUp(Msg, cmbRight, KeysToShiftState(Msg.Keys), Columns.ColumnByPoint(ViewPt));
+  DoMouseUp(Msg, cmbRight, KeysToShiftState(ToUInt16(Msg.Keys)), Columns.ColumnByPoint(ViewPt));
 end;
 
 function TEasyViewItem.AllowDrag(Item: TEasyItem; ViewportPoint: TPoint): Boolean;
@@ -20551,7 +20559,7 @@ begin
   end
 end;
 
-function TEasyViewItem.ValidateColumnIndex(Column: TEasyColumn): Integer;
+function TEasyViewItem.ValidateColumnIndex(Column: TEasyColumn): NativeInt;
 begin
   if Assigned(Column) then
     Result := Column.Index
@@ -20636,7 +20644,7 @@ end;
 procedure TEasyViewItem.GetImageSize(Item: TEasyItem; Column: TEasyColumn; var ImageW, ImageH: Integer; Image: TEasyImageKind);
 var
   Images: TCustomImageList;
-  ColumnPos: Integer;
+  ColumnPos: NativeInt;
   IsCustom: Boolean;
 begin
   ImageW := 0;
@@ -20702,7 +20710,7 @@ begin
   SetRect(RectArray.CheckRect, 0, 0, 0, 0);
 end;
 
-procedure TEasyViewItem.LoadTextFont(AItem: TEasyItem; APosition: Integer; ACanvas: TCanvas; AHightable: Boolean);
+procedure TEasyViewItem.LoadTextFont(AItem: TEasyItem; APosition: NativeInt; ACanvas: TCanvas; AHightable: Boolean);
 var
   lServices: TCustomStyleServices;
 begin
@@ -20924,7 +20932,7 @@ procedure TEasyViewItem.PaintCheckBox(Item: TEasyItem; Column: TEasyColumn;
   RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
 var
   PaintCheckBox: Boolean;
-  AbsIndex: Integer;
+  AbsIndex: NativeInt;
 begin
   PaintCheckBox := not ((Item.CheckType = ectNone) or (Item.CheckType = ectNoneWithSpace));
 
@@ -20955,7 +20963,7 @@ end;
 
 procedure TEasyViewItem.PaintFocusRect(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ACanvas: TCanvas);
 var
-  AbsIndex: Integer;
+  AbsIndex: NativeInt;
   LocalFocusRect: TRect;
 begin
   if not FullRowSelect then
@@ -21020,9 +21028,10 @@ end;
 
 procedure TEasyViewItem.PaintImage(Item: TEasyItem; Column: TEasyColumn; const Caption: string; RectArray: TEasyRectArrayObject; ImageSize: TEasyImageSize; ACanvas: TCanvas);
 var
-  rgbBk, rgbFg: Longword;
+  rgbBk, rgbFg: UInt32;
   fStyle: Integer;
-  OverlayIndex, ImageIndex, PositionIndex, AbsIndex, StateImageIndex: Integer;
+  AbsIndex: NativeInt;
+  OverlayIndex, ImageIndex, PositionIndex, StateImageIndex: NativeInt;
   Images, StateImages: TCustomImageList;
   DoDefault, IsCustom: Boolean;
   Rgn: HRgn;
@@ -21085,7 +21094,7 @@ begin
               RectArray.StateRect.Left := RectArray.StateRect.Left + (RectWidth(RectArray.StateRect) - StateImages.Width) div 2;
               RectArray.StateRect.Top := RectArray.StateRect.Top + (RectHeight(RectArray.StateRect) - StateImages.Height) div 2;
 
-              ImageList_DrawEx(ImagesForPPI(StateImages, OwnerListview.CurrentPPI).Handle, StateImageIndex, ACanvas.Handle, RectArray.StateRect.Left, RectArray.StateRect.Top, 0, 0, rgbBk, rgbFg, fStyle);
+              ImageList_DrawEx(ImagesForPPI(StateImages, OwnerListview.CurrentPPI).Handle, ToInt32(StateImageIndex), ACanvas.Handle, RectArray.StateRect.Left, RectArray.StateRect.Top, 0, 0, rgbBk, rgbFg, ToUInt32(fStyle));
             end
           end;
 
@@ -21107,17 +21116,17 @@ begin
               if OwnerListview.Selection.ForceDefaultBlend then
                 rgbFg := CLR_DEFAULT
               else
-                rgbFg := ColorToRGB(OwnerListview.Selection.Color)
+                rgbFg := ToUInt32(ColorToRGB(OwnerListview.Selection.Color))
             end;
 
             if not Item.Enabled or Item.Cut or Item.Ghosted or Item.OwnerListview.ShowInactive then
             begin
               fStyle := fStyle or ILD_SELECTED;
-              rgbFg := ColorToRGB(OwnerListview.DisabledBlendColor)
+              rgbFg := ToUInt32(ColorToRGB(OwnerListview.DisabledBlendColor))
             end;
 
             if OverlayIndex > -1 then
-              fStyle := FStyle or IndexToOverLayMask(OverlayIndex);
+              fStyle := FStyle or IndexToOverLayMask(ToInt32(OverlayIndex));
 
             if (RectWidth(RectArray.IconRect) < Images.Width) or (RectHeight(RectArray.IconRect) < Images.Height) then
             begin
@@ -21128,7 +21137,7 @@ begin
                   TmpBits.PixelFormat := pf32Bit;
                   TmpBits.Width := Images.Width;
                   TmpBits.Height := Images.Height;
-                  ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, ImageIndex, TmpBits.Canvas.Handle, 0, 0, 0, 0, rgbBk, rgbFg, fStyle);
+                  ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, ToInt32(ImageIndex), TmpBits.Canvas.Handle, 0, 0, 0, 0, rgbBk, rgbFg, ToUInt32(fStyle));
 
 
                   W := RectWidth(RectArray.IconRect)/Images.Width;
@@ -21139,7 +21148,7 @@ begin
                   else
                     Scale := W;
 
-                  R := Rect(0, 0, Round(Images.Width*Scale), Round(Images.Height*Scale));
+                  R := Rect(0, 0, ToInt32(Round(Images.Width*Scale)), ToInt32(Round(Images.Height*Scale)));
 
                   StretchBlt(ACanvas.Handle,
                              RectArray.IconRect.Left + ((RectWidth(RectArray.IconRect) - RectWidth(R)) div 2),
@@ -21160,8 +21169,8 @@ begin
             RectArray.IconRect.Left := RectArray.IconRect.Left + (RectWidth(RectArray.IconRect) - Images.Width) div 2;
             RectArray.IconRect.Top := RectArray.IconRect.Top + (RectHeight(RectArray.IconRect) - Images.Height) div 2;
 
-            ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, ImageIndex, ACanvas.Handle, RectArray.IconRect.Left,
-              RectArray.IconRect.Top, 0, 0, rgbBk, rgbFg, fStyle);
+            ImageList_DrawEx(ImagesForPPI(Images, OwnerListview.CurrentPPI).Handle, ToInt32(ImageIndex), ACanvas.Handle, RectArray.IconRect.Left,
+              RectArray.IconRect.Top, 0, 0, rgbBk, rgbFg, ToUInt32(fStyle));
             end
           end
         end
@@ -21384,7 +21393,7 @@ end;
 
 procedure TEasyViewItem.PaintText(AItem: TEasyItem; AColumn: TEasyColumn; const ACaption: string; ARectArray: TEasyRectArrayObject; ACanvas: TCanvas; ALinesToDraw: Integer);
 var
-  lAbsIndex: Integer;
+  lAbsIndex: NativeInt;
   lDrawTextFlags: TCommonDrawTextWFlags;
   lHilightable: Boolean;
 begin
@@ -21414,7 +21423,7 @@ begin
 
     OwnerListview.ClipHeader(ACanvas, False);
 
-    SetTextColor(ACanvas.Handle, ColorToRGB(ACanvas.Font.Color));
+    SetTextColor(ACanvas.Handle, ToUInt32(ColorToRGB(ACanvas.Font.Color)));
     if AItem.Focused and (OwnerListview.Focused or AItem.OwnerListview.Selection.PopupMode) then
       DrawTextWEx(ACanvas.Handle, ACaption, ARectArray.TextRect, lDrawTextFlags, ALinesToDraw)
     else
@@ -21471,7 +21480,7 @@ end;
 procedure TEasyViewItem.ReSizeRectArray(
   var RectArray: TEasyRectArrayObjectArray);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Length(RectArray) < OwnerListview.Header.Positions.Count then
   begin
@@ -21753,7 +21762,7 @@ var
   ImageW, ImageH, Left: Integer;
   DrawTextFlags: TCommonDrawTextWFlags;
   R: TRect;
-  PositionIndex, AbsIndex: Integer;
+  PositionIndex, AbsIndex: NativeInt;
   ACaption: string;
 begin
   if Assigned(Item) then
@@ -21904,7 +21913,9 @@ var
   SelectW, BoundsH, CheckH: Integer;
   CheckType: TEasyCheckType;
   R: TRect;
-  CheckIndent, CaptionIndent, Checksize, ImageIndex, ImageIndent, PositionIndex, AbsIndex, StateImageIndex: Integer;
+  AbsIndex: NativeInt;
+  PositionIndex: NativeInt;
+  CheckIndent, CaptionIndent, Checksize, ImageIndex, ImageIndent, StateImageIndex: Integer;
   ImageW, ImageH: Integer;
   ACaption: string;
 begin
@@ -22049,7 +22060,7 @@ begin
       // **********
       // During a drag selection the hit area is only a fraction of the Click bounds
       RectArray.DragSelectBoundsRect := RectArray.ClickselectBoundsRect;
-      SelectW := Round(RectWidth(RectArray.DragSelectBoundsRect) * SELECTION_OFFSET);
+      SelectW := ToInt32(Round(RectWidth(RectArray.DragSelectBoundsRect) * SELECTION_OFFSET));
       InflateRect(RectArray.DragSelectBoundsRect, -SelectW, 0);
 
       UnionRect(RectArray.FocusChangeInvalidRect, RectArray.IconRect, RectArray.FullTextRect);
@@ -22263,7 +22274,10 @@ end;
 procedure TEasyViewTileItem.ItemRectArray(Item: TEasyItem; Column: TEasyColumn; ACanvas: TCanvas; const Caption: string; var RectArray: TEasyRectArrayObject);
 var
   ACaption: string;
-  PositionIndex, i, YOffset, ImageW, ImageH, DetailCount: Integer;
+  PositionIndex: NativeInt;
+  i: NativeInt;
+  YOffset, ImageW, ImageH: Integer;
+  DetailCount: NativeInt;
   DrawTextFlags: TCommonDrawTextWFlags;
   R: TRect;
   Done: Boolean;
@@ -22441,7 +22455,7 @@ begin
       RectArray.ClickselectBoundsRect.Right := RectArray.TextRect.Right;
 
       RectArray.DragSelectBoundsRect := RectArray.TextRect;
-      RectArray.DragSelectBoundsRect.Right := RectArray.DragSelectBoundsRect.Right - Round(RectWidth(RectArray.DragSelectBoundsRect)*0.20);
+      RectArray.DragSelectBoundsRect.Right := RectArray.DragSelectBoundsRect.Right - ToInt32(Round(RectWidth(RectArray.DragSelectBoundsRect)*0.20));
 
       UnionRect(RectArray.FocusChangeInvalidRect, RectArray.IconRect, RectArray.FullTextRect);
 
@@ -22461,7 +22475,7 @@ procedure TEasyViewTileItem.PaintText(Item: TEasyItem; Column: TEasyColumn; cons
 //
 var
   DrawTextFlags: TCommonDrawTextWFlags;
-  i: Integer;
+  i: NativeInt;
 begin
   DrawTextFlags := [dtEndEllipsis, dtTop];
 
@@ -22548,7 +22562,7 @@ begin
                 IntersectRect(R, SelectViewportRect, ExpandIconR(Item, RectArray, SelectType))
     else begin
       R := ExpandIconR(Item, RectArray, SelectType);
-      SelectMargin := Round( RectWidth(R) * 0.10);
+      SelectMargin := ToInt32(Round( RectWidth(R) * 0.10));
       InflateRect(R, -SelectMargin, -SelectMargin);
       Result := IntersectRect(R, SelectViewportRect, R)
     end
@@ -22571,7 +22585,7 @@ begin
     else
     begin
       R := ExpandIconR(Item, RectArray, SelectType);
-      SelectMargin := Round( RectWidth(R) * 0.10);
+      SelectMargin := ToInt32(Round( RectWidth(R) * 0.10));
       InflateRect(R, -SelectMargin, -SelectMargin);
        Result := Winapi.Windows.PtInRect(R, ViewportPoint)
     end
@@ -22596,7 +22610,7 @@ var
   DrawTextFlags: TCommonDrawTextWFlags;
   Canvas: TControlCanvas;
   R: TRect;
-  PositionIndex, AbsIndex: Integer;
+  PositionIndex, AbsIndex: NativeInt;
   Metrics: TTextMetric;
   ACaption: string;
 begin
@@ -22884,8 +22898,8 @@ const
   cInflate = -2;
   cMargin = 4;
 var
-   lCaptionLines: Integer;
-   lCount: Integer;
+   lCaptionLines: NativeInt;
+   lCount: NativeInt;
    lDrawTextFlags: TCommonDrawTextWFlags;
    lImageHeight: Integer;
    lImageWidth: Integer;
@@ -23400,7 +23414,7 @@ begin
           CtlState := CBXS_HOT;
       end  else
         CtlState := CBXS_DISABLED;
-      DrawThemeBackground(OwnerListview.Themes.ComboBoxTheme, ACanvas.Handle, CtlType, CtlState, R, nil)
+      DrawThemeBackground(OwnerListview.Themes.ComboBoxTheme, ACanvas.Handle, ToInt32(CtlType), ToInt32(CtlState), R, nil)
     end else
     begin
       InflateRect(R, -1, -1);  // Looks better
@@ -23480,7 +23494,7 @@ begin
         0,
         CLR_NONE,
         CLR_NONE,
-        fStyle);
+        ToUInt32(fStyle));
     end
   end
 end;
@@ -23535,7 +23549,7 @@ begin
   end
 end;
 
-procedure TEasyViewColumn.PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: Integer);
+procedure TEasyViewColumn.PaintText(AColumn: TEasyColumn; ACanvas: TCanvas; AHeaderType: TEasyHeaderType; ARectArray: TEasyRectArrayObject; ALinesToDraw: NativeInt);
 var
   lColor: TColor;
   lDrawTextFlags: TCommonDrawTextWFlags;
@@ -23569,9 +23583,9 @@ begin
     lColor := ACanvas.Font.Color;
     if lServices.Enabled then
       lColor := lServices.GetSystemColor(lColor);
-    SetTextColor(ACanvas.Handle, ColorToRGB(lColor));
+    SetTextColor(ACanvas.Handle, ToUInt32(ColorToRGB(lColor)));
     DrawTextWEx(ACanvas.Handle, AColumn.Caption, ARectArray.TextRects[0], lDrawTextFlags, OwnerListview.PaintInfoColumn.CaptionLines);
-    SetTextColor(ACanvas.Handle, ColorToRGB(ACanvas.Font.Color));
+    SetTextColor(ACanvas.Handle, ToUInt32(ColorToRGB(ACanvas.Font.Color)));
     ACanvas.Brush.Style := lOldStyle;
   end;
 end;
@@ -23579,7 +23593,7 @@ end;
 procedure TEasyViewColumn.ReSizeRectArray(
   var RectArray: TEasyRectArrayObjectArray);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Length(RectArray) < OwnerListview.Header.Positions.Count then
   begin
@@ -23614,7 +23628,7 @@ end;
 
 function TEasyGridGroup.AdjacentItem(Item: TEasyItem; Direction: TEasyAdjacentCellDir): TEasyItem;
 var
-  ColumnPos: Integer;
+  ColumnPos: NativeInt;
   TestPt: TPoint;
   LastItem: TEasyItem;
   RectArray: TEasyRectArrayObject;
@@ -23777,7 +23791,7 @@ begin
   end
 end;
 
-procedure TEasyGridGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer);
+procedure TEasyGridGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt);
 //
 // The default implementation assumes a "grid" type arrangement of the grid
 //
@@ -23812,13 +23826,13 @@ begin
   Result := OwnerGroup.OwnerGroups
 end;
 
-function TEasyGridGroup.LastItemInNColumn(Group: TEasyGroup; N: Integer): TEasyItem;
+function TEasyGridGroup.LastItemInNColumn(Group: TEasyGroup; N: NativeInt): TEasyItem;
 //
 // Finds the last item in the group in the specified column.  It assumes
 // that the item does exist (N >= Group.ItemCount)
 //
 var
-  RowPos: Integer;
+  RowPos: NativeInt;
 begin
   RowPos := Group.VisibleCount div Group.Grid.ColumnCount;
   if RowPos * ColumnCount + N >= Group.VisibleCount then
@@ -23831,7 +23845,7 @@ function TEasyGridGroup.NextVisibleGroupWithNItems(StartGroup: TEasyGroup; N: In
   //  Returns the first next group encountered when at least N items in it
   //
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := nil;
   i := StartGroup.VisibleIndex + 1;
@@ -23848,7 +23862,7 @@ function TEasyGridGroup.PrevVisibleGroupWithNItems(StartGroup: TEasyGroup; N: In
 //  Returns the first prev group encountered when at least N items in it
 //
 var
-  i: Integer;
+  i: NativeInt;
 begin
   Result := nil;
   i := StartGroup.VisibleIndex - 1;
@@ -23861,7 +23875,7 @@ begin
 
 end;
 
-function TEasyGridGroup.SearchForHitRight(ColumnPos: Integer; Pt: TPoint): TEasyItem;
+function TEasyGridGroup.SearchForHitRight(ColumnPos: NativeInt; Pt: TPoint): TEasyItem;
 begin
   Result := nil;
   while not Assigned(Result) and (ColumnPos >= 0) do
@@ -23889,7 +23903,7 @@ end;
 procedure TEasyGridGroup.FindLongestCaption(Column: TEasyColumn; var Item: TEasyItem);
 var
   TempItem: TEasyItem;
-  ColumnIndex, i, Len: Integer;
+  ColumnIndex, i, Len: NativeInt;
 begin
   Item := nil;
 
@@ -23921,10 +23935,12 @@ begin
   end
 end;
 
-procedure TEasyGridGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer);
+procedure TEasyGridGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt);
 var
   TopLeft: TPoint;
-  i, LeftEdge, BottomEdge, ItemGroupVisibleIndex: Integer;
+  i: NativeInt;
+  LeftEdge: NativeInt;
+  BottomEdge, ItemGroupVisibleIndex: Integer;
   RectArray: TEasyRectArrayObject;
   WndWidth, VisibleCount, ItemMargin, GroupMargin, MarginTop, MarginLeft, MarginRight: Integer;
   FocusedItem, Item: TEasyItem;
@@ -24132,7 +24148,7 @@ begin
   end
 end;
 
-procedure TEasyGridReportGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer);
+procedure TEasyGridReportGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt);
 begin
 
 end;
@@ -24145,10 +24161,11 @@ end;
 { TEasyReportGroupGrid }
 
 
-procedure TEasyGridReportGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer);
+procedure TEasyGridReportGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt);
 
 var
-  i, Top, Bottom, Width, Left, Offset, TopMargin,
+  i: NativeInt;
+  Top, Bottom, Width, Left, Offset, TopMargin,
   BottomMargin, VisibleCount: Integer;
   Item: TEasyItem;
 begin
@@ -24224,12 +24241,12 @@ end;
 
 function TEasyGridListGroup.AdjacentItem(Item: TEasyItem; Direction: TEasyAdjacentCellDir): TEasyItem;
 
-  function NextVisibleGroupWithNItems(StartGroup: TEasyGroup; N: Integer): TEasyGroup;
+  function NextVisibleGroupWithNItems(StartGroup: TEasyGroup; N: NativeInt): TEasyGroup;
   //
   //  Returns the first next group encountered when at least N items in it
   //
   var
-    i: Integer;
+    i: NativeInt;
   begin
     Result := nil;
     i := StartGroup.VisibleIndex + 1;
@@ -24241,12 +24258,12 @@ function TEasyGridListGroup.AdjacentItem(Item: TEasyItem; Direction: TEasyAdjace
     end
   end;
 
-  function PrevVisibleGroupWithNItems(StartGroup: TEasyGroup; N: Integer): TEasyGroup;
+  function PrevVisibleGroupWithNItems(StartGroup: TEasyGroup; N: NativeInt): TEasyGroup;
   //
   //  Returns the first prev group encountered when at least N items in it
   //
   var
-    i: Integer;
+    i: NativeInt;
   begin
     Result := nil;
     i := StartGroup.VisibleIndex - 1;
@@ -24258,13 +24275,13 @@ function TEasyGridListGroup.AdjacentItem(Item: TEasyItem; Direction: TEasyAdjace
     end
   end;
 
-  function LastItemInNRow(Group: TEasyGroup; N: Integer): TEasyItem;
+  function LastItemInNRow(Group: TEasyGroup; N: NativeInt): TEasyItem;
   //
   // Finds the last item in the group in the specified column.  It assumes
   // that the item does exist (N >= Group.ItemCount)
   //
   var
-    ColumnPos: Integer;
+    ColumnPos: NativeInt;
   begin
     ColumnPos := Group.VisibleCount div Group.Grid.RowCount;
     if ColumnPos * RowCount + N >= Group.VisibleCount then
@@ -24284,7 +24301,7 @@ function TEasyGridListGroup.AdjacentItem(Item: TEasyItem; Direction: TEasyAdjace
   end;
 
 var
-  RowPos, ItemIndex: Integer;
+  RowPos, ItemIndex: NativeInt;
   AdjacentGroup: TEasyGroup;
 begin
   Result := nil;
@@ -24364,7 +24381,7 @@ begin
   end
 end;
 
-procedure TEasyGridListGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer);
+procedure TEasyGridListGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt);
 begin
 
 end;
@@ -24377,11 +24394,12 @@ end;
 { TEasyListGroupGrid }
 
 procedure TEasyGridListGroup.Rebuild(PrevGroup: TEasyGroup;
-  var NextVisibleItemIndex: Integer);
+  var NextVisibleItemIndex: NativeInt);
 var
   ClientHeight: Integer;
   TopLeft: TPoint;
-  i, Offset, VisibleCount, Height: Integer;
+  i: NativeInt;
+  Offset, VisibleCount, Height: Integer;
   RectArray: TEasyRectArrayObject;
   TextSize: TSize;
   R: TRect;
@@ -24493,7 +24511,7 @@ begin
   Result := PaintInfo.CaptionIndent
 end;
 
-function TCustomEasyFooterMargin.GetCaptionLines: Integer;
+function TCustomEasyFooterMargin.GetCaptionLines: NativeInt;
 begin
   Result := PaintInfo.CaptionLines
 end;
@@ -24555,7 +24573,7 @@ begin
   end
 end;
 
-procedure TCustomEasyFooterMargin.SetCaptionLines(Value: Integer);
+procedure TCustomEasyFooterMargin.SetCaptionLines(Value: NativeInt);
 begin
   if CaptionLines <> Value then
   begin
@@ -24693,7 +24711,7 @@ begin
   end
 end;
 
-procedure TEasyPaintInfoBasic.SetCaptionLines(Value: Integer);
+procedure TEasyPaintInfoBasic.SetCaptionLines(Value: NativeInt);
 begin
   if Value <> FCaptionLines then
   begin
@@ -25247,7 +25265,7 @@ end;
 
 function TEasyViewReportItemWholeLine.SelectionHitPt(AItem: TEasyItem; AViewportPoint: TPoint; ASelectType: TEasySelectHitType): Boolean;
 var
-  lColumn: Integer;
+  lColumn: NativeInt;
   lRectArray: TEasyRectArrayObject;
 begin
   Result := False;
@@ -25445,8 +25463,8 @@ begin
   end
 end;
 
-procedure TEasySortManager.GroupItem(Item: TEasyItem; ColumnIndex: Integer;
-  Key: LongWord);
+procedure TEasySortManager.GroupItem(Item: TEasyItem; ColumnIndex: NativeInt;
+  Key: Int32);
 //
 // WARNING:  Do not access the items OwnerListview property as it is an orphaned
 // item when it is passed to this method (the collection property is nil)
@@ -25492,8 +25510,8 @@ procedure TEasySortManager.ReGroup(Column: TEasyColumn);
 var
   Groups: TEasyGroups;
   Item: TEasyItem;
-  i, j, ColumnIndex, Index: Integer;
-  Key: Integer;
+  i, j, ColumnIndex, Index: NativeInt;
+  Key: Int32;
   Caption: string;
 begin
   OwnerListview.BeginUpdate;
@@ -25591,7 +25609,7 @@ end;
 
 procedure TEasySortManager.SortAll(Force: Boolean = False);
 var
-  i: Integer;
+  i: NativeInt;
   SupportsInterfaces: Boolean;
 begin
   if Assigned(Sorter) and Assigned(OwnerListview) and (({(OwnerListview.UpdateCount = 0) and} (UpdateCount = 0) and not LockoutSort) or Force) then
@@ -25618,9 +25636,9 @@ begin
 end;
 
 { TEasyQuicksort}
-procedure TEasyQuicksort.Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: Integer; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean);
+procedure TEasyQuicksort.Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: NativeInt; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean);
 var
- I, J: Integer;
+ I, J: NativeInt;
  P, Temp: TEasyCollectionItem;
 begin
   // Quicksort is not Stable, i.e. duplicate items may not be in the same
@@ -25678,9 +25696,10 @@ begin
 end;
 
 { TEasyBubbleSort}
-procedure TEasyBubbleSort.Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: Integer; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean);
+procedure TEasyBubbleSort.Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: NativeInt; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean);
 var
-  LastSwap, i, j, SortResult : Integer;
+  LastSwap, i, j: NativeInt;
+  SortResult : Integer;
   Tmp: TEasyCollectionItem;
 begin
   // During this loop, min and max are the smallest and largest
@@ -25816,13 +25835,13 @@ begin
   Result := ItemCompareFunc(Column, OwnerGroup, TEasyItem(i1), TEasyItem(i2)) <= 0;
 end;
 
-procedure TEasyMergeSort.Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: Integer; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean);
+procedure TEasyMergeSort.Sort(Column: TEasyColumn; Collection: TEasyCollection; Min, Max: NativeInt; GroupCompare: TEasyDoGroupCompare; ItemCompare: TEasyDoItemCompare; UseInterfaces: Boolean);
 type
   TEasyMergeSortCompare=function (i1, i2: TEasyCollectionItem): Boolean of object;
 var
   CompareFunc: TEasyMergeSortCompare;
 
-  procedure subMerge(dst: TEasyCollection; ld, md, hd: Integer; src: TEasyCollection; ls, ms: Integer);
+  procedure subMerge(dst: TEasyCollection; ld, md, hd: NativeInt; src: TEasyCollection; ls, ms: NativeInt);
   { dst    src
   hd
     aa
@@ -25830,7 +25849,7 @@ var
     xx      bb     bb+aa->xxaa
   ld      ls }
   var
-    i, j, d: Integer;
+    i, j, d: NativeInt;
   begin
     i := ls;
     j := md;
@@ -25851,11 +25870,11 @@ var
       end;
   end;
 
-  procedure subSortM(dst: TEasyCollection; ld, hd: Integer; src: TEasyCollection; ls, hs: Integer); forward;
+  procedure subSortM(dst: TEasyCollection; ld, hd: NativeInt; src: TEasyCollection; ls, hs: NativeInt); forward;
 
-  procedure subSortI(dst: TEasyCollection; ld, hd: Integer; tmp: TEasyCollection; lt, ht: Integer);
+  procedure subSortI(dst: TEasyCollection; ld, hd: NativeInt; tmp: TEasyCollection; lt, ht: NativeInt);
   var
-    m2: Integer; //I for Inplace
+    m2: NativeInt; //I for Inplace
     x3: Pointer;
   { -  hd
     |     A               inplace AA->AA
@@ -25882,8 +25901,8 @@ var
       end;
   end;
 
-  procedure subSortM(dst: TEasyCollection; ld, hd: Integer; src: TEasyCollection; ls, hs: Integer);
-  var m2: Integer; //M for Move
+  procedure subSortM(dst: TEasyCollection; ld, hd: NativeInt; src: TEasyCollection; ls, hs: NativeInt);
+  var m2: NativeInt; //M for Move
   {  hd      hs                    hd      hs
         c       A                     c       b
         c       A                     c       b
@@ -25915,7 +25934,7 @@ var
       dst[ld] := src[ls];
   end;
 
-var m: Integer;
+var m: NativeInt;
     TempList: TEasyCollection;
 begin
   if Max > Collection.Count - 1 then
@@ -26124,12 +26143,12 @@ begin
   inherited
 end;
 
-function TEasySelectionGroupList.Count: Integer;
+function TEasySelectionGroupList.Count: NativeInt;
 begin
   Result := List.Count
 end;
 
-function TEasySelectionGroupList.GetItems(Index: Integer): TEasyItem;
+function TEasySelectionGroupList.GetItems(Index: NativeInt): TEasyItem;
 begin
   Result := TEasyItem( List.Items[Index])
 end;
@@ -26156,7 +26175,7 @@ begin
   Inc(FRefCount)
 end;
 
-procedure TEasySelectionGroupList.SetItems(Index: Integer; Value: TEasyItem);
+procedure TEasySelectionGroupList.SetItems(Index: NativeInt; Value: TEasyItem);
 begin
   List.Items[Index] := Value
 end;
@@ -26202,7 +26221,7 @@ begin
 end;
 
 { TEasyGridTileGroup}
-procedure TEasyGridTileGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer);
+procedure TEasyGridTileGroup.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt);
 begin
 
 end;
@@ -26227,7 +26246,7 @@ begin
     Result := nil
 end;
 
-function TEasyItemInterfaced.GetCaptions(Column: Integer): string;
+function TEasyItemInterfaced.GetCaptions(Column: NativeInt): string;
 var
   CaptionInf: IEasyCaptions;
 begin
@@ -26246,7 +26265,7 @@ begin
     Result := Checks.GetChecked(0)
 end;
 
-function TEasyItemInterfaced.GetCommonImageIndex(Column: Integer; Kind: TEasyImageKind): TCommonImageIndexInteger;
+function TEasyItemInterfaced.GetCommonImageIndex(Column: NativeInt; Kind: TEasyImageKind): TCommonImageIndexInteger;
 var
   ImageInf: IEasyImages;
 begin
@@ -26256,7 +26275,7 @@ begin
     Result := ImageInf.ImageIndexes[Column, Kind]
 end;
 
-function TEasyItemInterfaced.GetDetailCount: Integer;
+function TEasyItemInterfaced.GetDetailCount: NativeInt;
 var
   TileInf: IEasyDetails;
 begin
@@ -26266,7 +26285,7 @@ begin
     Result := TileInf.GetDetailCount
 end;
 
-function TEasyItemInterfaced.GetDetails(Line: Integer): Integer;
+function TEasyItemInterfaced.GetDetails(Line: NativeInt): Integer;
 var
   TileInf: IEasyDetails;
 begin
@@ -26276,7 +26295,7 @@ begin
     Result := TileInf.Detail[Line]
 end;
 
-function TEasyItemInterfaced.GetGroupKey(FocusedColumn: Integer): LongWord;
+function TEasyItemInterfaced.GetGroupKey(FocusedColumn: NativeInt): Int32;
 var
   KeyInf: IEasyGroupKey;
 begin
@@ -26286,12 +26305,12 @@ begin
     Result := KeyInf.Key[FocusedColumn]
 end;
 
-function TEasyItemInterfaced.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemInterfaced.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := GetCommonImageIndex(Column, eikNormal);
 end;
 
-function TEasyItemInterfaced.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyItemInterfaced.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 var
   ImageList: IEasyImageList;
 begin
@@ -26302,17 +26321,17 @@ begin
     Result := DefaultImageList(IconSize)
 end;
 
-function TEasyItemInterfaced.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemInterfaced.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := GetCommonImageIndex(Column, eikOverlay);
 end;
 
-function TEasyItemInterfaced.GetStateImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemInterfaced.GetStateImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := GetCommonImageIndex(Column, eikState);
 end;
 
-function TEasyItemInterfaced.GetStateImageList(Column: Integer): TCustomImageList;
+function TEasyItemInterfaced.GetStateImageList(Column: NativeInt): TCustomImageList;
 var
   ImageList: IEasyStateImageList;
 begin
@@ -26349,7 +26368,7 @@ begin
     ImageInf.CustomDrawn(Column, IsCustom)
 end;
 
-procedure TEasyItemInterfaced.SetCaptions(Column: Integer; Value: string);
+procedure TEasyItemInterfaced.SetCaptions(Column: NativeInt; Value: string);
 var
   CaptionInf: IEasyCaptionsEditable;
 begin
@@ -26373,7 +26392,7 @@ begin
   end
 end;
 
-procedure TEasyItemInterfaced.SetCommonImageIndex(Column: Integer; Kind: TEasyImageKind; Value: TCommonImageIndexInteger);
+procedure TEasyItemInterfaced.SetCommonImageIndex(Column: NativeInt; Kind: TEasyImageKind; Value: TCommonImageIndexInteger);
 var
   ImageInf: IEasyImagesEditable;
 begin
@@ -26382,7 +26401,7 @@ begin
     ImageInf.SetImageIndex(Column, Kind, Value)
 end;
 
-procedure TEasyItemInterfaced.SetDetailCount(Value: Integer);
+procedure TEasyItemInterfaced.SetDetailCount(Value: NativeInt);
 var
   DetailsInf: IEasyDetailsEditable;
 begin
@@ -26394,7 +26413,7 @@ begin
   end
 end;
 
-procedure TEasyItemInterfaced.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyItemInterfaced.SetDetails(Line: NativeInt; Value: Integer);
 var
   DetailsInf: IEasyDetailsEditable;
 begin
@@ -26406,8 +26425,8 @@ begin
   end
 end;
 
-procedure TEasyItemInterfaced.SetGroupKey(FocusedColumn: Integer;
-  Value: LongWord);
+procedure TEasyItemInterfaced.SetGroupKey(FocusedColumn: NativeInt;
+  Value: Int32);
 var
   KeyInf: IEasyGroupKeyEditable;
 begin
@@ -26416,17 +26435,17 @@ begin
     KeyInf.Key[FocusedColumn] := Value;
 end;
 
-procedure TEasyItemInterfaced.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemInterfaced.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   SetCommonImageIndex(Column, eikNormal, Value)
 end;
 
-procedure TEasyItemInterfaced.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemInterfaced.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   SetCommonImageIndex(Column, eikOverlay, Value)
 end;
 
-procedure TEasyItemInterfaced.SetStateImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemInterfaced.SetStateImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   SetCommonImageIndex(Column, eikState, Value)
 end;
@@ -26543,7 +26562,7 @@ begin
   Result := View.EditAreaHitPt(Self, ViewportPoint)
 end;
 
-function TEasyItem.GetColumnPos: Integer;
+function TEasyItem.GetColumnPos: NativeInt;
 //
 // Returns the current column that the item is in within the grid or -1 if it
 // is not visible
@@ -26573,14 +26592,14 @@ begin
   end
 end;
 
-function TEasyItem.GetGroupKey(FocusedColumn: Integer): LongWord;
+function TEasyItem.GetGroupKey(FocusedColumn: NativeInt): Int32;
 begin
   Result := 0
 end;
 
-function TEasyItem.GetIndex: Integer;
+function TEasyItem.GetIndex: NativeInt;
 begin
-  Result := FIndex
+  Result := FIndex;
 end;
 
 function TEasyItem.GetOwnerGroup: TEasyGroup;
@@ -26598,7 +26617,7 @@ begin
   Result := TEasyPaintInfoItem( inherited PaintInfo)
 end;
 
-function TEasyItem.GetRowPos: Integer;
+function TEasyItem.GetRowPos: NativeInt;
 //
 // Returns the current column that the item is in within the grid or -1 if it
 // is not visible
@@ -26637,7 +26656,7 @@ end;
 
 function TEasyItem.HitTestAt(AViewportPoint: TPoint; var AHitInfo: TEasyItemHitTestInfoSet): Boolean;
 var
-  lCount: Integer;
+  lCount: NativeInt;
   lRect: TRect;
   lRectArray: TEasyRectArrayObject;
 begin
@@ -26915,8 +26934,8 @@ begin
           end;
         emvMiddle:
           begin
-            OwnerListview.Scrollbars.OffsetY := R.Top - Round( (OwnerListview.ClientHeight/2) - (RectHeight(R)/2) - OwnerListview.Header.RuntimeHeight);
-            OwnerListview.Scrollbars.OffsetX := R.Left - Round( (OwnerListview.ClientWidth/2) - (RectWidth(R)/2))
+            OwnerListview.Scrollbars.OffsetY := R.Top - ToInt32(Round( (OwnerListview.ClientHeight/2) - (RectHeight(R)/2) - OwnerListview.Header.RuntimeHeight));
+            OwnerListview.Scrollbars.OffsetX := R.Left - ToInt32(Round( (OwnerListview.ClientWidth/2) - (RectWidth(R)/2)))
           end;
         emvBottom:
           begin
@@ -26971,7 +26990,7 @@ begin
   // end
 end;
 
-procedure TEasyItem.SetGroupKey(FocusedColumn: Integer; Value: LongWord);
+procedure TEasyItem.SetGroupKey(FocusedColumn: NativeInt; Value: Int32);
 begin
 
 end;
@@ -26997,37 +27016,37 @@ begin
 end;
 
 { TEasyItemVirtual}
-function TEasyItemVirtual.GetCaptions(Column: Integer): string;
+function TEasyItemVirtual.GetCaptions(Column: NativeInt): string;
 begin
   Result := '';
   OwnerListview.DoItemGetCaption(Self, Column, Result)
 end;
 
-function TEasyItemVirtual.GetDetailCount: Integer;
+function TEasyItemVirtual.GetDetailCount: NativeInt;
 begin
   Result := 0;
   OwnerListview.DoItemGetTileDetailCount(Self, Result)
 end;
 
-function TEasyItemVirtual.GetDetails(Line: Integer): Integer;
+function TEasyItemVirtual.GetDetails(Line: NativeInt): Integer;
 begin
   Result := 0;
   OwnerListview.DoItemGetTileDetail(Self, Line, Result)
 end;
 
-function TEasyItemVirtual.GetGroupKey(FocusedColumn: Integer): LongWord;
+function TEasyItemVirtual.GetGroupKey(FocusedColumn: NativeInt): Int32;
 begin
   Result := 0;
   OwnerListview.DoItemGetGroupKey(Self, FocusedColumn, Result)
 end;
 
-function TEasyItemVirtual.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemVirtual.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   OwnerListview.DoItemGetImageIndex(Self, Column, eikNormal, Result)
 end;
 
-function TEasyItemVirtual.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyItemVirtual.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 begin
   Result := nil;
   OwnerListview.DoItemGetImageList(Self, Column, Result);
@@ -27035,19 +27054,19 @@ begin
     Result := DefaultImageList(IconSize)
 end;
 
-function TEasyItemVirtual.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemVirtual.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   OwnerListview.DoItemGetImageIndex(Self, Column, eikOverlay, Result)
 end;
 
-function TEasyItemVirtual.GetStateImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemVirtual.GetStateImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   OwnerListview.DoItemGetImageIndex(Self, Column, eikState, Result)
 end;
 
-function TEasyItemVirtual.GetStateImageList(Column: Integer): TCustomImageList;
+function TEasyItemVirtual.GetStateImageList(Column: NativeInt): TCustomImageList;
 begin
   Result := nil;
   OwnerListview.DoItemGetStateImageList(Self, Column, Result);
@@ -27071,42 +27090,42 @@ begin
   OwnerListview.DoItemImageGetSize(Self, Column, ImageW, ImageH)
 end;
 
-procedure TEasyItemVirtual.SetCaptions(Column: Integer; Value: string);
+procedure TEasyItemVirtual.SetCaptions(Column: NativeInt; Value: string);
 begin
   OwnerListview.DoItemSetCaption(Self, Column, Value);
   Invalidate(False)
 end;
 
-procedure TEasyItemVirtual.SetDetailCount(Value: Integer);
+procedure TEasyItemVirtual.SetDetailCount(Value: NativeInt);
 begin
   OwnerListview.DoItemSetTileDetailCount(Self, Value);
   Invalidate(False)
 end;
 
-procedure TEasyItemVirtual.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyItemVirtual.SetDetails(Line: NativeInt; Value: Integer);
 begin
   OwnerListview.DoItemSetTileDetail(Self, Line, Value);
   Invalidate(False)
 end;
 
-procedure TEasyItemVirtual.SetGroupKey(FocusedColumn: Integer; Value: LongWord);
+procedure TEasyItemVirtual.SetGroupKey(FocusedColumn: NativeInt; Value: Int32);
 begin
   OwnerListview.DoItemSetGroupKey(Self, FocusedColumn, Value);
 end;
 
-procedure TEasyItemVirtual.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemVirtual.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   OwnerListview.DoItemSetImageIndex(Self, Column, eikNormal, Value);
   Invalidate(False)
 end;
 
-procedure TEasyItemVirtual.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemVirtual.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   OwnerListview.DoItemSetImageIndex(Self, Column, eikOverlay, Value);
   Invalidate(False)
 end;
 
-procedure TEasyItemVirtual.SetStateImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemVirtual.SetStateImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   OwnerListview.DoItemSetImageIndex(Self, Column, eikState, Value);
   Invalidate(False)
@@ -27133,59 +27152,59 @@ begin
   FreeAndNil(FDataHelper);
 end;
 
-function TEasyItemStored.GetCaptions(Column: Integer): string;
+function TEasyItemStored.GetCaptions(Column: NativeInt): string;
 begin
   Result := '';
   if Assigned(DataHelper) then
     Result := DataHelper.Captions[Column]
 end;
 
-function TEasyItemStored.GetDetailCount: Integer;
+function TEasyItemStored.GetDetailCount: NativeInt;
 begin
   Result := OwnerListview.PaintInfoItem.TileDetailCount
 end;
 
-function TEasyItemStored.GetDetails(Line: Integer): Integer;
+function TEasyItemStored.GetDetails(Line: NativeInt): Integer;
 begin
   Result := 0;
   if Assigned(DataHelper) then
     Result := DataHelper.Details[Line]
 end;
 
-function TEasyItemStored.GetGroupKey(FocusedColumn: Integer): LongWord;
+function TEasyItemStored.GetGroupKey(FocusedColumn: NativeInt): Int32;
 begin
    Result := 0;
   if Assigned(DataHelper) then
     Result := DataHelper.GroupKey[FocusedColumn]
 end;
 
-function TEasyItemStored.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemStored.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   if Assigned(DataHelper) then
     Result := DataHelper.ImageIndexes[Column]
 end;
 
-function TEasyItemStored.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyItemStored.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 begin
   Result := DefaultImageList(IconSize)
 end;
 
-function TEasyItemStored.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemStored.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   if Assigned(DataHelper) then
     Result := DataHelper.ImageOverlayIndexes[Column]
 end;
 
-function TEasyItemStored.GetStateImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyItemStored.GetStateImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   if Assigned(DataHelper) then
     Result := DataHelper.StateImageIndexes[Column]
 end;
 
-function TEasyItemStored.GetStateImageList(Column: Integer): TCustomImageList;
+function TEasyItemStored.GetStateImageList(Column: NativeInt): TCustomImageList;
 begin
   Result := DefaultStateImageList
 end;
@@ -27233,7 +27252,7 @@ begin
   // end
 end;
 
-procedure TEasyItemStored.SetCaptions(Column: Integer; Value: string);
+procedure TEasyItemStored.SetCaptions(Column: NativeInt; Value: string);
 begin
   if Assigned(DataHelper) then
   begin
@@ -27242,12 +27261,12 @@ begin
   end;
 end;
 
-procedure TEasyItemStored.SetDetailCount(Value: Integer);
+procedure TEasyItemStored.SetDetailCount(Value: NativeInt);
 begin
   OwnerListview.PaintInfoItem.TileDetailCount := Value
 end;
 
-procedure TEasyItemStored.SetDetails(Column: Integer; Value: Integer);
+procedure TEasyItemStored.SetDetails(Column: NativeInt; Value: Integer);
 begin
   if Assigned(DataHelper) then
   begin
@@ -27256,13 +27275,13 @@ begin
   end;
 end;
 
-procedure TEasyItemStored.SetGroupKey(FocusedColumn: Integer; Value: LongWord);
+procedure TEasyItemStored.SetGroupKey(FocusedColumn: NativeInt; Value: Int32);
 begin
   if Assigned(DataHelper) then
     DataHelper.GroupKey[FocusedColumn] := Value;
 end;
 
-procedure TEasyItemStored.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemStored.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   if Assigned(DataHelper) then
   begin
@@ -27271,7 +27290,7 @@ begin
   end;
 end;
 
-procedure TEasyItemStored.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemStored.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   if Assigned(DataHelper) then
   begin
@@ -27280,7 +27299,7 @@ begin
   end;
 end;
 
-procedure TEasyItemStored.SetStateImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemStored.SetStateImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
  begin
   if Assigned(DataHelper) then
   begin
@@ -27297,7 +27316,7 @@ end;
 
 { TEasyDynamicDataHelper}
 
-function TEasyDynamicDataHelper.GetCaptions(Index: Integer): string;
+function TEasyDynamicDataHelper.GetCaptions(Index: NativeInt): string;
 begin
   if Index < Length(CaptionArray) then
     Result := CaptionArray[Index]
@@ -27305,7 +27324,7 @@ begin
     Result := ''
 end;
 
-function TEasyDynamicDataHelper.GetDetails(Index: Integer): Integer;
+function TEasyDynamicDataHelper.GetDetails(Index: NativeInt): Integer;
 begin
   if Index < Length(DetailArray) then
     Result := DetailArray[Index]
@@ -27313,7 +27332,7 @@ begin
     Result := 0
 end;
 
-function TEasyDynamicDataHelper.GetImageIndexes(Index: Integer): Integer;
+function TEasyDynamicDataHelper.GetImageIndexes(Index: NativeInt): Integer;
 begin
   if Index < Length(ImageIndexArray) then
     Result := ImageIndexArray[Index]
@@ -27321,7 +27340,7 @@ begin
     Result := -1
 end;
 
-function TEasyDynamicDataHelper.GetImageOverlayIndexes(Index: Integer): Integer;
+function TEasyDynamicDataHelper.GetImageOverlayIndexes(Index: NativeInt): Integer;
 begin
   if Index < Length(OverlayIndexArray) then
     Result := OverlayIndexArray[Index]
@@ -27373,7 +27392,7 @@ end;
 
 procedure TEasyDynamicDataHelper.SaveIntArrayToStream(S: TStream; var AnArray: TCommonIntegerDynArray);
 var
-  Len, i: Integer;
+  Len, i: NativeInt;
 begin
   Len := Length(AnArray);
   S.WriteBuffer(Len, SizeOf(Len));
@@ -27383,7 +27402,7 @@ end;
 
 procedure TEasyDynamicDataHelper.SaveStrArrayToStream(S: TStream; var AnArray: TCommonStringDynArray);
 var
-  Len, i, Count: Integer;
+  Len, i, Count: NativeInt;
 begin
   Len := Length(AnArray);
   S.WriteBuffer(Len, SizeOf(Len));
@@ -27403,9 +27422,9 @@ begin
   SaveIntArrayToStream(S, FOverlayIndexArray);
 end;
 
-procedure TEasyDynamicDataHelper.SetCaptions(Index: Integer; Value: string);
+procedure TEasyDynamicDataHelper.SetCaptions(Index: NativeInt; Value: string);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Index >= Length(CaptionArray) then
   begin
@@ -27417,9 +27436,9 @@ begin
   CaptionArray[Index] := Value
 end;
 
-procedure TEasyDynamicDataHelper.SetDetails(Index: Integer; Value: Integer);
+procedure TEasyDynamicDataHelper.SetDetails(Index: NativeInt; Value: Integer);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Index >= Length(DetailArray) then
   begin
@@ -27431,9 +27450,9 @@ begin
   DetailArray[Index] := Value
 end;
 
-procedure TEasyDynamicDataHelper.SetImageIndexes(Index: Integer; Value: Integer);
+procedure TEasyDynamicDataHelper.SetImageIndexes(Index: NativeInt; Value: Integer);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Index >= Length(ImageIndexArray) then
   begin
@@ -27445,9 +27464,9 @@ begin
   ImageIndexArray[Index] := Value
 end;
 
-procedure TEasyDynamicDataHelper.SetImageOverlayIndexes(Index: Integer; Value: Integer);
+procedure TEasyDynamicDataHelper.SetImageOverlayIndexes(Index: NativeInt; Value: Integer);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Index >= Length(OverlayIndexArray) then
   begin
@@ -27473,32 +27492,32 @@ begin
   FreeAndNil(FDataHelper);
 end;
 
-function TEasyBaseGroupStored.GetCaptions(Line: Integer): string;
+function TEasyBaseGroupStored.GetCaptions(Line: NativeInt): string;
 begin
   Result := DataHelper.Captions[Line]
 end;
 
-function TEasyBaseGroupStored.GetDetailCount: Integer;
+function TEasyBaseGroupStored.GetDetailCount: NativeInt;
 begin
   Result := OwnerListview.PaintInfoGroup.CaptionLines
 end;
 
-function TEasyBaseGroupStored.GetDetails(Line: Integer): Integer;
+function TEasyBaseGroupStored.GetDetails(Line: NativeInt): Integer;
 begin
   Result := DataHelper.Details[Line]
 end;
 
-function TEasyBaseGroupStored.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyBaseGroupStored.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := DataHelper.ImageIndexes[Column]
 end;
 
-function TEasyBaseGroupStored.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyBaseGroupStored.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 begin
   Result := DefaultImageList(IconSize)
 end;
 
-function TEasyBaseGroupStored.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyBaseGroupStored.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := DataHelper.ImageOverlayIndexes[Column]
 end;
@@ -27544,30 +27563,30 @@ begin
   // end
 end;
 
-procedure TEasyBaseGroupStored.SetCaptions(Column: Integer; Value: string);
+procedure TEasyBaseGroupStored.SetCaptions(Column: NativeInt; Value: string);
 begin
   DataHelper.Captions[Column] := Value;
   Invalidate(False)
 end;
 
-procedure TEasyBaseGroupStored.SetDetailCount(Value: Integer);
+procedure TEasyBaseGroupStored.SetDetailCount(Value: NativeInt);
 begin
   OwnerListview.PaintInfoGroup.CaptionLines := Value
 end;
 
-procedure TEasyBaseGroupStored.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyBaseGroupStored.SetDetails(Line: NativeInt; Value: Integer);
 begin
   DataHelper.Details[Line] := Value;
   Invalidate(False)
 end;
 
-procedure TEasyBaseGroupStored.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyBaseGroupStored.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   DataHelper.ImageIndexes[Column] := Value;
   Invalidate(False)
 end;
 
-procedure TEasyBaseGroupStored.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyBaseGroupStored.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   DataHelper.ImageOverlayIndexes[Column] := Value;
   Invalidate(False)
@@ -27580,31 +27599,31 @@ begin
 end;
 
 { TEasyGroupVirtual}
-function TEasyGroupVirtual.GetCaptions(Line: Integer): string;
+function TEasyGroupVirtual.GetCaptions(Line: NativeInt): string;
 begin
   Result := '';
   OwnerListview.DoGroupGetCaption(Self, Result)
 end;
 
-function TEasyGroupVirtual.GetDetailCount: Integer;
+function TEasyGroupVirtual.GetDetailCount: NativeInt;
 begin
   Result := 0;
   OwnerListview.DoGroupGetDetailCount(Self, Result)
 end;
 
-function TEasyGroupVirtual.GetDetails(Line: Integer): Integer;
+function TEasyGroupVirtual.GetDetails(Line: NativeInt): Integer;
 begin
   Result := 0;
   OwnerListview.DoGroupGetDetail(Self, Line, Result)
 end;
 
-function TEasyGroupVirtual.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyGroupVirtual.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   OwnerListview.DoGroupGetImageIndex(Self, eikNormal, Result)
 end;
 
-function TEasyGroupVirtual.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyGroupVirtual.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 begin
   Result := nil;
   OwnerListview.DoGroupGetImageList(Self, Result);
@@ -27612,7 +27631,7 @@ begin
     Result := DefaultImageList(IconSize)
 end;
 
-function TEasyGroupVirtual.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyGroupVirtual.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   OwnerListview.DoGroupGetImageIndex(Self, eikOverlay, Result)
 end;
@@ -27634,31 +27653,31 @@ begin
   OwnerListview.DoGroupImageDrawIsCustom(Self, IsCustom)
 end;
 
-procedure TEasyGroupVirtual.SetCaptions(Column: Integer; Value: string);
+procedure TEasyGroupVirtual.SetCaptions(Column: NativeInt; Value: string);
 begin
   OwnerListview.DoGroupSetCaption(Self, Value);
   Invalidate(False)
 end;
 
-procedure TEasyGroupVirtual.SetDetailCount(Value: Integer);
+procedure TEasyGroupVirtual.SetDetailCount(Value: NativeInt);
 begin
   OwnerListview.DoGroupSetDetailCount(Self, Value);
   Invalidate(False)
 end;
 
-procedure TEasyGroupVirtual.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyGroupVirtual.SetDetails(Line: NativeInt; Value: Integer);
 begin
   OwnerListview.DoGroupSetDetail(Self, Line, Value);
   Invalidate(False)
 end;
 
-procedure TEasyGroupVirtual.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyGroupVirtual.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   OwnerListview.DoGroupSetImageIndex(Self, eikNormal, Value);
   Invalidate(False)
 end;
 
-procedure TEasyGroupVirtual.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyGroupVirtual.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   OwnerListview.DoGroupSetImageIndex(Self, eikOverlay, Value);
   Invalidate(False)
@@ -27671,7 +27690,7 @@ begin
 end;
 
 { TEasyGroupInterfaced}
-function TEasyGroupInterfaced.GetCaptions(Line: Integer): string;
+function TEasyGroupInterfaced.GetCaptions(Line: NativeInt): string;
 var
   CaptionInf: IEasyCaptions;
 begin
@@ -27680,7 +27699,7 @@ begin
     Result := CaptionInf.Captions[Line]
 end;
 
-function TEasyGroupInterfaced.GetDetailCount: Integer;
+function TEasyGroupInterfaced.GetDetailCount: NativeInt;
 var
   DetailInf: IEasyDetails;
 begin
@@ -27690,7 +27709,7 @@ begin
     Result := DetailInf.GetDetailCount
 end;
 
-function TEasyGroupInterfaced.GetDetails(Line: Integer): Integer;
+function TEasyGroupInterfaced.GetDetails(Line: NativeInt): Integer;
 var
   DetailInf: IEasyDetails;
 begin
@@ -27700,7 +27719,7 @@ begin
     Result := DetailInf.Detail[Line]
 end;
 
-function TEasyGroupInterfaced.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyGroupInterfaced.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 var
   ImageInf: IEasyImages;
 begin
@@ -27710,7 +27729,7 @@ begin
     Result := ImageInf.ImageIndexes[Column, eikNormal]
 end;
 
-function TEasyGroupInterfaced.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyGroupInterfaced.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 var
   ImageList: IEasyImageList;
 begin
@@ -27721,7 +27740,7 @@ begin
     Result := DefaultImageList(IconSize)
 end;
 
-function TEasyGroupInterfaced.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyGroupInterfaced.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 var
   ImageInf: IEasyImages;
 begin
@@ -27757,7 +27776,7 @@ begin
     ImageInf.CustomDrawn(Column, IsCustom)
 end;
 
-procedure TEasyGroupInterfaced.SetCaptions(Column: Integer; Value: string);
+procedure TEasyGroupInterfaced.SetCaptions(Column: NativeInt; Value: string);
 var
   CaptionInf: IEasyCaptionsEditable;
 begin
@@ -27769,7 +27788,7 @@ begin
   end
 end;
 
-procedure TEasyGroupInterfaced.SetDetailCount(Value: Integer);
+procedure TEasyGroupInterfaced.SetDetailCount(Value: NativeInt);
 var
   DetailsInf: IEasyDetailsEditable;
 begin
@@ -27781,7 +27800,7 @@ begin
   end
 end;
 
-procedure TEasyGroupInterfaced.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyGroupInterfaced.SetDetails(Line: NativeInt; Value: Integer);
 var
   DetailsInf: IEasyDetailsEditable;
 begin
@@ -27793,7 +27812,7 @@ begin
   end
 end;
 
-procedure TEasyGroupInterfaced.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyGroupInterfaced.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 var
   ImageInf: IEasyImagesEditable;
 begin
@@ -27805,7 +27824,7 @@ begin
   end
 end;
 
-procedure TEasyGroupInterfaced.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyGroupInterfaced.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 var
   ImageInf: IEasyImagesEditable;
 begin
@@ -27838,32 +27857,32 @@ begin
   FreeAndNil(FDataHelper);
 end;
 
-function TEasyColumnStored.GetCaptions(Line: Integer): string;
+function TEasyColumnStored.GetCaptions(Line: NativeInt): string;
 begin
   Result := DataHelper.Captions[Line]
 end;
 
-function TEasyColumnStored.GetDetailCount: Integer;
+function TEasyColumnStored.GetDetailCount: NativeInt;
 begin
   Result := OwnerListview.PaintInfoColumn.CaptionLines
 end;
 
-function TEasyColumnStored.GetDetails(Line: Integer): Integer;
+function TEasyColumnStored.GetDetails(Line: NativeInt): Integer;
 begin
   Result := DataHelper.Details[Index]
 end;
 
-function TEasyColumnStored.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyColumnStored.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := DataHelper.ImageIndexes[Column]
 end;
 
-function TEasyColumnStored.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyColumnStored.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 begin
   Result := DefaultImageList(IconSize)
 end;
 
-function TEasyColumnStored.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyColumnStored.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := DataHelper.ImageOverlayIndexes[Column]
 end;
@@ -27909,30 +27928,30 @@ begin
   // end
 end;
 
-procedure TEasyColumnStored.SetCaptions(Column: Integer; Value: string);
+procedure TEasyColumnStored.SetCaptions(Column: NativeInt; Value: string);
 begin
   DataHelper.Captions[Column] := Value;
   Invalidate(False)
 end;
 
-procedure TEasyColumnStored.SetDetailCount(Value: Integer);
+procedure TEasyColumnStored.SetDetailCount(Value: NativeInt);
 begin
   OwnerListview.PaintInfoColumn.CaptionLines := Value;
 end;
 
-procedure TEasyColumnStored.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyColumnStored.SetDetails(Line: NativeInt; Value: Integer);
 begin
   DataHelper.Details[Line] := Value;
   Invalidate(False)
 end;
 
-procedure TEasyColumnStored.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyColumnStored.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   DataHelper.ImageIndexes[Column] := Value;
   Invalidate(False)
 end;
 
-procedure TEasyColumnStored.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyColumnStored.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   DataHelper.ImageOverlayIndexes[Column] := Value;
   Invalidate(False)
@@ -27944,7 +27963,7 @@ begin
   // not implemented
 end;
 
-function TEasyColumnInterfaced.GetCaptions(Line: Integer): string;
+function TEasyColumnInterfaced.GetCaptions(Line: NativeInt): string;
 var
   CaptionInf: IEasyCaptions;
 begin
@@ -27953,7 +27972,7 @@ begin
     Result := CaptionInf.Captions[Line]
 end;
 
-function TEasyColumnInterfaced.GetDetailCount: Integer;
+function TEasyColumnInterfaced.GetDetailCount: NativeInt;
 var
   DetailInf: IEasyDetails;
 begin
@@ -27963,7 +27982,7 @@ begin
     Result := DetailInf.GetDetailCount
 end;
 
-function TEasyColumnInterfaced.GetDetails(Line: Integer): Integer;
+function TEasyColumnInterfaced.GetDetails(Line: NativeInt): Integer;
 var
   DetailInf: IEasyDetails;
 begin
@@ -27973,7 +27992,7 @@ begin
     Result := DetailInf.Detail[Line]
 end;
 
-function TEasyColumnInterfaced.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyColumnInterfaced.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 var
   ImageInf: IEasyImages;
 begin
@@ -27983,7 +28002,7 @@ begin
     Result := ImageInf.ImageIndexes[Column, eikNormal]
 end;
 
-function TEasyColumnInterfaced.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyColumnInterfaced.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 var
   ImageList: IEasyImageList;
 begin
@@ -27994,7 +28013,7 @@ begin
     Result := DefaultImageList(IconSize)
 end;
 
-function TEasyColumnInterfaced.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyColumnInterfaced.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 var
   ImageInf: IEasyImages;
 begin
@@ -28030,7 +28049,7 @@ begin
     ImageInf.CustomDrawn(Column, IsCustom)
 end;
 
-procedure TEasyColumnInterfaced.SetCaptions(Column: Integer; Value: string);
+procedure TEasyColumnInterfaced.SetCaptions(Column: NativeInt; Value: string);
 var
   CaptionInf: IEasyCaptionsEditable;
 begin
@@ -28040,7 +28059,7 @@ begin
   Invalidate(False);
 end;
 
-procedure TEasyColumnInterfaced.SetDetailCount(Value: Integer);
+procedure TEasyColumnInterfaced.SetDetailCount(Value: NativeInt);
 var
   DetailsInf: IEasyDetailsEditable;
 begin
@@ -28052,7 +28071,7 @@ begin
   end
 end;
 
-procedure TEasyColumnInterfaced.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyColumnInterfaced.SetDetails(Line: NativeInt; Value: Integer);
 var
   DetailsInf: IEasyDetailsEditable;
 begin
@@ -28064,7 +28083,7 @@ begin
   end
 end;
 
-procedure TEasyColumnInterfaced.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyColumnInterfaced.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 var
   ImageInf: IEasyImagesEditable;
 begin
@@ -28076,7 +28095,7 @@ begin
   end
 end;
 
-procedure TEasyColumnInterfaced.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyColumnInterfaced.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 var
   ImageInf: IEasyImagesEditable;
 begin
@@ -28095,31 +28114,31 @@ begin
 end;
 
 { TEasyColumnVirtual}
-function TEasyColumnVirtual.GetCaptions(Line: Integer): string;
+function TEasyColumnVirtual.GetCaptions(Line: NativeInt): string;
 begin
   Result := '';
   OwnerListview.DoColumnGetCaption(Self, Line, Result)
 end;
 
-function TEasyColumnVirtual.GetDetailCount: Integer;
+function TEasyColumnVirtual.GetDetailCount: NativeInt;
 begin
   Result := 0;
   OwnerListview.DoColumnGetDetailCount(Self, Result)
 end;
 
-function TEasyColumnVirtual.GetDetails(Line: Integer): Integer;
+function TEasyColumnVirtual.GetDetails(Line: NativeInt): Integer;
 begin
   Result := 0;
   OwnerListview.DoColumnGetDetail(Self, Line, Result)
 end;
 
-function TEasyColumnVirtual.GetImageIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyColumnVirtual.GetImageIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   OwnerListview.DoColumnGetImageIndex(Self, eikNormal, Result)
 end;
 
-function TEasyColumnVirtual.GetImageList(Column: Integer; IconSize: TEasyImageSize): TCustomImageList;
+function TEasyColumnVirtual.GetImageList(Column: NativeInt; IconSize: TEasyImageSize): TCustomImageList;
 begin
   Result := nil;
   OwnerListview.DoColumnGetImageList(Self, Result);
@@ -28127,7 +28146,7 @@ begin
     Result := DefaultImageList(IconSize)
 end;
 
-function TEasyColumnVirtual.GetImageOverlayIndexes(Column: Integer): TCommonImageIndexInteger;
+function TEasyColumnVirtual.GetImageOverlayIndexes(Column: NativeInt): TCommonImageIndexInteger;
 begin
   Result := -1;
   OwnerListview.DoColumnGetImageIndex(Self, eikOverlay, Result)
@@ -28150,31 +28169,31 @@ begin
   OwnerListview.DoColumnImageDrawIsCustom(Self, IsCustom)
 end;
 
-procedure TEasyColumnVirtual.SetCaptions(Column: Integer; Value: string);
+procedure TEasyColumnVirtual.SetCaptions(Column: NativeInt; Value: string);
 begin
   OwnerListview.DoColumnSetCaption(Self, Value);
   Invalidate(False)
 end;
 
-procedure TEasyColumnVirtual.SetDetailCount(Value: Integer);
+procedure TEasyColumnVirtual.SetDetailCount(Value: NativeInt);
 begin
   OwnerListview.DoColumnSetDetailCount(Self, Value);
   Invalidate(False)
 end;
 
-procedure TEasyColumnVirtual.SetDetails(Line: Integer; Value: Integer);
+procedure TEasyColumnVirtual.SetDetails(Line: NativeInt; Value: Integer);
 begin
   OwnerListview.DoColumnSetDetail(Self, Line, Value);
   Invalidate(False)
 end;
 
-procedure TEasyColumnVirtual.SetImageIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyColumnVirtual.SetImageIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   OwnerListview.DoColumnSetImageIndex(Self, eikNormal, Value);
   Invalidate(False)
 end;
 
-procedure TEasyColumnVirtual.SetImageOverlayIndexes(Column: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyColumnVirtual.SetImageOverlayIndexes(Column: NativeInt; Value: TCommonImageIndexInteger);
 begin
   OwnerListview.DoColumnSetImageIndex(Self, eikOverlay, Value);
   Invalidate(False)
@@ -28240,7 +28259,7 @@ begin
   end
 end;
 
-procedure TEasyPaintInfoBaseItem.SetTileDetailCount(Value: Integer);
+procedure TEasyPaintInfoBaseItem.SetTileDetailCount(Value: NativeInt);
 begin
   if Value <> FTileDetailCount then
   begin
@@ -28552,7 +28571,7 @@ begin
 end;
 
 { TEasyItemDynamicDataHelper }
-function TEasyItemDynamicDataHelper.GetGroupKey(Index: Integer): LongWord;
+function TEasyItemDynamicDataHelper.GetGroupKey(Index: NativeInt): Int32;
 begin
   if Index < Length(GroupKeyArray) then
     Result := GroupKeyArray[Index]
@@ -28560,7 +28579,7 @@ begin
     Result := EGT_FIRSTLETTER
 end;
 
-function TEasyItemDynamicDataHelper.GetStateImageIndexes(Index: Integer): TCommonImageIndexInteger;
+function TEasyItemDynamicDataHelper.GetStateImageIndexes(Index: NativeInt): TCommonImageIndexInteger;
 begin
    if Index < Length(StateImageArray) then
     Result := StateImageArray[Index]
@@ -28585,10 +28604,10 @@ begin
   SaveIntArrayToStream(S, FStateImageArray);
 end;
 
-procedure TEasyItemDynamicDataHelper.SetGroupKey(Index: Integer;
-  Value: LongWord);
+procedure TEasyItemDynamicDataHelper.SetGroupKey(Index: NativeInt;
+  Value: Int32);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Index >= Length(GroupKeyArray) then
   begin
@@ -28600,9 +28619,9 @@ begin
   GroupKeyArray[Index] := Value
 end;
 
-procedure TEasyItemDynamicDataHelper.SetStateImageIndexes(Index: Integer; Value: TCommonImageIndexInteger);
+procedure TEasyItemDynamicDataHelper.SetStateImageIndexes(Index: NativeInt; Value: TCommonImageIndexInteger);
 var
-  OldLen, i: Integer;
+  OldLen, i: NativeInt;
 begin
   if Index >= Length(StateImageArray) then
   begin
@@ -28642,7 +28661,7 @@ var
   {$IFDEF SpTBX}
   CheckState: TCheckBoxState;
   {$ENDIF}
-  uState: Longword;
+  uState: Int32;
   Part: BUTTONPARTS;
   Pt: TPoint;
 begin
@@ -28836,14 +28855,14 @@ procedure TEasyIncrementalSearchManager.HandleWMChar(var Msg: TWMChar);
     // Determines the code page for a given locale.
     // Unfortunately there is no easier way than this, currently.
     GetLocaleInfo(Language, LOCALE_IDEFAULTANSICODEPAGE, Buf, 6);
-    Result := StrToIntDef(Buf, GetACP);
+    Result := StrToIntDef(Buf, ToInt32(GetACP));
   end;
 
   function KeyUnicode(C: Char): WideChar;
   // Converts the given character into its corresponding Unicode character
   // depending on the active keyboard layout.
   begin
-    MultiByteToWideChar(CodePageFromLocale(GetKeyboardLayout(0) and $FFFF),
+    MultiByteToWideChar(ToUInt32(CodePageFromLocale(ToUInt32(GetKeyboardLayout(0) and $FFFF))),
       MB_USEGLYPHCHARS, @C, 1, @Result, 1);
   end;
 
@@ -29166,7 +29185,7 @@ begin
   begin
     if not Assigned(TimerStub) then
       TimerStub := TCallbackStub.Create(Self, @TEasyIncrementalSearchManager.TimerProc, 4);
-    hTimer := SetTimer(0, 0, ResetTime, TimerStub.StubPointer);
+    hTimer := SetTimer(0, 0, ToUInt32(ResetTime), TimerStub.StubPointer);
     Include(FState, eissTimerRunning);
   end
 end;
@@ -29225,9 +29244,10 @@ begin
   Result := OwnerListview.CellSizes.Grid
 end;
 
-procedure TEasyGridGridGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer);
+procedure TEasyGridGridGroup.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt);
 var
-  i, Top, Bottom, Left, Offset, TopMargin,
+  i: NativeInt;
+  Top, Bottom, Left, Offset, TopMargin,
   BottomMargin, VisibleCount, ColumnIndex, ColumnLeft: Integer;
   Item: TEasyItem;
   Columns: TEasyColumns;
@@ -29537,7 +29557,7 @@ begin
   // Do nothing
 end;
 
-procedure TEasyGridSingleColumn.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: Integer);
+procedure TEasyGridSingleColumn.FindInsertPosition(ViewportPoint: TPoint; var Group: TEasyGroup; var Index: NativeInt);
 begin
   Group := nil;
   Index := -1
@@ -29567,7 +29587,7 @@ end;
 
 procedure TEasyViewTaskBandGroup.GetExpandImageSize(Group: TEasyGroup; var ImageW: Integer; var ImageH: Integer);
 var
-  PartID, StateID: LongWord;
+  PartID, StateID: Int32;
   R: TRect;
 begin
   ImageW := 0;
@@ -29609,7 +29629,7 @@ var
   TempRectArray: TEasyRectArrayObject;
   ImageW, ImageH, ExpandImageW, ExpandImageH: Integer;
   R: TRect;
-  PartID, StateID: LongWord;
+  PartID, StateID: Int32;
   Flags, Flags2: DWORD;
 begin
   Group.Initialized := True;
@@ -29799,7 +29819,7 @@ procedure TEasyViewTaskBandGroup.PaintBackground(Group: TEasyGroup; ACanvas: TCa
   end;
 
 var
-  PartID, StateID: LongWord;
+  PartID, StateID: Int32;
   R, HeaderR: TRect;
 {$IFDEF SpTBX}
 var
@@ -29930,7 +29950,7 @@ procedure TEasyViewTaskBandGroup.PaintExpandButton(Group: TEasyGroup; ACanvas: T
   end;
 
 var
-  PartID, StateID: LongWord;
+  PartID, StateID: Int32;
 begin
   if (MarginEdge = egmeTop) and Group.Expandable then
   begin
@@ -30020,7 +30040,7 @@ end;
 
 procedure TEasyViewTaskBandGroup.PaintTextTopThemed(ACanvas: TCanvas; Group: TEasyGroup; ObjRect: TRect; RectArray: TEasyRectArrayObject);
 var
-  PartID, StateID: LongWord;
+  PartID, StateID: Int32;
   Flags, Flags2: DWORD;
 begin
   if Group.Bold then
@@ -30053,7 +30073,7 @@ end;
 { TEasyTaskBandBackgroundManager }
 procedure TEasyTaskBandBackgroundManager.PaintTo(ACanvas: TCanvas; ARect: TRect; PaintDefault: Boolean);
 var
-  PartID, StateID: LongWord;
+  PartID, StateID: Int32;
   R: TRect;
   Theme: HTheme;
 begin
@@ -30433,7 +30453,7 @@ end;
 
 procedure TEasyTaskPanelBand.PositionPanels;
 var
-  i: Integer;
+  i: NativeInt;
   DeferHandle: THandle;
   TaskPanel: TEasyTaskPanelForm;
   MappedR: TRect;
@@ -30442,7 +30462,7 @@ begin
   try
     Groups.Rebuild(True);
     // MUST MAKE SURE NEVER TO MAKE THE PANELS NOT VISIBLE FOR THIS TO WORK
-    DeferHandle := BeginDeferWindowPos(Groups.Count);
+    DeferHandle := BeginDeferWindowPos(ToInt32(Groups.Count));
     for i := 0 to Groups.Count - 1 do
     begin
       if not (Groups[i] as TEasyGroupTaskPanel).TaskWindowCreated then
@@ -30504,12 +30524,12 @@ begin
   inherited Create(AnOwner);
 end;
 
-function TEasyGroupsTaskPanel.GetGroup(Index: Integer): TEasyGroupTaskPanel;
+function TEasyGroupsTaskPanel.GetGroup(Index: NativeInt): TEasyGroupTaskPanel;
 begin
   Result := inherited Groups[Index] as TEasyGroupTaskPanel
 end;
 
-procedure TEasyGroupsTaskPanel.SetGroup(Index: Integer; Value: TEasyGroupTaskPanel);
+procedure TEasyGroupsTaskPanel.SetGroup(Index: NativeInt; Value: TEasyGroupTaskPanel);
 begin
   inherited Groups[Index] := Value
 end;
@@ -30538,7 +30558,7 @@ begin
   Result := 10;
 end;
 
-procedure TEasyGridGroupTaskPanel.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: Integer);
+procedure TEasyGridGroupTaskPanel.Rebuild(PrevGroup: TEasyGroup; var NextVisibleItemIndex: NativeInt);
 var
   Top: Integer;
   TaskGroup: TEasyGroupTaskPanel;
@@ -30772,8 +30792,8 @@ begin
   inherited Create(AnOwner);
   hdcScreen := GetDC(GetDesktopWindow);
   try
-    FWidth := Round(DEFAULT_WIDTH_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH);
-    FHeight := Round(DEFAULT_HEIGHT_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH);
+    FWidth := ToInt32(Round(DEFAULT_WIDTH_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH));
+    FHeight := ToInt32(Round(DEFAULT_HEIGHT_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH));
     FHeightAutoSizeRaw := FHeight;
     FWidthAutoSizeRaw := FWidth;
   finally
@@ -30787,8 +30807,8 @@ var
 begin
   hdcScreen := GetDC(GetDesktopWindow);
   try
-    SetSize(Round(DEFAULT_WIDTH_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH),
-            Round(DEFAULT_HEIGHT_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH))
+    SetSize(ToInt32(Round(DEFAULT_WIDTH_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSX)/DEFAULT_PIXEL_PER_INCH)),
+            ToInt32(Round(DEFAULT_HEIGHT_REPORTTHUMB * GetDeviceCaps(hdcScreen, LOGPIXELSY)/DEFAULT_PIXEL_PER_INCH)))
   finally
      ReleaseDC(GetDesktopWindow, hdcScreen)
   end
@@ -30811,7 +30831,7 @@ begin
   if Image in [eikNormal, eikOverlay] then
   begin
     ImageH := OwnerListview.Groups.GetCellHeight - 4;
-    ImageW := Round(ImageH * REPORT_THUMB_SCALING);
+    ImageW := ToInt32(Round(ImageH * REPORT_THUMB_SCALING));
   end
 end;
 

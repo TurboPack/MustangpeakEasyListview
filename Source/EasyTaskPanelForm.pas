@@ -228,7 +228,8 @@ procedure TEasyTaskPanelForm.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 
 var
   DC: TControlCanvas;
-  PartID, StateID: LongWord;
+  PartID: Int32;
+  StateID: Int32;
 begin
   DC := TControlCanvas.Create;
   try
