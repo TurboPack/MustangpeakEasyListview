@@ -1,6 +1,6 @@
 unit EasyListview;
 
-// Version 2.1.0
+// Version 2.1.1
 //
 // The contents of this file are subject to the Mozilla Public License
 // Version 1.1 (the "License"); you maynot use this file except in compliance
@@ -22294,6 +22294,10 @@ begin
       FillChar(RectArray, SizeOf(RectArray), #0);
 
       GetImageSize(Item, Column, ImageW, ImageH, eikNormal);
+
+      // Fix 2.1.1 - In Tile view the vAlgnnment was off
+      // DrawTextFlags wasn't initialized
+      DrawTextFlags := [];
 
       // Get the cell size for the main caption, aligned with the top
       case PaintTextAlignment(Item, Column) of
